@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mandate-ledger-demo"
+version = "0.1"
+description = "Mandate Ledger Service Demo for Agent Payments Protocol"
+dependencies = []
+keywords = ["mandate-ledger", "ap2", "mongodb"]
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["example/src"]
+include = ["ap2*", "common*", "roles*"]
+
+[tool.uv.workspace]
+members = ["example", "mandate_ledger_service"]

@@ -1,0 +1,17 @@
+{
+    "mandate_type": "IntentMandate",
+    "mandate_data": {
+        "user_cart_confirmation_required": true,
+        "natural_language_description": "High top, old school, red basketball shoes under $200",
+        "merchants": [
+            "nike.com",
+            "adidas.com"
+        ],
+        "requires_refundability": true,
+        "intent_expiry": "2025-12-31T23:59:59Z"
+    },
+    "metadata": {
+        "source": "test_suite",
+        "environment": "test"
+    }
+}

@@ -1,0 +1,54 @@
+{
+    "mandate_type": "CartMandate",
+    "mandate_data": {
+        "contents": {
+            "id": "cart_test_12345",
+            "user_cart_confirmation_required": true,
+            "payment_request": {
+                "method_data": [
+                    {
+                        "supported_methods": "basic-card",
+                        "data": {
+                            "supportedNetworks": [
+                                "visa",
+                                "mastercard"
+                            ]
+                        }
+                    }
+                ],
+                "details": {
+                    "id": "payment_details_001",
+                    "total": {
+                        "label": "Total",
+                        "amount": {
+                            "currency": "USD",
+                            "value": "1049.99"
+                        }
+                    },
+                    "display_items": [
+                        {
+                            "label": "Laptop",
+                            "amount": {
+                                "currency": "USD",
+                                "value": "999.99"
+                            }
+                        },
+                        {
+                            "label": "Mouse (x2)",
+                            "amount": {
+                                "currency": "USD",
+                                "value": "50.00"
+                            }
+                        }
+                    ]
+                }
+            },
+            "cart_expiry": "2025-12-31T23:59:59Z",
+            "merchant_name": "Test Electronics Store"
+        }
+    },
+    "metadata": {
+        "source": "test_suite",
+        "environment": "test"
+    }
+}

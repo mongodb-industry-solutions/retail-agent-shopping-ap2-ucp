@@ -1,0 +1,46 @@
+{
+    "mandate_type": "PaymentMandate",
+    "mandate_data": {
+        "payment_mandate_contents": {
+            "payment_mandate_id": "pm_test_67890",
+            "payment_details_id": "pd_test_12345",
+            "payment_details_total": {
+                "label": "Total",
+                "amount": {
+                    "currency": "USD",
+                    "value": "1049.99"
+                }
+            },
+            "payment_response": {
+                "request_id": "req_test_abc123",
+                "method_name": "basic-card",
+                "details": {
+                    "cardNumber": "4242424242424242",
+                    "cardholderName": "Test User",
+                    "expiryMonth": "12",
+                    "expiryYear": "2025",
+                    "cardSecurityCode": "123"
+                },
+                "shipping_address": {
+                    "country": "US",
+                    "address_line": [
+                        "123 Test St"
+                    ],
+                    "region": "CA",
+                    "city": "San Francisco",
+                    "postal_code": "94102",
+                    "recipient": "Test User",
+                    "phone": "+1-555-0100"
+                },
+                "payer_name": "Test User",
+                "payer_email": "test@example.com",
+                "payer_phone": "+1-555-0100"
+            },
+            "merchant_agent": "merchant_test_001"
+        }
+    },
+    "metadata": {
+        "source": "test_suite",
+        "environment": "test"
+    }
+}
