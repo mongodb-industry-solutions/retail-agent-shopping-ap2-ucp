@@ -11,6 +11,13 @@ import logging
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from src.config import settings
 
+# SSL certificate support for macOS (fixes Python.org installer issues)
+try:
+    import certifi
+    TLS_CA_FILE = certifi.where()
+except ImportError:
+    TLS_CA_FILE = None
+
 logger = logging.getLogger(__name__)
 
 
@@ -59,16 +66,27 @@ async def connect_to_mongo() -> None:
     """
     try:
         logger.info(f"Connecting to MongoDB: {settings.MONGODB_DATABASE}")
+        
+        # Build client options with connection pooling
+        client_options = {
+            "maxPoolSize": settings.MONGODB_MAX_POOL_SIZE,
+            "minPoolSize": settings.MONGODB_MIN_POOL_SIZE,
+            "maxIdleTimeMS": 45000,  # Close idle connections after 45 seconds
+            "serverSelectionTimeoutMS": 5000,  # Timeout for server selection
+            "connectTimeoutMS": 10000,  # Timeout for initial connection
+            "socketTimeoutMS": 20000,  # Timeout for socket operations
+        }
+
+        # Add certifi CA file if available (fixes macOS SSL certificate issues)
+        if TLS_CA_FILE:
+            client_options["tlsCAFile"] = TLS_CA_FILE
+            logger.debug(f"Using certifi CA file for TLS: {TLS_CA_FILE}")
+
 
         # Create MongoDB client with connection pooling
         MongoDB.client = AsyncIOMotorClient(
             settings.MONGODB_URI,
-            maxPoolSize=settings.MONGODB_MAX_POOL_SIZE,
-            minPoolSize=settings.MONGODB_MIN_POOL_SIZE,
-            maxIdleTimeMS=45000,  # Close idle connections after 45 seconds
-            serverSelectionTimeoutMS=5000,  # Timeout for server selection
-            connectTimeoutMS=10000,  # Timeout for initial connection
-            socketTimeoutMS=20000,  # Timeout for socket operations
+            **client_options
         )
 
         # Get database reference
