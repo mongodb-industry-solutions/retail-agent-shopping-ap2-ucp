@@ -1,7 +1,7 @@
 version: 2
 updates:
-  # NPM updates - weekly, grouped
-  - package-ecosystem: "npm"
+  # Pip updates - weekly, grouped
+  - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -10,7 +10,7 @@ updates:
     open-pull-requests-limit: 3
     labels:
       - "dependencies"
-      - "javascript"
+      - "python"
     reviewers:
       - "mongodb-industry-solutions/ist-techhub"
     commit-message:
@@ -20,7 +20,7 @@ updates:
       # Group all patch updates together
       patch-updates:
         update-types: ["patch"]
-      # Group all minor updates together  
+      # Group all minor updates together
       minor-updates:
         update-types: ["minor"]
       # Group all major updates together
