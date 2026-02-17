@@ -216,3 +216,7 @@ api_keys_*.json
 cicd-kanopy/
 security_check.sh
 SECURITY_CHECK_README.md
+
+# Git hooks
+setup-hooks.sh
+.githooks/
