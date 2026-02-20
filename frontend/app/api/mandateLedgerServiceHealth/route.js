@@ -37,13 +37,13 @@ export async function GET() {
     return NextResponse.json(data, { status: 200 });
     
   } catch (error) {
-    console.error('[API Proxy] Error connecting to mandate ledger service:', error);
+    console.error('[API Proxy] Error connecting to mandate ledger service:', error, {
+      backendUrl: process.env.NEXT_PUBLIC_BACKEND_ENDPOINT,
+    });
     
     return NextResponse.json(
       { 
         error: 'Failed to connect to mandate ledger service',
-        details: error.message,
-        backendUrl: process.env.NEXT_PUBLIC_BACKEND_ENDPOINT
       },
       { status: 500 }
     );
