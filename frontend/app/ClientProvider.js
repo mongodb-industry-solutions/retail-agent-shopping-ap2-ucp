@@ -6,7 +6,9 @@ import store from "../redux/store";
 
 export default function ClientProvider({ children }) {
   useEffect(() => {
-    sessionStorage.clear();
+    if (process.env.NODE_ENV === "development") {
+      sessionStorage.clear();
+    }
   }, []);
 
   return <Provider store={store}>{children}</Provider>
