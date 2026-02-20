@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # Pip updates - weekly, grouped
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "python"
+    reviewers:
+      - "mongodb-industry-solutions/ist-techhub"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      # Group all patch updates together
+      patch-updates:
+        update-types: ["patch"]
+      # Group all minor updates together
+      minor-updates:
+        update-types: ["minor"]
+      # Group all major updates together
+      major-updates:
+        update-types: ["major"]

@@ -1,0 +1,16 @@
+# GitHub CODEOWNERS file for automatic review requests
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Dependency files
+pyproject.toml @Alberthor47 @AngelicaGE @floarin @mongodb-industry-solutions/ist-techhub
+
+# Dependabot configuration
+.github/dependabot.yml @Alberthor47 @AngelicaGE @floarin
+
+# GitHub workflows and actions
+.github/workflows/ @Alberthor47 @AngelicaGE @floarin
+.github/actions/ @Alberthor47 @AngelicaGE @floarin
+
+# Docker and deployment
+Dockerfile @Alberthor47 @AngelicaGE @floarin
+docker-compose.yml @Alberthor47 @AngelicaGE @floarin
