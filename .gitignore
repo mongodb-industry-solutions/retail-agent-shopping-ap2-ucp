@@ -11,6 +11,49 @@ __pycache__/
 # C extensions
 *.so
 
+# 🌐 Frontend (Next.js, Node.js, Yarn)
+node_modules/
+.pnp/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+.next/
+out/
+build/
+coverage/
+dist/
+
+# Frontend utils/style folder
+frontend/utils/style/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+*.tsbuildinfo
+next-env.d.ts
+
+# 🐍 Backend (Python)
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+*.pot
+*.mo
+*.sqlite3
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+*.spec
+*.manifest
+
 # Distribution / packaging
 .Python
 build/
@@ -216,3 +259,7 @@ api_keys_*.json
 cicd-kanopy/
 security_check.sh
 SECURITY_CHECK_README.md
+
+# Git hooks
+setup-hooks.sh
+.githooks/
