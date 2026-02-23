@@ -59,9 +59,7 @@ steps:
       release: retail-agent-shopping-ap2-ucp-staging
       values_files: ["environment/staging.yaml"]
       values:
-        - "sidecarContainers[0].name=backend"
         - "sidecarContainers[0].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-backend:git-${DRONE_COMMIT_SHA:0:7}"
-        - "sidecarContainers[0].containerPort=8000"
         - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
         - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-frontend"
         - "ingress.enabled=true"
@@ -149,9 +147,7 @@ steps:
       release: retail-agent-shopping-ap2-ucp-prod
       values_files: ["environment/production.yaml"]
       values:
-        - "sidecarContainers[0].name=backend"
         - "sidecarContainers[0].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-backend-prod:git-${DRONE_COMMIT_SHA:0:7}"
-        - "sidecarContainers[0].containerPort=8000"
         - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
         - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-frontend-prod"
         - "ingress.enabled=true"

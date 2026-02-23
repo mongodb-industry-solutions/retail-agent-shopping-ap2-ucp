@@ -14,7 +14,7 @@ npm install
 ````bash
 npm run dev
 ````
-3. The frontend will now be accessible at http://localhost:3000 by default, providing a user interface to interact with the image vector search demo.
+3. The frontend will now be accessible at http://localhost:8080 by default, providing a user interface to interact with the image vector search demo.
 
 
 ## Understanding Next.js
@@ -29,23 +29,23 @@ In Next.js, routes are created inside the `app` directory. Here's a breakdown of
 - We have two example routes for demonstrating how API routes work:
 
   - **GET request to MongoDB**:  
-    [http://localhost:3000/api/mongodb](http://localhost:3000/api/mongodb)
+    [http://localhost:8080/api/mongodb](http://localhost:8080/api/mongodb)
 
   - **Basic test route**:  
-    [http://localhost:3000/api/test](http://localhost:3000/api/test)
+    [http://localhost:8080/api/test](http://localhost:8080/api/test)
 
 #### Dynamic Routes
 
 - If you create a new folder inside the `app` directory, a route will be automatically created based on the folder name.
 - For example, creating a folder called `example` will make it accessible at:
-  [http://localhost:3000/example](http://localhost:3000/example)
+  [http://localhost:8080/example](http://localhost:8080/example)
 
 Each route includes a `layout.js` and `page.js` to define the structure and content.
 
 #### Root Route
 
 - The global root route (home page) is accessible at:
-  [http://localhost:3000](http://localhost:3000)
+  [http://localhost:8080](http://localhost:8080)
 
 This page is managed by the `layout.js` and `page.js` inside the `app` directory.
 
