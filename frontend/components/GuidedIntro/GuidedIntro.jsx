@@ -8,6 +8,7 @@ import { palette } from "@leafygreen-ui/palette";
 import { introSlides } from '@/lib/const/ux-writing';
 import { setGuidedSlice } from '../../redux/slices/GlobalSlice';
 import { Logo } from '@leafygreen-ui/logo';
+import Icon from '@leafygreen-ui/icon';
 
 const GuidedIntro = () => {
   const dispatch = useDispatch();
@@ -116,6 +117,7 @@ const GuidedIntro = () => {
             <Button
               variant="default"
               size="large"
+              leftGlyph={<Icon glyph="CaretLeft" />}
               onClick={handlePrevious}
               style={{
                 backgroundColor: palette.gray.light2,
@@ -123,20 +125,19 @@ const GuidedIntro = () => {
                 border: `1px solid ${palette.gray.light1}`
               }}
             >
-              <span className="h-4 w-4">‹</span>
               Previous
             </Button>
           )}
           <Button 
             size="large" 
             onClick={handleNext}
+            rightGlyph={<Icon glyph="CaretRight" />}
             style={{
               backgroundColor: palette.green.dark2,
               color: palette.gray.light3
             }}
           >
             {isLastSlide ? "Start Demo" : "Continue"}
-            <span className="h-4 w-4">›</span>
           </Button>
         </div>
       </div>

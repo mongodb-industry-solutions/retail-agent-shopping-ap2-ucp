@@ -2,7 +2,7 @@ export const introSlides = [
   {
     title: "Unlocking the Agentic Commerce Opportunity",
     description:
-      "<p>Discover a new way to shop with our <strong>AI-powered retail platform</strong>.</p><p>Get personalized recommendations and seamless checkout experience tailored just for you.</p>",
+      "<p>Digital commerce has evolved. We are entering the Agent Economy, where AI assistants do more than search—they autonomously negotiate, assemble carts, and purchase on our behalf, maximizing our convenience and shopping options.</p><p>But this leap forward breaks today's payment systems, which assume a human is actually present to click 'buy'. This shift introduces critical new challenges around trust, authorization, and accountability.</p><p>How do we secure a transaction when the buyer is a bot?</p>",
     imagePlaceholder: "Interactive shopping interface mockup",
     imageURL: "/GuidedIntro/mandateLedgerArchietcture.png",
   },
