@@ -37,6 +37,27 @@ sidecarContainers:
             name: retail-ap2
             key: MONGODB_URI
 
+  - name: mandate-ledger
+    # Image will be overridden by Drone pipeline with specific git-SHA tag
+    image: 795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-mandate-ledger-prod:latest
+    
+    # Expose mandate ledger service port (accessible via localhost from other containers)
+    ports:
+      - containerPort: 5000
+        name: mandate-ledger
+    
+    # Environment variables for mandate ledger service container
+    env:
+      - name: NODE_ENV
+        value: prod
+      
+      # MongoDB Configuration (from secrets)
+      - name: MONGODB_URI
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: MONGODB_URI
+
 ## ----------------------------- Cloud Specific Configurations (For AWS only line 42 to 46 needed)-----------------------------
 
 ## Add IRSA configuration here, this is for AWS
