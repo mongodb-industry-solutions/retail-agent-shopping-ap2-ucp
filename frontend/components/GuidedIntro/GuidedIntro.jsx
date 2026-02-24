@@ -52,7 +52,7 @@ const GuidedIntro = () => {
         <Logo height={30} color='green-dark-2' />
       </div>
 
-      <div className="w-full max-w-4xl px-6">
+      <div className="">
         {/* Progress indicators */}
         <div className="flex justify-center gap-2 mb-12">
           {introSlides.map((_, index) => {
@@ -104,7 +104,7 @@ const GuidedIntro = () => {
               {slide.title}
             </H3>
             <div 
-              className="text-lg max-w-2xl mx-auto leading-relaxed"
+              className="text-lg max-w-5xl mx-auto leading-relaxed"
               style={{ color: palette.gray.dark1 }}
               dangerouslySetInnerHTML={{ __html: slide.description }}
             />
