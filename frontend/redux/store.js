@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import MandateLedgerReducer from './slices/MandateLedgerSlice'
+import GlobalSliceReducer from './slices/GlobalSlice'
 
 
 const store = configureStore({
     reducer: {
-        "MandateLedger": MandateLedgerReducer
+        "MandateLedger": MandateLedgerReducer,
+        "Global": GlobalSliceReducer
     }
 });
 
