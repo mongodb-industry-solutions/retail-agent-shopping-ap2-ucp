@@ -81,6 +81,7 @@ export const profiles = [
     color: "primary",
     detailedInfo:
       "Objective: Introduce all agents involved in a purchase and how they communicate.",
+    profileIcon:  "Checkmark"
   },
   {
     id: "hunter",
@@ -93,6 +94,7 @@ export const profiles = [
     color: "accent",
     detailedInfo:
       "Objective: Introduce the Mandate Service Layer and Role-Based Access Control (RBAC).",
+    profileIcon: "CreditCard"
   },
   {
     id: "disputing",
@@ -105,5 +107,6 @@ export const profiles = [
     color: "accent",
     detailedInfo:
       "Objective: Demonstrate immutability and audit trail capabilities for AP2/UCP compliance.",
+    profileIcon: "Warning"
   },
 ];
