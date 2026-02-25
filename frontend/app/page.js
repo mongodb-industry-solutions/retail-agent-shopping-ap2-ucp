@@ -24,7 +24,7 @@ export default function Home() {
     <main className="flex flex-col min-h-screen items-center justify-center relative">
       <GuidedIntroManager />
       <ProfileSelection/>
-      {/* <div className="absolute top-8 left-1/2 -translate-x-1/2">
+      <div className="absolute top-8 left-1/2 -translate-x-1/2">
         <h1 className="mb-3">AP2 + Mandate Ledger Service</h1>
         <Button onClick={getMandateLedgerServiceHealth}>Check Mandate Ledger Health</Button>
         {health && (
@@ -33,7 +33,7 @@ export default function Home() {
             <pre>{JSON.stringify(health, null, 2)}</pre>
           </div>
         )}
-      </div> */}
+      </div>
     </main>
   );
 }
