@@ -1,0 +1,100 @@
+env:
+  NODE_ENV: staging
+  # AWS region for IRSA (no credentials needed)
+  AWS_REGION: us-east-1
+  # Backend API URL for frontend to connect to backend health check - get <service-name> using kubectl get services
+  NEXT_PUBLIC_BACKEND_ENDPOINT: http://localhost:8000 # Multi-container pod setup - backend sidecar accessible via localhost
+  #COLLECTION_NAME: test-collection
+
+## Single Pod Containers
+envSecrets:
+  # MongoDB Configuration
+  MONGODB_URI: retail-ap2
+  #DATABASE_NAME: <secret-group>  
+  #VOYAGE_API_KEY: <secret-group>
+
+## should be used in case of multiple sidecar containers
+sidecarContainers:
+  - name: backend
+    # Image will be overridden by Drone pipeline with specific git-SHA tag
+    image: 795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-backend:latest
+    
+    # Expose backend port (accessible via localhost from frontend)
+    ports:
+      - containerPort: 8000
+        name: backend
+    
+    # Environment variables for backend container
+    env:
+      - name: NODE_ENV
+        value: staging
+      
+      - name: MANDATE_LEDGER_SERVICE_URL
+        value: http://localhost:5000
+      
+      # MongoDB Configuration (from secrets)
+      - name: MONGODB_URI
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: MONGODB_URI
+
+  - name: mandate-ledger
+    # Image will be overridden by Drone pipeline with specific git-SHA tag
+    image: 795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-mandate-ledger:latest
+    
+    # Expose mandate ledger service port (accessible via localhost from other containers)
+    ports:
+      - containerPort: 5000
+        name: mandate-ledger
+    
+    # Environment variables for mandate ledger service container
+    env:
+      - name: NODE_ENV
+        value: staging
+      
+      # MongoDB Configuration (from secrets)
+      - name: MONGODB_URI
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: MONGODB_URI
+    
+## ----------------------------- Cloud Specific Configurations -----------------------------
+
+# Add IRSA configuration here, role here gives access to bedrock, s3, aws secrets manager
+serviceAccount:
+  enabled: true
+  irsa:
+    accountId: "275662791714"
+    roleName: "kanopy-staging-cicd-irsa"
+
+## For GCP this, example setup here is for manufacturing
+
+# serviceAccount:
+#  enabled: true
+#  name: <service-account> # commit and helm should create Service account 
+# ## kubectl get pods -n ${KSA_NAMESPACE} -o jsonpath='{.items[0].spec.serviceAccountName}' | grep <demo-pod-name>
+
+
+# # Mount GCP credential config and service account token
+# extraVolumes:
+#  - name: gcp-creds
+#    configMap:
+#      name: <config-map-name>
+#  - name: gcp-token
+#    projected:
+#      sources:
+#      - serviceAccountToken:
+#          path: token
+#          expirationSeconds: 3600
+#          audience: "//iam.googleapis.com/projects/<USER_PROJECT_NUMBER>/locations/global/workloadIdentityPools/<WIF_POOL_ID>/providers/<WIF_PROVIDER_ID>"
+
+
+# extraVolumeMounts:
+#  - name: gcp-creds
+#    mountPath: /etc/gcp
+#    readOnly: true
+#  - name: gcp-token
+#    mountPath: /var/run/service-account
+#    readOnly: true
