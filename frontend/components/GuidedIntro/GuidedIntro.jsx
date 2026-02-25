@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import Button from "@leafygreen-ui/button";
 import { H3 } from "@leafygreen-ui/typography";
@@ -83,15 +84,18 @@ const GuidedIntro = () => {
         <div className="text-center space-y-8">
           {/* Image */}
           <div className="flex justify-center">
-            <div className="w-full max-w-md aspect-video rounded-xl overflow-hidden">
-              <img 
+            <div className="w-full max-w-3xl rounded-xl overflow-hidden">
+              <Image
                 src={slide.imageURL}
                 alt={slide.imagePlaceholder}
-                className="w-full h-full object-contain"
+                width={1200}
+                height={600}
+                className="w-full h-auto object-contain"
                 style={{
                   border: `2px solid ${palette.gray.light1}`,
                   borderRadius: '12px'
                 }}
+                priority
               />
             </div>
           </div>
