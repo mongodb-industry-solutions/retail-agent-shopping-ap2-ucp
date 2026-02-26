@@ -35,7 +35,7 @@ export const introSlides = [
          `<br/>
          <p>To complete an autonomous transaction, <b>AI agents</b> need to both find the product and buy it securely.</p>
          <br/>
-         <p>While the <b>Universal Commerce Protocol (UCP)</b> acts as the "common language" allowing agents to discover catalogs and navigate checkouts, <b>AP2</b> is the security layer that AP2 is the security layer that provides the cryptographic proof of authorization.</p>
+         <p>While the <b>Universal Commerce Protocol (UCP)</b> acts as the "common language" allowing agents to discover catalogs and navigate checkouts, <b>AP2</b> is the security layer that provides the cryptographic proof of authorization.</p>
          <br/>
          <p>Though our demo focuses on <b>AP2’s secure transaction mechanics</b>, they are designed to work together seamlessly.</p>
          <br/>
