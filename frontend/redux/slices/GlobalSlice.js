@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const GlobalSliceSlice = createSlice({
   name: "GlobalSlice",
   initialState: {
-    isGuidedSliceOpened: true,
+    isGuidedSliceOpened: false, //TODO, change to true after this feature is done
     startedJourneys: [],
   },
   reducers: {

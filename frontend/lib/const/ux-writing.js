@@ -69,8 +69,8 @@ export const introSlides = [
   },
 ];
 
-export const profiles = [
-  {
+export const profiles = {
+  straightforward: {
     id: "straightforward",
     name: "The Straightforward Buyer",
     characteristic: "Efficient & Decisive",
@@ -83,7 +83,7 @@ export const profiles = [
       "Objective: Introduce all agents involved in a purchase and how they communicate.",
     profileIcon:  "Checkmark"
   },
-  {
+  hunter: {
     id: "hunter",
     name: "The Hunter Buyer",
     characteristic: "Deal Seeker",
@@ -96,7 +96,7 @@ export const profiles = [
       "Objective: Introduce the Mandate Service Layer and Role-Based Access Control (RBAC).",
     profileIcon: "CreditCard"
   },
-  {
+  disputing: {
     id: "disputing",
     name: "The Disputing Customer",
     characteristic: "Post-Purchase Advocate",
@@ -109,4 +109,106 @@ export const profiles = [
       "Objective: Demonstrate immutability and audit trail capabilities for AP2/UCP compliance.",
     profileIcon: "Warning"
   },
-];
+};
+
+export const chatFlows = {
+  straightforward: [
+    {
+      id: "welcome",
+      type: "assistant",
+      content: "Hello! Welcome to TechMart. What would you like to browse today?",
+      options: [
+        { id: "opt-laptops", label: "Laptops", nextMessageId: "laptops" },
+        { id: "opt-phones", label: "Phones", nextMessageId: "phones" },
+        { id: "opt-accessories", label: "Accessories", nextMessageId: "accessories" },
+      ],
+    },
+    {
+      id: "laptops",
+      type: "assistant",
+      content: "Here are some laptops you might like:",
+      products: [
+        { id: "prod1", name: "Laptop A", description: "High-performance laptop", price: 1200 },
+        { id: "prod2", name: "Laptop B", description: "Lightweight laptop", price: 950 },
+      ],
+      options: [
+        { id: "opt-add-cart", label: "Add to Cart", nextMessageId: "cart-added" },
+      ],
+    },
+    {
+      id: "cart-added",
+      type: "assistant",
+      content: "Item added to your cart! Ready to checkout?",
+      options: [
+        { id: "opt-checkout", label: "Checkout", nextMessageId: "checkout" },
+      ],
+    },
+    {
+      id: "checkout",
+      type: "assistant",
+      content: "Checkout complete! Payment successful.",
+      type: "system",
+    },
+  ],
+
+  hunter: [
+    {
+      id: "welcome",
+      type: "assistant",
+      content: "Hey deal hunter! Let's find the best discounts.",
+      options: [
+        { id: "opt-deals", label: "See Deals", nextMessageId: "deals" },
+      ],
+    },
+    {
+      id: "deals",
+      type: "assistant",
+      content: "Here are the hottest deals today:",
+      products: [
+        { id: "prod3", name: "Phone X", description: "Top smartphone", price: 700 },
+        { id: "prod4", name: "Headphones Y", description: "Noise-cancelling", price: 150 },
+      ],
+      options: [
+        { id: "opt-add-cart", label: "Add to Cart", nextMessageId: "cart-added" },
+      ],
+    },
+    {
+      id: "cart-added",
+      type: "assistant",
+      content: "Item added to your cart! Ready to checkout?",
+      options: [
+        { id: "opt-checkout", label: "Checkout", nextMessageId: "checkout" },
+      ],
+    },
+    {
+      id: "checkout",
+      type: "assistant",
+      content: "Checkout complete! Payment successful.",
+      type: "system",
+    },
+  ],
+
+  disputing: [
+    {
+      id: "welcome",
+      type: "assistant",
+      content: "Hello! I see you have an issue with an order. How can I assist?",
+      options: [
+        { id: "opt-refund", label: "Request Refund", nextMessageId: "refund" },
+        { id: "opt-change-order", label: "Change Order", nextMessageId: "change-order" },
+      ],
+    },
+    {
+      id: "refund",
+      type: "assistant",
+      content: "Refund initiated. You'll receive a confirmation soon.",
+      type: "system",
+    },
+    {
+      id: "change-order",
+      type: "assistant",
+      content: "You can modify your order before shipment.",
+      type: "system",
+    },
+  ],
+};
