@@ -1,10 +1,10 @@
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import { Providers } from "./providers";
 
-// TODO: Update metadata with actual demo details
 export const metadata = {
-  title: "Demo Template",
-  description: "Industry Solutions Demo Template for NextJS",
+  title: "Agentic Commerce Demo",
+  description: "Agentic Commerce Demo showcasing AP2 and Mandate Ledger Service integration",
 };
 
 export default function RootLayout({ children }) {

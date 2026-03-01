@@ -12,7 +12,7 @@ async def get_mandate_ledger_health():
         mandate_ledger_url = os.getenv("MANDATE_LEDGER_SERVICE_URL")
         
         # If no mandate ledger service URL is configured, return mock response
-        if not mandate_ledger_url or mandate_ledger_url == "http://localhost:5000":
+        if not mandate_ledger_url:
             return {
                 "status": "healthy",
                 "service": "mandate-ledger-mock",

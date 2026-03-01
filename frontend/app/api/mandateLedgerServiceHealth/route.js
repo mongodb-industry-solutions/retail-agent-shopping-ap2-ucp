@@ -31,7 +31,7 @@ export async function GET() {
     // Get response data from backend
     const data = await response.json();
     
-    console.log('[API Proxy] Mandate Ledger health response received:', {...data});
+    console.log('[API Proxy] Mandate Ledger health response received:', data);
     
     // Return backend response to browser
     return NextResponse.json(data, { status: 200 });
