@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react'
 import { Chip } from "@leafygreen-ui/chip";
 import Button from "@leafygreen-ui/button";
