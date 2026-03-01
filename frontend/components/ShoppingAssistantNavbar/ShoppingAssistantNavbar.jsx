@@ -25,7 +25,6 @@ const ShoppingAssistantNavbar = ({profileId}) => {
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <Button
           variant="ghost"
-          size=""
           onClick={() => router.push(`/`)}
           leftGlyph={<Icon size={"xlarge"} glyph="ChevronLeft" />}
         />
