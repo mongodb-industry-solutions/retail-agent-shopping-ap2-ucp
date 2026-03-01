@@ -1,0 +1,49 @@
+import { profiles } from "@/lib/const/ux-writing";
+import {Badge} from "@leafygreen-ui/badge";
+import Button from "@leafygreen-ui/button";
+import Icon from "@leafygreen-ui/icon";
+import { Logo } from "@leafygreen-ui/logo";
+import { palette } from "@leafygreen-ui/palette";
+import { Body } from "@leafygreen-ui/typography";
+import React from "react";
+
+const ShoppingAssistantNavbar = ({profileId}) => {
+  return (
+    <div
+      style={{
+        padding: "16px 24px",
+        borderBottom: `1px solid ${palette.gray.light2}`,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <Button
+          variant="ghost"
+          size=""
+          onClick={() => router.push(`/`)}
+          leftGlyph={<Icon size={"xlarge"} glyph="ChevronLeft" />}
+        />
+        <div>
+          <h2 style={{ margin: 0 }}>Shopping Assistant</h2>
+          <small
+            className="d-flex flex-row flex-align-center gap-1"
+            style={{ color: "#666" }}
+          >
+            Powered by <Logo height={20} color="green-dark-2" />
+          </small>
+        </div>
+      </div>
+      <div className="d-flex flex-row align-items-center gap-2">
+        <Icon size={"small"} glyph="Cursor" />
+        <Body style={{ fontSize: "14px" }}>Click any message to explore</Body>
+        <Badge variant="blue" size="small">
+          {profiles[profileId]?.characteristic}
+        </Badge>
+      </div>
+    </div>
+  );
+};
+
+export default ShoppingAssistantNavbar;

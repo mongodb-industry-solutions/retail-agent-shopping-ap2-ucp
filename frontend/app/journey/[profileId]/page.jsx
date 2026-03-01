@@ -1,31 +1,24 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { useDispatch } from "react-redux";
-import Button from "@leafygreen-ui/button";
-import { Body, Subtitle } from "@leafygreen-ui/typography";
-import Icon from "@leafygreen-ui/icon";
-import { palette } from "@leafygreen-ui/palette";
-import Badge from "@leafygreen-ui/badge";
+
 
 import "../journey.css";
 import { profiles, chatFlows } from "@/lib/const/ux-writing";
 import { addStartedJourney } from "@/redux/slices/GlobalSlice";
-import { Chip } from "@leafygreen-ui/chip";
-import { Logo } from "@leafygreen-ui/logo";
+import ShoppingAssistantNavbar from "@/components/ShoppingAssistantNavbar/ShoppingAssistantNavbar";
+import MessageBubble from "@/components/MessageBubble/MessageBubble";
+import DetailsSidebar from "@/components/DetailsSidebar/DetailsSidebar";
 
 export default function JourneyPage() {
-  const router = useRouter();
   const params = useParams();
   const { profileId } = params;
   const profile = profiles[profileId];
   const dispatch = useDispatch();
   const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const [sidebarWidth, setSidebarWidth] = useState(420);
-  const [isResizing, setIsResizing] = useState(false);
   const messagesEndRef = useRef(null);
 
   const flow = chatFlows[profileId] || chatFlows.straightforward;
@@ -64,33 +57,6 @@ export default function JourneyPage() {
     }
   };
 
-  const handleMouseDown = () => {
-    setIsResizing(true);
-  };
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (!isResizing) return;
-      const newWidth = window.innerWidth - e.clientX;
-      const maxWidth = Math.floor(window.innerWidth / 2);
-      setSidebarWidth(Math.min(Math.max(320, newWidth), maxWidth));
-    };
-
-    const handleMouseUp = () => {
-      setIsResizing(false);
-    };
-
-    if (isResizing) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isResizing]);
-
   if (!profile) {
     return <div>Shopping journey not found.</div>;
   }
@@ -103,36 +69,7 @@ export default function JourneyPage() {
       {/* Main Chat */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         {/* Header */}
-        <div
-          style={{
-            padding: "16px 24px",
-            borderBottom: `1px solid ${palette.gray.light2}`,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Button
-              variant="ghost"
-              size=""
-              onClick={() => router.push(`/`)}
-              leftGlyph={<Icon size={"xlarge"} glyph="ChevronLeft" />}
-            />
-            <div>
-              <h2 style={{ margin: 0 }}>Shopping Assistant</h2>
-              <small className="d-flex flex-row flex-align-center gap-1" style={{ color: "#666" }}>
-                Powered by <Logo height={20} color='green-dark-2' />
-              </small>
-            </div>
-          </div>
-          <div className="d-flex flex-row align-items-center gap-2">
-            <Icon size={"small"} glyph="Cursor" />
-            <Body style={{fontSize: "14px"}}>Click any message to explore</Body>
-            <Badge variant="blue" size="small">{profiles[profileId].characteristic}</Badge>
-          </div>
-        </div>
-
+        <ShoppingAssistantNavbar profileId={profileId} />
         {/* Messages */}
         <div
           className="chatbotBody"
@@ -147,6 +84,7 @@ export default function JourneyPage() {
         >
           {messages.map((message, index) => (
             <MessageBubble
+              setSelectedMessage={setSelectedMessage}
               key={`${message.id}-${index}`}
               messageType={message.type}
               messageContent={message.content}
@@ -202,169 +140,14 @@ export default function JourneyPage() {
               }}
             />
           ))}
-
           <div ref={messagesEndRef} />
         </div>
       </div>
 
       {/* Sidebar */}
       {selectedMessage && (
-        <>
-          <div
-            style={{
-              width: 4,
-              cursor: "col-resize",
-              background: "#e0e0e0",
-            }}
-            onMouseDown={handleMouseDown}
-          />
-
-          <div
-            style={{
-              width: sidebarWidth,
-              borderLeft: "1px solid #e0e0e0",
-              padding: 24,
-              overflowY: "auto",
-            }}
-          >
-            <h3>{selectedMessage.detailedInfo?.title}</h3>
-            <p>{selectedMessage.detailedInfo?.description}</p>
-          </div>
-        </>
+        <DetailsSidebar selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} />
       )}
     </div>
-  );
-}
-
-function MessageBubble({
-  messageType,
-  messageContent,
-  messageOptions,
-  onOptionClick,
-  isLatest,
-  message,
-}) {
-  if (messageType === "user") {
-    return (
-      <div
-        className="speechBubble userBubble d-flex flex-col"
-         style={{ backgroundColor: palette.green.dark2 }}
-      >
-        <Body style={{color: "white"}} className="text-start messageContent">{messageContent}</Body>
-        <>
-          <hr className="m-0" />
-          <div
-            className="agentDetails"
-            style={{ backgroundColor: palette.green.light3 }}
-          >
-            {/* Agent header for details message */}
-            <div className="d-flex justify-content-between">
-              <div className="d-flex flex-row align-items-center gap-2">
-                <Icon
-                  style={{ color: palette.green.dark2 }}
-                  glyph="Database"
-                ></Icon>
-                <Subtitle
-                  className={"agentPrefix"}
-                  style={{ color: palette.green.dark2 }}
-                >
-                  Behind The Scenes
-                </Subtitle>
-              </div>
-              <Button
-                rightGlyph={<Icon glyph="ArrowRight" />}
-                size="small"
-                variant="primaryOutlined"
-              >
-                Click for details
-              </Button>
-            </div>
-            {/* Agent content for details message */}
-            <div>
-              <p className="behindTheScenesSummary m-0">
-                {message.behindTheScenes.summary}
-              </p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {message.behindTheScenes.keyPoints.map((point, i) => (
-                  <Chip key={i} label={point} className="chip p-1" />
-                ))}
-              </div>
-            </div>
-          </div>
-        </>
-      </div>
-    );
-  }
-  const hasDetails = !!message.detailedInfo;
-  return (
-    <>
-      <div className="agentHeader">
-        <img src="/icons/coachGTM_Headshot.png" className="agentImage" />
-        <Subtitle className="agentPrefix">Agent's response</Subtitle>
-      </div>
-      <div className="speechBubble answerBubble">
-        <Body className="messageContent">{messageContent}</Body>
-        {/* Message details */}
-        {hasDetails && (
-          <>
-            <hr className="m-0" />
-            <div
-              className="agentDetails"
-              style={{ backgroundColor: palette.gray.light3 }}
-            >
-              {/* Agent header for details message */}
-              <div className="d-flex justify-content-between">
-                <div className="d-flex flex-row align-items-center gap-2">
-                  <Icon
-                    style={{ color: palette.green.dark2 }}
-                    glyph="Database"
-                  ></Icon>
-                  <Subtitle
-                    className={"agentPrefix"}
-                    style={{ color: palette.green.dark2 }}
-                  >
-                    Behind The Scenes
-                  </Subtitle>
-                </div>
-                <Button
-                  rightGlyph={<Icon glyph="ArrowRight" />}
-                  size="small"
-                  variant="primaryOutlined"
-                >
-                  Click for details
-                </Button>
-              </div>
-              {/* Agent content for details message */}
-              <div>
-                <p className="behindTheScenesSummary m-0">
-                  {message.behindTheScenes.summary}
-                </p>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {message.behindTheScenes.keyPoints.map((point, i) => (
-                    <Chip key={i} label={point} className="chip p-1" />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-
-      {isLatest && messageOptions && (
-        <div className="d-flex flex-row flex-wrap gap-3">
-          {messageOptions.map((option) => (
-            <Button
-              key={option.id}
-              leftGlyph={<Icon glyph="Sparkle" />}
-              size="small"
-              variant="default"
-               onClick={() => onOptionClick(option.id, option.nextMessageId, option.label) }
-            >
-              {option.label}
-            </Button>
-          ))}
-        </div>
-      )}
-    </>
   );
 }
