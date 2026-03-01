@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react'
 import { Chip } from "@leafygreen-ui/chip";
 import Button from "@leafygreen-ui/button";
@@ -73,7 +75,7 @@ const MessageBubble = ({
   return (
     <>
       <div className="agentHeader">
-        <img src="/icons/coachGTM_Headshot.png" className="agentImage" />
+        <img src="/icons/coachGTM_Headshot.png" className="agentImage" alt="Agent headshot" />
         <Subtitle className="agentPrefix">Agent's response</Subtitle>
       </div>
       <div className="speechBubble answerBubble">

@@ -46,12 +46,11 @@ const ProfileSelection = () => {
     const profileIndex = profileOrder.indexOf(profileId);
     if (profileIndex <= 0) return "";
     const previousJourney = profileOrder[profileIndex - 1];
-    const profile = profiles.find((p) => p.id === previousJourney);
-    return profile?.name || "";
+    return profiles[previousJourney]?.name || "";
   };
 
   const getProfileById = (profileId) => {
-    return profiles.find((profile) => profile.id === profileId);
+    return profiles[profileId];
   };
 
   return (
@@ -76,8 +75,9 @@ const ProfileSelection = () => {
 
       {/* Profile Cards */}
       <div className="grid md:grid-cols-3" style={{ gap: spacing[3] }}>
-        {profiles.map((profile, index) => {
-          const iconGlyph = getProfileById(profile.id)?.profileIcon || "User";
+        {profileOrder.map((profileId, index) => {
+          const profile = profiles[profileId];
+          const iconGlyph = profile?.profileIcon || "User";
           const isHovered = hoveredProfile === profile.id;
           const unlocked = isUnlocked(profile.id);
           const started = isStarted(profile.id);
