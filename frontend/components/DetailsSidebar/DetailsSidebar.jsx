@@ -5,9 +5,12 @@ import { palette } from "@leafygreen-ui/palette";
 import IconButton from "@leafygreen-ui/icon-button";
 
 import "./detailsSidebar.css";
+import { useDispatch, useSelector } from "react-redux";
+import { setSidebarWidth } from "@/redux/slices/GlobalSlice";
 
 const DetailsSidebar = ({ selectedMessage, setSelectedMessage }) => {
-  const [sidebarWidth, setSidebarWidth] = useState(420);
+  const dispatch = useDispatch();
+  const sidebarWidth =  useSelector((state) => state.Global.sidebarWidth);
   const [isResizing, setIsResizing] = useState(false);
 
   const handleMouseDown = () => {
@@ -19,7 +22,7 @@ const DetailsSidebar = ({ selectedMessage, setSelectedMessage }) => {
       if (!isResizing) return;
       const newWidth = window.innerWidth - e.clientX;
       const maxWidth = Math.floor(window.innerWidth / 2);
-      setSidebarWidth(Math.min(Math.max(320, newWidth), maxWidth));
+      dispatch(setSidebarWidth(Math.min(Math.max(320, newWidth), maxWidth)));
     };
 
     const handleMouseUp = () => {

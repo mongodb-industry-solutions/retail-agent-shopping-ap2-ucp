@@ -116,10 +116,10 @@ export const chatFlows = {
     {
       id: "welcome",
       type: "assistant",
-      content: "Hello! Welcome to TechMart. What would you like to browse today?",
+      content: "Hello! I am your shopping agent. What are you looking to shop for today?",
       options: [
         { id: "opt-laptops", label: "Laptops", nextMessageId: "laptops" },
-        { id: "opt-phones", label: "Phones", nextMessageId: "phones" },
+        { id: "opt-phones", label: "Coffe Machine", nextMessageId: "phones" },
         { id: "opt-accessories", label: "Accessories", nextMessageId: "accessories" },
       ],
     },

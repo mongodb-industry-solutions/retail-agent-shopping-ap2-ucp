@@ -1,10 +1,17 @@
+import { profiles } from "@/lib/const/ux-writing";
 import { createSlice } from "@reduxjs/toolkit";
 
 const GlobalSliceSlice = createSlice({
   name: "GlobalSlice",
   initialState: {
-    isGuidedSliceOpened: false, //TODO, change to true after this feature is done
+    isGuidedSliceOpened: true,
+    sidebarWidth: 420,
     startedJourneys: [],
+    messages: {
+      [`${profiles.straightforward.id}`]: [],
+      [`${profiles.hunter.id}`]: [],
+      [`${profiles.disputing.id}`]: [],
+    },
   },
   reducers: {
     setGuidedSlice(state, action) {
@@ -16,9 +23,16 @@ const GlobalSliceSlice = createSlice({
         state.startedJourneys.push(profileId);
       }
     },
+    setSidebarWidth(state, action) {
+      state.sidebarWidth = action.payload;
+    },
   },
 });
 
-export const { setGuidedSlice, addStartedJourney } = GlobalSliceSlice.actions;
+export const { 
+  setGuidedSlice, 
+  addStartedJourney, 
+  setSidebarWidth 
+} = GlobalSliceSlice.actions;
 
 export default GlobalSliceSlice.reducer;
