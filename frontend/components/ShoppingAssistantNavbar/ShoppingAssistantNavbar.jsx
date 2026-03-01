@@ -1,3 +1,5 @@
+"use client";
+
 import { profiles } from "@/lib/const/ux-writing";
 import {Badge} from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
@@ -5,9 +7,11 @@ import Icon from "@leafygreen-ui/icon";
 import { Logo } from "@leafygreen-ui/logo";
 import { palette } from "@leafygreen-ui/palette";
 import { Body } from "@leafygreen-ui/typography";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const ShoppingAssistantNavbar = ({profileId}) => {
+  const router = useRouter();
   return (
     <div
       style={{
