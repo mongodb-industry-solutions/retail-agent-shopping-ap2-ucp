@@ -1,3 +1,4 @@
+'use client";'
 import React, { useState, useEffect } from "react";
 import { Subtitle } from "@leafygreen-ui/typography";
 import Icon from "@leafygreen-ui/icon";
@@ -38,7 +39,7 @@ const DetailsSidebar = ({ selectedMessage, setSelectedMessage }) => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isResizing]);
+  }, [isResizing, dispatch]);
   return (
     <div className="d-flex flex-row h-100">
       {/* Resizer */}
