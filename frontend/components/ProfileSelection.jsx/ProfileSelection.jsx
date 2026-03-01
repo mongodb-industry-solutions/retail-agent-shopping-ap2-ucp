@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from 'react-redux';
 import Button from "@leafygreen-ui/button";
 import {Card} from "@leafygreen-ui/card";
@@ -12,20 +11,20 @@ import Tooltip from "@leafygreen-ui/tooltip";
 import { H3, Body, H1 } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
-
 import { profiles } from '@/lib/const/ux-writing';
-import { setGuidedSlice } from '../../redux/slices/GlobalSlice';
+import { setGuidedSlice, addStartedJourney } from '../../redux/slices/GlobalSlice';
+
 
 const profileOrder = ["straightforward", "hunter", "disputing"];
+
 
 const ProfileSelection = () => {
   const dispatch = useDispatch();
   const startedJourneys = useSelector((state) => state.Global.startedJourneys);
   const [hoveredProfile, setHoveredProfile] = useState(null);
-  const router = useRouter();
 
   const onSelectProfile = (profileId) => {
-    router.push(`/journey/${profileId}`);
+    dispatch(addStartedJourney(profileId));
   };
 
   const handleOpenIntro = () => {
@@ -47,12 +46,12 @@ const ProfileSelection = () => {
     const profileIndex = profileOrder.indexOf(profileId);
     if (profileIndex <= 0) return "";
     const previousJourney = profileOrder[profileIndex - 1];
-    const profile = profiles[previousJourney];
+    const profile = profiles.find((p) => p.id === previousJourney);
     return profile?.name || "";
   };
 
   const getProfileById = (profileId) => {
-    return profiles[profileId];
+    return profiles.find((profile) => profile.id === profileId);
   };
 
   return (
@@ -77,7 +76,7 @@ const ProfileSelection = () => {
 
       {/* Profile Cards */}
       <div className="grid md:grid-cols-3" style={{ gap: spacing[3] }}>
-        {Object.values(profiles).map((profile, index) => {
+        {profiles.map((profile, index) => {
           const iconGlyph = getProfileById(profile.id)?.profileIcon || "User";
           const isHovered = hoveredProfile === profile.id;
           const unlocked = isUnlocked(profile.id);
@@ -148,11 +147,9 @@ const ProfileSelection = () => {
               <div className="absolute" style={{ top: spacing[2], right: spacing[2] }}>
                 <Tooltip
                   trigger={
-                    <span onClick={e => e.stopPropagation()}>
-                      <IconButton aria-label="Profile information">
-                        <Icon glyph="InfoWithCircle" />
-                      </IconButton>
-                    </span>
+                    <IconButton aria-label="Profile information">
+                      <Icon glyph="InfoWithCircle" />
+                    </IconButton>
                   }
                   triggerEvent="hover"
                   placement="bottom"
