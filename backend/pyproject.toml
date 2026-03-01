@@ -1,8 +1,8 @@
 [project]
-name = "your-virtual-env"
+name = "backend-service"
 version = "0.1.0"
-description = "Your Description"
-authors = [{name = "Your Name", email = "you@example.com"}]
+description = "Backend service for the application"
+authors = [{name = "Project Maintainers", email = "devnull@example.com"}]
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "pymongo>=4.10.1",

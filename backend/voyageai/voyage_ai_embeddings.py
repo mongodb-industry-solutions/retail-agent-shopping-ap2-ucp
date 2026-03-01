@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class VogayeAIEmbeddings:
+class VoyageAIEmbeddings:
     """ A class to generate text embeddings using the Voyage AI Embeddings models. """
     # References:
     # - Voyage AI Embeddings models: https://docs.voyageai.com/docs/embeddings
@@ -20,7 +20,7 @@ class VogayeAIEmbeddings:
 
     def __init__(self, api_key: str):
         """
-        Initialize the VogayeAIEmbeddings class.
+        Initialize the VoyageAIEmbeddings class.
 
         Args:
             api_key (str): The Voyage AI API key. If not provided, it will try to get it from the environment variable VOYAGE_API_KEY.
@@ -48,10 +48,10 @@ class VogayeAIEmbeddings:
         return embeddings
     
 
-# Example usage of the VogayeAIEmbeddings class.
+# Example usage of the VoyageAIEmbeddings class.
 if __name__ == '__main__':
 
-    ve = VogayeAIEmbeddings(api_key=os.getenv("VOYAGE_API_KEY"))
+    ve = VoyageAIEmbeddings(api_key=os.getenv("VOYAGE_API_KEY"))
     model_id = "voyage-3-lite"
     text = "Embed this text."
     embeddings = ve.get_embeddings(model_id=model_id, text=text)
