@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import Button from "@leafygreen-ui/button";
-import {Card} from "@leafygreen-ui/card";
+import { Card } from "@leafygreen-ui/card";
 import Badge from "@leafygreen-ui/badge";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
@@ -11,20 +12,19 @@ import Tooltip from "@leafygreen-ui/tooltip";
 import { H3, Body, H1 } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
-import { profiles } from '@/lib/const/ux-writing';
-import { setGuidedSlice, addStartedJourney } from '../../redux/slices/GlobalSlice';
-
+import { profiles } from "@/lib/const/ux-writing";
+import { setGuidedSlice } from "../../redux/slices/GlobalSlice";
 
 const profileOrder = ["straightforward", "hunter", "disputing"];
 
-
 const ProfileSelection = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const startedJourneys = useSelector((state) => state.Global.startedJourneys);
   const [hoveredProfile, setHoveredProfile] = useState(null);
 
   const onSelectProfile = (profileId) => {
-    dispatch(addStartedJourney(profileId));
+    router.push(`/journey/${profileId}`);
   };
 
   const handleOpenIntro = () => {
@@ -54,20 +54,29 @@ const ProfileSelection = () => {
   };
 
   return (
-    <div className="container d-flex flex-column justify-content-between" style={{ minHeight: '100vh'}}>
+    <div
+      className="container d-flex flex-column justify-content-between"
+      style={{ minHeight: "100vh" }}
+    >
       {/* Header */}
-      <header className="text-center mt-5 pt-5" style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: spacing[5],
-      }}>
+      <header
+        className="text-center mt-5 pt-5"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: spacing[5],
+        }}
+      >
         <H1> Interactive Agentic Commerce Demo </H1>
-        <Body className="w-full mx-auto pb-4" style={{ 
-          color: palette.gray.dark1, 
-          textAlign: 'center', 
-          fontSize: '20px',
-          lineHeight: '1.5'
-        }}>
+        <Body
+          className="w-full mx-auto pb-4"
+          style={{
+            color: palette.gray.dark1,
+            textAlign: "center",
+            fontSize: "20px",
+            lineHeight: "1.5",
+          }}
+        >
           Navigate through three progressive shopping scenarios to discover how
           MongoDB powers real-time payment decisions in AP2/UCP protocols.
         </Body>
@@ -86,37 +95,41 @@ const ProfileSelection = () => {
           // Profile-specific colors
           const getProfileColors = () => {
             switch (profile.id) {
-              case 'straightforward':
+              case "straightforward":
                 return {
                   bg: palette.green.light3,
-                  border: isHovered ? palette.green.dark2 : palette.green.light2,
+                  border: isHovered
+                    ? palette.green.dark2
+                    : palette.green.light2,
                   icon: palette.green.dark2,
-                  badge: 'green',
-                  button: { bg: palette.green.dark2, text: 'white' }
+                  badge: "green",
+                  button: { bg: palette.green.dark2, text: "white" },
                 };
-              case 'hunter':
+              case "hunter":
                 return {
                   bg: palette.blue.light2,
                   border: isHovered ? palette.blue.base : palette.blue.light1,
                   icon: palette.blue.base,
-                  badge: 'blue',
-                  button: { bg: palette.blue.base, text: 'white' }
+                  badge: "blue",
+                  button: { bg: palette.blue.base, text: "white" },
                 };
-              case 'disputing':
+              case "disputing":
                 return {
                   bg: palette.yellow.light2,
-                  border: isHovered ? palette.yellow.base : palette.yellow.light1,
+                  border: isHovered
+                    ? palette.yellow.base
+                    : palette.yellow.light1,
                   icon: palette.yellow.dark2,
-                  badge: 'yellow',
-                  button: { bg: palette.yellow.base, text: palette.gray.dark2 }
+                  badge: "yellow",
+                  button: { bg: palette.yellow.base, text: palette.gray.dark2 },
                 };
               default:
                 return {
                   bg: palette.gray.light2,
                   border: palette.gray.light1,
                   icon: palette.gray.base,
-                  badge: 'lightgray',
-                  button: { bg: palette.gray.light2, text: palette.gray.base }
+                  badge: "lightgray",
+                  button: { bg: palette.gray.light2, text: palette.gray.base },
                 };
             }
           };
@@ -131,12 +144,17 @@ const ProfileSelection = () => {
               onClick={() => unlocked && onSelectProfile(profile.id)}
             >
               {/* Step Number */}
-              <div className="absolute" style={{ top: spacing[2], left: spacing[2] }}>
+              <div
+                className="absolute"
+                style={{ top: spacing[2], left: spacing[2] }}
+              >
                 <div
                   className="h-7 w-7 rounded-full flex items-center justify-center text-sm font-bold"
                   style={{
-                    backgroundColor: unlocked ? palette.gray.light2 : palette.gray.light3,
-                    color: unlocked ? palette.gray.dark2 : palette.gray.base
+                    backgroundColor: unlocked
+                      ? palette.gray.light2
+                      : palette.gray.light3,
+                    color: unlocked ? palette.gray.dark2 : palette.gray.base,
                   }}
                 >
                   {index + 1}
@@ -144,7 +162,10 @@ const ProfileSelection = () => {
               </div>
 
               {/* Info Icon with Tooltip */}
-              <div className="absolute" style={{ top: spacing[2], right: spacing[2] }}>
+              <div
+                className="absolute"
+                style={{ top: spacing[2], right: spacing[2] }}
+              >
                 <Tooltip
                   trigger={
                     <IconButton aria-label="Profile information">
@@ -154,34 +175,57 @@ const ProfileSelection = () => {
                   triggerEvent="hover"
                   placement="bottom"
                 >
-                  <div style={{ maxWidth: '300px', padding: spacing[2] }}>
-                    <div className="flex items-center" style={{ gap: spacing[1], marginBottom: spacing[2] }}>
+                  <div style={{ maxWidth: "300px", padding: spacing[2] }}>
+                    <div
+                      className="flex items-center"
+                      style={{ gap: spacing[1], marginBottom: spacing[2] }}
+                    >
                       <Icon glyph="InfoWithCircle" fill={palette.green.dark2} />
                       <Body weight="medium">About this journey</Body>
                     </div>
-                    <Body size="small" className="text-start">{profile.detailedInfo}</Body>
+                    <Body size="small" className="text-start">
+                      {profile.detailedInfo}
+                    </Body>
                     {!unlocked && (
-                      <div className="flex items-center" style={{ 
-                        gap: spacing[1], 
-                        marginTop: spacing[2], 
-                        paddingTop: spacing[2], 
-                        borderTop: `1px solid ${palette.gray.light1}` 
-                      }}>
+                      <div
+                        className="flex items-center"
+                        style={{
+                          gap: spacing[1],
+                          marginTop: spacing[2],
+                          paddingTop: spacing[2],
+                          borderTop: `1px solid ${palette.gray.light1}`,
+                        }}
+                      >
                         <Icon glyph="Lock" fill={palette.gray.base} />
-                        <Body size="small" className="text-start" style={{ color: palette.gray.dark1 }}>Start "{previousJourney}" to unlock</Body>
+                        <Body
+                          size="small"
+                          className="text-start"
+                          style={{ color: palette.gray.dark1 }}
+                        >
+                          Start "{previousJourney}" to unlock
+                        </Body>
                       </div>
                     )}
                   </div>
                 </Tooltip>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[3], marginTop: spacing[2] }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: spacing[3],
+                  marginTop: spacing[2],
+                }}
+              >
                 {/* Icon */}
                 <div className="flex justify-center">
                   <div
                     className="p-4 rounded-2xl"
                     style={{
-                      backgroundColor: unlocked ? profileColors.bg : palette.gray.light2
+                      backgroundColor: unlocked
+                        ? profileColors.bg
+                        : palette.gray.light2,
                     }}
                   >
                     <Icon
@@ -193,18 +237,26 @@ const ProfileSelection = () => {
                 </div>
 
                 {/* Content */}
-                <div className="text-center" style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
-                  <H3 style={{ color: palette.gray.dark2 }}>
-                    {profile.name}
-                  </H3>
+                <div
+                  className="text-center"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: spacing[2],
+                  }}
+                >
+                  <H3 style={{ color: palette.gray.dark2 }}>{profile.name}</H3>
                   <div className="flex justify-center">
-                    <Badge 
-                      variant={unlocked ? profileColors.badge : 'lightgray'}
+                    <Badge
+                      variant={unlocked ? profileColors.badge : "lightgray"}
                     >
                       {profile.characteristic}
                     </Badge>
                   </div>
-                  <p className="leading-relaxed mt-3" style={{ color: palette.gray.dark1, fontSize: '16px' }}>
+                  <p
+                    className="leading-relaxed mt-3"
+                    style={{ color: palette.gray.dark1, fontSize: "16px" }}
+                  >
                     {profile.description}
                   </p>
                 </div>
@@ -218,22 +270,31 @@ const ProfileSelection = () => {
                     style={{
                       backgroundColor: profileColors.button.bg,
                       color: profileColors.button.text,
-                      width: '100%'
+                      width: "100%",
                     }}
                     onClick={() => onSelectProfile(profile.id)}
                   >
                     {started ? "Continue Journey" : "Start Journey"}
                   </Button>
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[1] }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: spacing[1],
+                    }}
+                  >
                     <Button
                       disabled
                       leftGlyph={<Icon glyph="Lock" />}
-                      style={{ width: '100%' }}
+                      style={{ width: "100%" }}
                     >
                       Locked
                     </Button>
-                    <Body className="text-center mt-1" style={{ color: palette.gray.dark1, fontSize: '14px' }}>
+                    <Body
+                      className="text-center mt-1"
+                      style={{ color: palette.gray.dark1, fontSize: "14px" }}
+                    >
                       Start "{previousJourney}" first
                     </Body>
                   </div>
