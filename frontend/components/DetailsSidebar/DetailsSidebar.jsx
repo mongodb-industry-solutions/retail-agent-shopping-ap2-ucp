@@ -38,7 +38,7 @@ const DetailsSidebar = ({ selectedMessage, setSelectedMessage }) => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isResizing]);
+  }, [isResizing, dispatch]);
   return (
     <div className="d-flex flex-row h-100">
       {/* Resizer */}
