@@ -19,6 +19,7 @@ from agents_manager import agents_manager
 # Import the ADK shopping agent and Runner (following ADK FastAPI pattern)
 from agents.roles.shopping_agent.agent import root_agent
 from google.adk.runners import Runner
+from google.adk.memory import InMemoryMemoryService
 from google.adk.sessions.in_memory_session_service import InMemorySessionService
 from google.adk.artifacts.in_memory_artifact_service import InMemoryArtifactService
 from google.adk.auth.credential_service.in_memory_credential_service import InMemoryCredentialService
@@ -48,7 +49,8 @@ class ShoppingResponse(BaseModel):
 # Setup ADK services (following ADK FastAPI pattern)
 session_service = InMemorySessionService()
 artifact_service = InMemoryArtifactService()
-credential_service = InMemoryCredentialService()
+memory_service = InMemoryMemoryService()
+#credential_service = InMemoryCredentialService()
 
 # Create the ADK Runner for the shopping agent
 shopping_runner = Runner(
@@ -56,8 +58,8 @@ shopping_runner = Runner(
     agent=root_agent,
     artifact_service=artifact_service,
     session_service=session_service,
-    memory_service=None,  # Optional
-    credential_service=credential_service,
+    memory_service=memory_service,
+    #credential_service=credential_service,
 )
 
 async def call_shopping_agent(message: str, session_id: str, user_id: str) -> Dict[str, Any]:
@@ -72,8 +74,8 @@ async def call_shopping_agent(message: str, session_id: str, user_id: str) -> Di
             session_id=session_id
         )
         
-        if session is None:
-            await session_service.create_session(
+        if not session:
+            session = await session_service.create_session(
                 app_name="shopping_agent",
                 user_id=user_id,
                 session_id=session_id
@@ -85,11 +87,13 @@ async def call_shopping_agent(message: str, session_id: str, user_id: str) -> Di
             agent=root_agent,
             session_service=session_service,
             artifact_service=artifact_service,
-            credential_service=credential_service
+            memory_service=memory_service,
+            #credential_service=credential_service
         )
         
         # Call the agent with the actual user message (exact ADK FastAPI pattern)
-        content_message = types.Content(parts=[types.Part(text=message)])
+        #content_message = types.Content(parts=[types.Part(text=message)])
+        content_message = types.Content(role="user", parts=[types.Part.from_text(text=message)],)
         
         events = [
             event
