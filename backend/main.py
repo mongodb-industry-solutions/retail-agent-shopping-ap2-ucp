@@ -1,14 +1,173 @@
-from fastapi import FastAPI, Request
+import logging
+import asyncio
+from contextlib import asynccontextmanager
+from typing import Dict, Any, Optional
+from datetime import datetime
+import uuid
+
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import APIRouter
+from pydantic import BaseModel, Field
 
 from dotenv import load_dotenv
 
 from routers import mandate_ledger
+from routers import shopping_router
+from agents_manager import agents_manager
+
+# Import the ADK shopping agent and Runner (following ADK FastAPI pattern)
+from agents.roles.shopping_agent.agent import root_agent
+from google.adk.runners import Runner
+from google.adk.sessions.in_memory_session_service import InMemorySessionService
+from google.adk.artifacts.in_memory_artifact_service import InMemoryArtifactService
+from google.adk.auth.credential_service.in_memory_credential_service import InMemoryCredentialService
+from google.genai import types
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-app = FastAPI()
+# FastAPI models for shopping agent integration
+class ShoppingRequest(BaseModel):
+    message: str
+    user_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    session_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    context: Optional[Dict[str, Any]] = None
+
+class ShoppingResponse(BaseModel):
+    response: str
+    session_id: str
+    user_id: str 
+    status: str = "success"
+    data: Optional[Dict[str, Any]] = None
+    agent_state: Optional[Dict[str, Any]] = None
+
+# Setup ADK services (following ADK FastAPI pattern)
+session_service = InMemorySessionService()
+artifact_service = InMemoryArtifactService()
+credential_service = InMemoryCredentialService()
+
+# Create the ADK Runner for the shopping agent
+shopping_runner = Runner(
+    app_name="shopping_agent",
+    agent=root_agent,
+    artifact_service=artifact_service,
+    session_service=session_service,
+    memory_service=None,  # Optional
+    credential_service=credential_service,
+)
+
+async def call_shopping_agent(message: str, session_id: str, user_id: str) -> Dict[str, Any]:
+    """Call the ADK shopping agent using the Runner pattern (same as ADK FastAPI)"""
+    try:
+        logger.info(f"Calling shopping agent with message: {message}")
+        
+        # Ensure session exists (minimal ADK requirement)
+        session = await session_service.get_session(
+            app_name="shopping_agent", 
+            user_id=user_id, 
+            session_id=session_id
+        )
+        
+        if session is None:
+            await session_service.create_session(
+                app_name="shopping_agent",
+                user_id=user_id,
+                session_id=session_id
+            )
+        
+        # Use the ADK Runner directly
+        runner = Runner(
+            app_name="shopping_agent",
+            agent=root_agent,
+            session_service=session_service,
+            artifact_service=artifact_service,
+            credential_service=credential_service
+        )
+        
+        # Call the agent with the actual user message (exact ADK FastAPI pattern)
+        content_message = types.Content(parts=[types.Part(text=message)])
+        
+        events = [
+            event
+            async for event in runner.run_async(
+                user_id=user_id,
+                session_id=session_id,
+                new_message=content_message,
+            )
+        ]
+        
+        logger.info(f"Received {len(events)} events from agent")
+        
+        # Extract response text from events
+        response_text = ""
+        for event in events:
+            # Extract text from ADK Event objects properly
+            if hasattr(event, 'content') and event.content:
+                # Handle Content object with parts
+                if hasattr(event.content, 'parts') and event.content.parts:
+                    for part in event.content.parts:
+                        if hasattr(part, 'text') and part.text:
+                            response_text += part.text + "\n"
+                elif hasattr(event.content, 'text') and event.content.text:
+                    response_text += event.content.text + "\n"
+            elif hasattr(event, 'text') and event.text:
+                response_text += event.text + "\n"
+                
+        response_text = response_text.strip() or "Hello! I'm your shopping assistant. What are you looking for today?"
+        
+        logger.info(f"Final response text: {response_text[:200]}...")
+        
+        return {
+            "response": response_text,
+            "session_id": session_id,
+            "user_id": user_id,
+            "status": "success",
+            "events_count": len(events),
+            "debug_info": {
+                "message_sent": message,
+                "session_existed": session is not None,
+                "events_received": len(events)
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calling shopping agent: {e}")
+        return {
+            "response": f"I encountered an error: {str(e)}",
+            "session_id": session_id,
+            "user_id": user_id,
+            "status": "error",
+            "error": str(e)
+        }
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Manage the application lifecycle, including A2A agent startup and cleanup.
+    """
+    # Startup
+    logger.info("Starting backend service with A2A agents...")
+    
+    try:
+        # Start all A2A agents in background
+        agents_manager.start_all_agents()
+        logger.info("A2A agents startup completed")
+        
+        yield
+        
+    finally:
+        # Cleanup
+        logger.info("Shutting down A2A agents...")
+        agents_manager.cleanup()
+        logger.info("Backend service shutdown completed")
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,17 +178,107 @@ app.add_middleware(
 )
 
 app.include_router(mandate_ledger.router)
+# Shopping agent router (ADK-powered conversational interface)
+app.include_router(shopping_router.router, prefix="/api/shopping", tags=["shopping"])
+
+# FastAPI Shopping Agent Endpoints
+@app.post("/api/v1/shopping/chat", response_model=ShoppingResponse, tags=["Shopping Agent"])
+async def shopping_chat(request: ShoppingRequest) -> ShoppingResponse:
+    """
+    Chat with the ADK shopping agent - main conversation interface
+    """
+    try:
+        # if not agents_manager.is_healthy():
+        #     raise HTTPException(
+        #         status_code=503, 
+        #         detail="A2A agents are not ready. Please ensure all agents are running."
+        #     )
+        
+        result = await call_shopping_agent(
+            message=request.message,
+            session_id=request.session_id, 
+            user_id=request.user_id
+        )
+        
+        return ShoppingResponse(**result)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in shopping chat: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/v1/shopping/start-session", tags=["Shopping Agent"])
+async def start_shopping_session(user_id: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Start a new shopping session
+    """
+    session_id = str(uuid.uuid4())
+    user_id = user_id or str(uuid.uuid4())
+    
+    # Initialize with a greeting
+    result = await call_shopping_agent(
+        message="Hello, I'd like to start shopping",
+        session_id=session_id,
+        user_id=user_id
+    )
+    
+    return {
+        "session_id": session_id,
+        "user_id": user_id,
+        "status": "started",
+        "initial_response": result.get("response", "Welcome! How can I help you shop today?")
+    }
+
+@app.get("/api/v1/shopping/session/{session_id}", tags=["Shopping Agent"])
+async def get_shopping_session(session_id: str, user_id: str) -> Dict[str, Any]:
+    """
+    Get shopping session state and conversation history
+    """
+    # Get session from ADK session service
+    session = await session_service.get_session(
+        app_name="shopping_agent", 
+        user_id=user_id, 
+        session_id=session_id
+    )
+    
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    return {
+        "session_id": session_id,
+        "user_id": user_id,
+        "session_data": session.model_dump() if hasattr(session, 'model_dump') else str(session)
+    }
 
 router = APIRouter()
 
 @app.get("/")
 async def read_root(request: Request):
-    return {"message":"Server is running"}
+    return {
+        "message": "Backend server with ADK Shopping Agent FastAPI integration",
+        "service": "Backend API with Shopping Agent (ADK-powered)", 
+        "version": "1.0.0",
+        "agents": agents_manager.get_status(),
+        "description": "ADK shopping agent wrapped in FastAPI endpoints for NextJS integration",
+        "endpoints": {
+            "shopping_chat": "/api/v1/shopping/chat",
+            "start_session": "/api/v1/shopping/start-session",
+            "session_info": "/api/v1/shopping/session/{session_id}",
+            "shopping_health": "/api/shopping/health",
+            "agent_status": "/api/shopping/agents/status", 
+            "health": "/health",
+            "api_docs": "/docs"
+        }
+    }
 
 @app.get("/health")
 async def health_check():
+    agents_status = agents_manager.get_status()
+    
     return {
-        "status": "healthy",
+        "status": "healthy" if agents_manager.is_healthy() else "degraded",
         "service": "backend",
-        "message": "Backend service is running"
+        "message": "Backend service is running",
+        "agents": agents_status
     }

@@ -21,3 +21,11 @@ uv_sync:
 
 uv_update:
 	cd backend && uv lock --upgrade
+
+# Backend with A2A agents
+backend_start:
+	cd backend && ./start.sh
+
+# Test A2A agent integration
+test_agents:
+	cd backend && uv run python test_integration.py
