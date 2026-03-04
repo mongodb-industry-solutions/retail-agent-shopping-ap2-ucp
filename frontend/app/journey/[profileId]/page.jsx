@@ -91,7 +91,53 @@ export default function JourneyPage() {
               messageOptions={message.options}
               onOptionClick={handleOptionClick}
               isLatest={index === messages.length - 1}
-              message={message}
+              message={{
+                behindTheScenes: {
+                  summary: "Buyer/Shopping Agent received user intent",
+                  keyPoints: [
+                    "User intent captured",
+                    "Querying Seller Agents via API",
+                    "Product search initiated",
+                  ],
+                  // actor: {
+                  //   name: "Buyer/Shopping Agent",
+                  //   message:
+                  //     "I received the user's intent to browse laptops. I will now query the Seller Agent through the merchant API to fetch available products.",
+                  // },
+                },
+                detailedInfo: {
+                  title: "User Intent Processing",
+                  description:
+                    "The Buyer/Shopping Agent acts as the user's representative in the agentic commerce ecosystem.",
+                  mongodbOperations: [
+                    {
+                      operation: "insertOne",
+                      collection: "userIntents",
+                      query:
+                        '{ sessionId: "sess_123", intent: "browse_laptops", timestamp: ISODate() }',
+                      result: "Intent logged for agent processing",
+                    },
+                    {
+                      operation: "find",
+                      collection: "sellerAgents",
+                      query: '{ categories: "laptops", status: "active" }',
+                      result: "3 active merchant agents found",
+                    },
+                  ],
+                  dataFlow: [
+                    "User expresses intent",
+                    "Buyer Agent captures request",
+                    "Seller Agent API queried",
+                    "Product options retrieved",
+                  ],
+                  actor: {
+                    name: "Buyer/Shopping Agent",
+                    role: "User's Representative",
+                    message:
+                      "I received the user's intent to browse laptops. I will now query the Seller Agent through the merchant API to fetch available products from various merchants.",
+                  },
+                },
+              }}
             />
           ))}
           <div ref={messagesEndRef} />
@@ -100,10 +146,7 @@ export default function JourneyPage() {
 
       {/* Sidebar */}
       {selectedMessage && (
-        <DetailsSidebar 
-          selectedMessage={selectedMessage} 
-          setSelectedMessage={setSelectedMessage} 
-        />
+        <DetailsSidebar selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} />
       )}
     </div>
   );
