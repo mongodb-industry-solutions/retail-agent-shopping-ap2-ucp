@@ -82,7 +82,16 @@ async def shopping_chat(request: ShoppingRequest) -> Dict[str, Any]:
             "available_agents": ["merchant_agent", "credentials_provider_agent", "merchant_payment_processor_agent", "auditor_agent"]
         }
         
-        logger.info(f"Processed shopping request for user {request.user_id}: {request.message[:50]}...")
+# Helper function to sanitize user input before logging to prevent log injection
+def _sanitize_for_log(value: str, max_length: int = 200) -> str:
+    import re
+    sanitized = value.replace('\n', '\\n').replace('\r', '\\r')
+    sanitized = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', '', sanitized)
+    return sanitized[:max_length] + ('...[truncated]' if len(sanitized) > max_length else '')
+
+logger.info(
+    f"Processed shopping request for user {_sanitize_for_log(str(request.user_id))}: {_sanitize_for_log(str(request.message)[:50])}..."
+)
         
         return response
         
