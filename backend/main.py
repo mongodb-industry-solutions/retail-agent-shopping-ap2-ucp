@@ -81,23 +81,12 @@ async def call_shopping_agent(message: str, session_id: str, user_id: str) -> Di
                 session_id=session_id
             )
         
-        # Use the ADK Runner directly
-        runner = Runner(
-            app_name="shopping_agent",
-            agent=root_agent,
-            session_service=session_service,
-            artifact_service=artifact_service,
-            memory_service=memory_service,
-            #credential_service=credential_service
-        )
-        
-        # Call the agent with the actual user message (exact ADK FastAPI pattern)
-        #content_message = types.Content(parts=[types.Part(text=message)])
+        # Call the agent with the actual user message using the module-level shopping_runner
         content_message = types.Content(role="user", parts=[types.Part.from_text(text=message)],)
         
         events = [
             event
-            async for event in runner.run_async(
+            async for event in shopping_runner.run_async(
                 user_id=user_id,
                 session_id=session_id,
                 new_message=content_message,
