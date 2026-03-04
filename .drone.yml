@@ -91,11 +91,11 @@ steps:
         - "resources.limits.memory=512Mi"
         - "resources.requests.cpu=100m"
         - "resources.requests.memory=256Mi"
-        # Backend sidecar resources (reduced defaults for demos - increase if OOMKilled)
+        # Backend sidecar resources (increased for ML/AI workload - was OOMKilled at 512Mi)
         - "sidecarContainers[0].resources.limits.cpu=500m"
-        - "sidecarContainers[0].resources.limits.memory=512Mi"
+        - "sidecarContainers[0].resources.limits.memory=768Mi"
         - "sidecarContainers[0].resources.requests.cpu=100m"
-        - "sidecarContainers[0].resources.requests.memory=256Mi"
+        - "sidecarContainers[0].resources.requests.memory=384Mi"
         # Mandate ledger sidecar resources (reduced defaults for demos - increase if OOMKilled)
         - "sidecarContainers[1].resources.limits.cpu=500m"
         - "sidecarContainers[1].resources.limits.memory=512Mi"
@@ -205,11 +205,11 @@ steps:
         - "resources.limits.memory=512Mi"
         - "resources.requests.cpu=150m"
         - "resources.requests.memory=256Mi"
-        # Backend sidecar resources (production - slightly higher for reliability)
+        # Backend sidecar resources (production - increased for ML/AI workload)
         - "sidecarContainers[0].resources.limits.cpu=500m"
-        - "sidecarContainers[0].resources.limits.memory=512Mi"
+        - "sidecarContainers[0].resources.limits.memory=768Mi"
         - "sidecarContainers[0].resources.requests.cpu=150m"
-        - "sidecarContainers[0].resources.requests.memory=256Mi"
+        - "sidecarContainers[0].resources.requests.memory=384Mi"
         # Mandate ledger sidecar resources (production - slightly higher for reliability)
         - "sidecarContainers[1].resources.limits.cpu=500m"
         - "sidecarContainers[1].resources.limits.memory=512Mi"
