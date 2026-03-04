@@ -116,9 +116,7 @@ NextJS Frontend ←→ Backend API (8000) ←→ A2A Agents
 **Backend Service (Port 8000) - Unified API:**
 - **Backend API**: http://localhost:8000
 - **Shopping Chat**: http://localhost:8000/api/v1/shopping/chat
-- **Product Search**: http://localhost:8000/api/v1/shopping/search
-- **Cart Update**: http://localhost:8000/api/v1/shopping/cart/update
-- **Payment**: http://localhost:8000/api/v1/shopping/payment/initiate
+- **Start Session**: http://localhost:8000/api/v1/shopping/start-session
 - **Session Status**: http://localhost:8000/api/v1/shopping/session/{session_id}
 - **Health Check**: http://localhost:8000/health (includes agent status)
 - **Agent Status**: http://localhost:8000/api/shopping/agents/status
