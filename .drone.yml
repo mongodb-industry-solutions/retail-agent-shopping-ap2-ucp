@@ -15,8 +15,8 @@ steps:
       create_repository: true
       registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
       repo: industrysolutions/retail-agent-shopping-ap2-ucp-backend
-      dockerfile: Dockerfile.backend
-      context: .
+      dockerfile: backend/Dockerfile
+      context: backend
       tags:
         - git-${DRONE_COMMIT_SHA:0:7}
         - latest
@@ -129,8 +129,8 @@ steps:
       create_repository: true
       registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
       repo: industrysolutions/retail-agent-shopping-ap2-ucp-backend-prod
-      dockerfile: Dockerfile.backend
-      context: .
+      dockerfile: backend/Dockerfile
+      context: backend
       tags:
         - git-${DRONE_COMMIT_SHA:0:7}
         - latest

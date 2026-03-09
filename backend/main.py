@@ -12,6 +12,12 @@ from pydantic import BaseModel, Field
 
 from dotenv import load_dotenv
 
+# Setup logging BEFORE any agent imports to capture import debug logs
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+load_dotenv()
+
 from routers import mandate_ledger
 from routers import shopping_router
 from agents_manager import agents_manager
@@ -25,12 +31,6 @@ from google.adk.sessions.in_memory_session_service import InMemorySessionService
 from google.adk.artifacts.in_memory_artifact_service import InMemoryArtifactService
 from google.adk.auth.credential_service.in_memory_credential_service import InMemoryCredentialService
 from google.genai import types
-
-# Setup logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-load_dotenv()
 
 # FastAPI models for shopping agent integration
 class ShoppingRequest(BaseModel):
@@ -149,7 +149,19 @@ async def lifespan(app: FastAPI):
     
     try:
         # Start all A2A agents in background
+        logger.info("About to start all A2A agents via agents_manager...")
         agents_manager.start_all_agents()
+        
+        # Check status after startup attempt
+        agents_status = agents_manager.get_status()
+        logger.info(f"A2A agents status after startup: {agents_status}")
+        
+        is_healthy = agents_manager.is_healthy()
+        logger.info(f"A2A agents health check: {is_healthy}")
+        
+        if not is_healthy:
+            logger.info("WARNING: Some A2A agents may not have started properly")
+            
         logger.info("A2A agents startup completed")
         
         yield
@@ -277,10 +289,17 @@ async def read_root(request: Request):
 @app.get("/health")
 async def health_check():
     agents_status = agents_manager.get_status()
+    is_healthy = agents_manager.is_healthy()
+    
+    # Log agent status for debugging
+    logger.info(f"Health check - agents status: {agents_status}")
+    logger.info(f"Health check - is_healthy: {is_healthy}")
     
     return {
-        "status": "healthy" if agents_manager.is_healthy() else "degraded",
+        "status": "healthy" if is_healthy else "degraded",
         "service": "backend",
         "message": "Backend service is running",
-        "agents": agents_status
+        "agents": agents_status,
+        "agents_healthy": is_healthy,
+        "agent_count": len(agents_status) if isinstance(agents_status, dict) else 0
     }

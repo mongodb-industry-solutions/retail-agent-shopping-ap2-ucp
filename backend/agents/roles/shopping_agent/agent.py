@@ -22,12 +22,55 @@ The Google ADK powers this shopping agent, chosen for its simplicity and
 efficiency in developing robust LLM agents.
 """
 
+import logging
 from . import tools
-from .subagents.payment_method_collector.agent import payment_method_collector
-from .subagents.shipping_address_collector.agent import shipping_address_collector
-from .subagents.shopper.agent import shopper
 from agents.common.retrying_llm_agent import RetryingLlmAgent
 from agents.common.system_utils import DEBUG_MODE_INSTRUCTIONS
+
+# Configure logging for shopping agent imports
+logger = logging.getLogger(__name__)
+
+# Import sub-agents with explicit logging
+payment_method_collector = None
+shipping_address_collector = None 
+shopper = None
+
+try:
+    from .subagents.payment_method_collector.agent import payment_method_collector
+    logger.info("✅ SUB-AGENT IMPORT SUCCESS: payment_method_collector")
+except Exception as e:
+    logger.error(f"❌ SUB-AGENT IMPORT FAILED: payment_method_collector - {e}")
+
+try:
+    from .subagents.shipping_address_collector.agent import shipping_address_collector
+    logger.info("✅ SUB-AGENT IMPORT SUCCESS: shipping_address_collector")
+except Exception as e:
+    logger.error(f"❌ SUB-AGENT IMPORT FAILED: shipping_address_collector - {e}")
+
+try:
+    from .subagents.shopper.agent import shopper
+    logger.info("✅ SUB-AGENT IMPORT SUCCESS: shopper")
+except Exception as e:
+    logger.error(f"❌ SUB-AGENT IMPORT FAILED: shopper - {e}")
+
+# Create sub-agents list from successfully imported agents
+sub_agents_list = []
+if payment_method_collector is not None:
+    sub_agents_list.append(payment_method_collector)
+if shipping_address_collector is not None:
+    sub_agents_list.append(shipping_address_collector)
+if shopper is not None:
+    sub_agents_list.append(shopper)
+
+# Log what sub-agents are available
+logger.info(f"🔍 SUB-AGENTS AVAILABLE: {len(sub_agents_list)} out of 3")
+for i, agent in enumerate(sub_agents_list):
+    logger.info(f"  {i+1}. {getattr(agent, 'name', 'Unknown')}: {type(agent)}")
+
+if len(sub_agents_list) == 0:
+    logger.error("🚨 NO SUB-AGENTS LOADED - ShoppingAgent will only have basic functionality!")
+else:
+    logger.info(f"✅ SUB-AGENTS READY: {[getattr(agent, 'name', 'Unknown') for agent in sub_agents_list]}")
 
 
 root_agent = RetryingLlmAgent(
@@ -117,9 +160,17 @@ root_agent = RetryingLlmAgent(
         tools.sign_mandates_on_user_device,
         tools.update_cart,
     ],
-    sub_agents=[
-        shopper,
-        shipping_address_collector,
-        payment_method_collector,
-    ],
+    sub_agents=sub_agents_list,
 )
+
+# Log final agent configuration 
+logger.info(f"🎯 ROOT AGENT CREATED with {len(sub_agents_list)} sub-agents")
+logger.info(f"🔧 Tools available: {len(root_agent.tools) if hasattr(root_agent, 'tools') else 'Unknown'}")
+if hasattr(root_agent, 'sub_agents'):
+    logger.info(f"🤖 Sub-agents registered: {len(root_agent.sub_agents)}")
+    for i, agent in enumerate(root_agent.sub_agents):
+        logger.info(f"  └─ {i+1}. {getattr(agent, 'name', 'Unnamed')}")
+else:
+    logger.error("🚨 NO SUB-AGENTS PROPERTY ON ROOT AGENT!")
+
+logger.info("🚀 Shopping agent initialization complete!")
