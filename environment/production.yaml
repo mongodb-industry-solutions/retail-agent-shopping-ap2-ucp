@@ -9,7 +9,24 @@ env:
 envSecrets:
   # MongoDB Configuration
   MONGODB_URI: retail-ap2
-  #DATABASE_NAME: <secret-group> 
+  MONGODB_DATABASE: retail-ap2
+  # Google Cloud Configuration
+  GOOGLE_GENAI_USE_VERTEXAI: retail-ap2
+  GOOGLE_CLOUD_PROJECT: retail-ap2
+  GOOGLE_CLOUD_LOCATION: retail-ap2
+  # Mandate Ledger Configuration
+  MANDATE_LEDGER_SERVICE_URL: retail-ap2
+  MANDATE_LEDGER_API_KEY: retail-ap2
+  # Bootstrap and Auth Configuration
+  ENABLE_BOOTSTRAP_AUTH: retail-ap2
+  BOOTSTRAP_ADMIN_KEY: retail-ap2
+  # Rate Limiting
+  DEFAULT_RATE_LIMIT_PER_MINUTE: retail-ap2
+  # CORS Configuration
+  ALLOWED_CORS_ORIGINS: retail-ap2
+  # Service Configuration
+  SERVICE_NAME: retail-ap2
+  ENVIRONMENT: retail-ap2 
   
 ## should be used in case of multi-pod container i.e: both frontend and backend in one pod
 sidecarContainers:
@@ -26,16 +43,36 @@ sidecarContainers:
     env:
       - name: NODE_ENV
         value: prod
-      
-      - name: MANDATE_LEDGER_SERVICE_URL
-        value: http://localhost:5000
-      
-      # MongoDB Configuration (from secrets)
-      - name: MONGODB_URI
+
+      - name: GOOGLE_GENAI_USE_VERTEXAI
         valueFrom:
           secretKeyRef:
             name: retail-ap2
-            key: MONGODB_URI
+            key: GOOGLE_GENAI_USE_VERTEXAI
+
+      - name: GOOGLE_CLOUD_PROJECT
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: GOOGLE_CLOUD_PROJECT
+
+      - name: GOOGLE_CLOUD_LOCATION
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: GOOGLE_CLOUD_LOCATION
+
+      - name: MANDATE_LEDGER_SERVICE_URL
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: MANDATE_LEDGER_SERVICE_URL
+
+      - name: MANDATE_LEDGER_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: MANDATE_LEDGER_API_KEY            
 
   - name: mandate-ledger
     # Image will be overridden by Drone pipeline with specific git-SHA tag
@@ -51,13 +88,54 @@ sidecarContainers:
       - name: NODE_ENV
         value: prod
       
-      # MongoDB Configuration (from secrets)
       - name: MONGODB_URI
         valueFrom:
           secretKeyRef:
             name: retail-ap2
             key: MONGODB_URI
 
+      - name: MONGODB_DATABASE
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: MONGODB_DATABASE
+
+      - name: SERVICE_NAME
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: SERVICE_NAME
+
+      - name: BOOTSTRAP_ADMIN_KEY
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: BOOTSTRAP_ADMIN_KEY
+
+      - name: ENABLE_BOOTSTRAP_AUTH
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: ENABLE_BOOTSTRAP_AUTH
+
+      - name: ALLOWED_CORS_ORIGINS
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: ALLOWED_CORS_ORIGINS 
+
+      - name: DEFAULT_RATE_LIMIT_PER_MINUTE
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: DEFAULT_RATE_LIMIT_PER_MINUTE
+
+      - name: ENVIRONMENT
+        valueFrom:
+          secretKeyRef:
+            name: retail-ap2
+            key: ENVIRONMENT 
+    
 ## ----------------------------- Cloud Specific Configurations -----------------------------
 
 # GCP Workload Identity Federation configuration  

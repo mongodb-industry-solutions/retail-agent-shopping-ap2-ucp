@@ -80,7 +80,7 @@ async def connect_to_mongo() -> None:
         # Add certifi CA file if available (fixes macOS SSL certificate issues)
         if TLS_CA_FILE:
             client_options["tlsCAFile"] = TLS_CA_FILE
-            logger.debug(f"Using certifi CA file for TLS: {TLS_CA_FILE}")
+            logger.info(f"Using certifi CA file for TLS: {TLS_CA_FILE}")
 
 
         # Create MongoDB client with connection pooling
