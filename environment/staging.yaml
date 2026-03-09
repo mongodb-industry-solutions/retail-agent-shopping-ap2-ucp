@@ -62,39 +62,28 @@ sidecarContainers:
     
 ## ----------------------------- Cloud Specific Configurations -----------------------------
 
-# Add IRSA configuration here, role here gives access to bedrock, s3, aws secrets manager
+# GCP Workload Identity Federation configuration
 serviceAccount:
   enabled: true
-  irsa:
-    accountId: "275662791714"
-    roleName: "kanopy-staging-cicd-irsa"
+  name: retail-agent-shopping-ap2-ucp-gcp-sa  # Kubernetes service account for GCP WIF
 
-## For GCP this, example setup here is for manufacturing
+# Mount GCP credential config AND projected service account token
+extraVolumes:
+  - name: gcp-creds
+    configMap:
+      name: gcp-wif-config-retail
+  - name: gcp-token
+    projected:
+      sources:
+        - serviceAccountToken:
+            path: token
+            expirationSeconds: 3600  # Token expires after 1 hour and auto-renews
+            audience: "//iam.googleapis.com/projects/531154772515/locations/global/workloadIdentityPools/kanopy-retail-wif-pool/providers/kanopy-retail-provider"
 
-# serviceAccount:
-#  enabled: true
-#  name: <service-account> # commit and helm should create Service account 
-# ## kubectl get pods -n ${KSA_NAMESPACE} -o jsonpath='{.items[0].spec.serviceAccountName}' | grep <demo-pod-name>
-
-
-# # Mount GCP credential config and service account token
-# extraVolumes:
-#  - name: gcp-creds
-#    configMap:
-#      name: <config-map-name>
-#  - name: gcp-token
-#    projected:
-#      sources:
-#      - serviceAccountToken:
-#          path: token
-#          expirationSeconds: 3600
-#          audience: "//iam.googleapis.com/projects/<USER_PROJECT_NUMBER>/locations/global/workloadIdentityPools/<WIF_POOL_ID>/providers/<WIF_PROVIDER_ID>"
-
-
-# extraVolumeMounts:
-#  - name: gcp-creds
-#    mountPath: /etc/gcp
-#    readOnly: true
-#  - name: gcp-token
-#    mountPath: /var/run/service-account
-#    readOnly: true
+extraVolumeMounts:
+  - name: gcp-creds
+    mountPath: /etc/gcp
+    readOnly: true
+  - name: gcp-token
+    mountPath: /var/run/service-account
+    readOnly: true
