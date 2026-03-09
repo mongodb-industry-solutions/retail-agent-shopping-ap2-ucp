@@ -47,29 +47,6 @@ sidecarContainers:
       
       - name: MANDATE_LEDGER_SERVICE_URL
         value: http://localhost:5000
-        
-      # Google GenAI Configuration - Use Vertex AI with Workload Identity
-      - name: GOOGLE_GENAI_USE_VERTEXAI
-        valueFrom:
-          secretKeyRef:
-            name: retail-ap2
-            key: GOOGLE_GENAI_USE_VERTEXAI
-      
-      - name: GOOGLE_CLOUD_PROJECT
-        valueFrom:
-          secretKeyRef:
-            name: retail-ap2
-            key: GOOGLE_CLOUD_PROJECT
-      
-      - name: GOOGLE_CLOUD_LOCATION
-        valueFrom:
-          secretKeyRef:
-            name: retail-ap2
-            key: GOOGLE_CLOUD_LOCATION
-      
-      # GCP Workload Identity Configuration
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/gcp/credential-config.json
       
       # MongoDB Configuration (from secrets)
       - name: MONGODB_URI
