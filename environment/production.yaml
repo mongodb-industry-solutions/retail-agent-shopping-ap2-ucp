@@ -34,10 +34,18 @@ sidecarContainers:
     # Image will be overridden by Drone pipeline with specific git-SHA tag
     image: 795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-backend-prod:latest
     
-    # Expose backend port (accessible via localhost from frontend)
+    # Expose backend port and A2A agent ports (accessible via localhost from frontend)
     ports:
       - containerPort: 8000
         name: backend
+      - containerPort: 8001
+        name: merchant-agent
+      - containerPort: 8002
+        name: credentials-provider
+      - containerPort: 8003
+        name: payment-processor
+      - containerPort: 8004
+        name: auditor-agent
     
     # Environment variables for backend container
     env:
@@ -72,7 +80,7 @@ sidecarContainers:
         valueFrom:
           secretKeyRef:
             name: retail-ap2
-            key: MANDATE_LEDGER_API_KEY            
+            key: MANDATE_LEDGER_API_KEY
 
   - name: mandate-ledger
     # Image will be overridden by Drone pipeline with specific git-SHA tag
