@@ -42,7 +42,7 @@ sidecarContainers:
     # Environment variables for backend container
     env:
       - name: NODE_ENV
-        value: staging
+        value: prod
 
       - name: GOOGLE_GENAI_USE_VERTEXAI
         valueFrom:
@@ -86,7 +86,7 @@ sidecarContainers:
     # Environment variables for mandate ledger service container
     env:
       - name: NODE_ENV
-        value: staging
+        value: prod
       
       - name: MONGODB_URI
         valueFrom:
