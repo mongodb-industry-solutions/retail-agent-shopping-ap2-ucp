@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from routers import mandate_ledger
 from routers import shopping_router
 from agents_manager import agents_manager
+from agents.common.genai_client_manager import cleanup_genai_client
 
 # Import the ADK shopping agent and Runner (following ADK FastAPI pattern)
 from agents.roles.shopping_agent.agent import root_agent
@@ -157,6 +158,14 @@ async def lifespan(app: FastAPI):
         # Cleanup
         logger.info("Shutting down A2A agents...")
         agents_manager.cleanup()
+        
+        # Cleanup GenAI client to prevent async cleanup issues
+        logger.info("Cleaning up GenAI client...")  
+        try:
+            await cleanup_genai_client()
+        except Exception as e:
+            logger.error(f"Error during GenAI client cleanup: {e}")
+            
         logger.info("Backend service shutdown completed")
 
 

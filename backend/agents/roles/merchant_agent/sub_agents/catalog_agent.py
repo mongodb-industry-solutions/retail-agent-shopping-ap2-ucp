@@ -43,6 +43,7 @@ from agents.ap2.types.payment_request import PaymentMethodData
 from agents.ap2.types.payment_request import PaymentOptions
 from agents.ap2.types.payment_request import PaymentRequest
 from agents.common import message_utils
+from agents.common.genai_client_manager import get_genai_client
 from agents.common.system_utils import DEBUG_MODE_INSTRUCTIONS
 
 
@@ -52,7 +53,7 @@ async def find_items_workflow(
     current_task: Task | None,
 ) -> None:
   """Finds products that match the user's IntentMandate."""
-  llm_client = genai.Client()
+  llm_client = get_genai_client()
 
   intent_mandate = message_utils.parse_canonical_object(
       INTENT_MANDATE_DATA_KEY, data_parts, IntentMandate
