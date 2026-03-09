@@ -43,6 +43,7 @@ from agents.common import message_utils
 from agents.common import watch_log
 from agents.common.a2a_extension_utils import EXTENSION_URI
 from agents.common.function_call_resolver import FunctionCallResolver
+from agents.common.genai_client_manager import get_genai_client
 from agents.common.validation import validate_payment_mandate_signature
 
 DataPartContent = dict[str, Any]
@@ -68,7 +69,7 @@ class BaseServerExecutor(AgentExecutor, abc.ABC):
       self._supported_extension_uris = {ext.uri for ext in supported_extensions}
     else:
       self._supported_extension_uris = set()
-    self._client = genai.Client()
+    self._client = get_genai_client()
     self._tools = tools
     self._tool_resolver = FunctionCallResolver(
         self._client, self._tools, system_prompt
