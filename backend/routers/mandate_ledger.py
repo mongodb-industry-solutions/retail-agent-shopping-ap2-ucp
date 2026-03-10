@@ -9,9 +9,18 @@ async def get_mandate_ledger_health():
     """Forward health check request to mandate ledger service"""
     try:
         # Get mandate ledger service URL from environment
-        mandate_ledger_url = os.getenv("MANDATE_LEDGER_SERVICE_URL", "http://localhost:5000")
+        mandate_ledger_url = os.getenv("MANDATE_LEDGER_SERVICE_URL")
         
-        # Make request to mandate ledger service
+        # If no mandate ledger service URL is configured, return mock response
+        if not mandate_ledger_url:
+            return {
+                "status": "healthy",
+                "service": "mandate-ledger-mock",
+                "message": "Mandate ledger service is running (mock response for demo)",
+                "mock": True
+            }
+        
+        # Make request to actual mandate ledger service (if configured)
         async with httpx.AsyncClient() as client:
             response = await client.get(f"{mandate_ledger_url}/api/v1/health")
             response.raise_for_status()

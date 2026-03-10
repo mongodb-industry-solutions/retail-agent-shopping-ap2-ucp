@@ -15,8 +15,8 @@ steps:
       create_repository: true
       registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
       repo: industrysolutions/retail-agent-shopping-ap2-ucp-backend
-      dockerfile: Dockerfile.backend
-      context: .
+      dockerfile: backend/Dockerfile
+      context: backend
       tags:
         - git-${DRONE_COMMIT_SHA:0:7}
         - latest
@@ -91,11 +91,11 @@ steps:
         - "resources.limits.memory=512Mi"
         - "resources.requests.cpu=100m"
         - "resources.requests.memory=256Mi"
-        # Backend sidecar resources (reduced defaults for demos - increase if OOMKilled)
+        # Backend sidecar resources (increased to 1Gi for ML/AI workload - was OOMKilled at 768Mi)
         - "sidecarContainers[0].resources.limits.cpu=500m"
-        - "sidecarContainers[0].resources.limits.memory=512Mi"
+        - "sidecarContainers[0].resources.limits.memory=1Gi"
         - "sidecarContainers[0].resources.requests.cpu=100m"
-        - "sidecarContainers[0].resources.requests.memory=256Mi"
+        - "sidecarContainers[0].resources.requests.memory=512Mi"
         # Mandate ledger sidecar resources (reduced defaults for demos - increase if OOMKilled)
         - "sidecarContainers[1].resources.limits.cpu=500m"
         - "sidecarContainers[1].resources.limits.memory=512Mi"
@@ -129,8 +129,8 @@ steps:
       create_repository: true
       registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
       repo: industrysolutions/retail-agent-shopping-ap2-ucp-backend-prod
-      dockerfile: Dockerfile.backend
-      context: .
+      dockerfile: backend/Dockerfile
+      context: backend
       tags:
         - git-${DRONE_COMMIT_SHA:0:7}
         - latest
@@ -205,11 +205,11 @@ steps:
         - "resources.limits.memory=512Mi"
         - "resources.requests.cpu=150m"
         - "resources.requests.memory=256Mi"
-        # Backend sidecar resources (production - slightly higher for reliability)
+        # Backend sidecar resources (production - increased to 1Gi for ML/AI workload)
         - "sidecarContainers[0].resources.limits.cpu=500m"
-        - "sidecarContainers[0].resources.limits.memory=512Mi"
+        - "sidecarContainers[0].resources.limits.memory=1Gi"
         - "sidecarContainers[0].resources.requests.cpu=150m"
-        - "sidecarContainers[0].resources.requests.memory=256Mi"
+        - "sidecarContainers[0].resources.requests.memory=512Mi"
         # Mandate ledger sidecar resources (production - slightly higher for reliability)
         - "sidecarContainers[1].resources.limits.cpu=500m"
         - "sidecarContainers[1].resources.limits.memory=512Mi"

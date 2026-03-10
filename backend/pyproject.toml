@@ -1,15 +1,23 @@
 [project]
-name = "your-virtual-env"
+name = "backend-service"
 version = "0.1.0"
-description = "Your Description"
-authors = [{name = "Your Name", email = "you@example.com"}]
+description = "Backend service for the application"
+authors = [{name = "Project Maintainers", email = "devnull@example.com"}]
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "pymongo>=4.10.1",
     "python-dotenv>=1.0.1",
     "fastapi>=0.115.4",
     "uvicorn>=0.32.0",
-    "voyageai>=0.3.2",
+    "a2a-sdk==0.3.4",
+    "absl-py",
+    "flask",
+    "flask-cors",
+    "google-adk>=1.6.0",
+    "google-genai>=0.8.0",
+    "httpx",
+    "requests",
+    "pydantic",
 ]
 
 [build-system]
