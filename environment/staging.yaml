@@ -5,7 +5,10 @@ env:
   # Backend API URL for frontend to connect to backend health check - get <service-name> using kubectl get services
   NEXT_PUBLIC_BACKEND_ENDPOINT: http://localhost:8000 # Multi-container pod setup - backend sidecar accessible via localhost
   #COLLECTION_NAME: test-collection
-
+  GOOGLE_APPLICATION_CREDENTIALS: /etc/gcp/credential-configuration.json
+  GCP_PROJECT_ID: ist-retail-demo
+  GCP_LOCATION: us-central1
+  
 ## Single Pod Containers
 envSecrets:
   # MongoDB Configuration
