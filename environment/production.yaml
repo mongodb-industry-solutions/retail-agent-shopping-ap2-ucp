@@ -7,7 +7,7 @@ env:
   GOOGLE_APPLICATION_CREDENTIALS: /etc/gcp/credential-configuration.json
   GCP_PROJECT_ID: ist-retail-demo
   GCP_LOCATION: us-central1
-  
+
 ## Single Pod Containers
 envSecrets:
   # MongoDB Configuration
@@ -55,6 +55,9 @@ sidecarContainers:
       - name: NODE_ENV
         value: prod
 
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/gcp/credential-configuration.json
+
       - name: GOOGLE_GENAI_USE_VERTEXAI
         valueFrom:
           secretKeyRef:
@@ -84,6 +87,14 @@ sidecarContainers:
           secretKeyRef:
             name: retail-ap2
             key: MANDATE_LEDGER_API_KEY
+
+    volumeMounts:
+      - name: gcp-creds
+        mountPath: /etc/gcp
+        readOnly: true
+      - name: gcp-token
+        mountPath: /var/run/service-account
+        readOnly: true
 
   - name: mandate-ledger
     # Image will be overridden by Drone pipeline with specific git-SHA tag
@@ -152,7 +163,6 @@ sidecarContainers:
 # GCP Workload Identity Federation configuration  
 serviceAccount:
   enabled: true
-  name: retail-agent-shopping-ap2-ucp-gcp-sa  # Kubernetes service account for GCP WIF
 
 # Mount GCP credential config AND projected service account token
 extraVolumes:

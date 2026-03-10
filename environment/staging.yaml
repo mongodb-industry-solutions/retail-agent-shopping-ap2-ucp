@@ -56,6 +56,9 @@ sidecarContainers:
       - name: NODE_ENV
         value: staging
 
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/gcp/credential-configuration.json
+
       - name: GOOGLE_GENAI_USE_VERTEXAI
         valueFrom:
           secretKeyRef:
@@ -85,6 +88,14 @@ sidecarContainers:
           secretKeyRef:
             name: retail-ap2
             key: MANDATE_LEDGER_API_KEY
+    
+    volumeMounts:
+      - name: gcp-creds
+        mountPath: /etc/gcp
+        readOnly: true
+      - name: gcp-token
+        mountPath: /var/run/service-account
+        readOnly: true
 
   - name: mandate-ledger
     # Image will be overridden by Drone pipeline with specific git-SHA tag
