@@ -20,8 +20,4 @@ uv_sync:
 	cd backend && uv sync
 
 uv_update:
-<<<<<<< HEAD
 	cd backend && uv lock --upgrade
-=======
-	cd backend && uv lock --upgrade
->>>>>>> fb64d57ada70a720effbbcd1afd285744a243953

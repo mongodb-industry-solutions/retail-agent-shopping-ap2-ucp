@@ -5,10 +5,7 @@ import { getMandateLedgerServiceHealthAPI } from "@/lib/api";
 import Button from "@leafygreen-ui/button";
 import GuidedIntroManager from "@/components/GuidedIntro/GuidedIntroManager";
 import ProfileSelection from "@/components/ProfileSelection.jsx/ProfileSelection";
-<<<<<<< HEAD
 import { Logo } from "@leafygreen-ui/logo";
-=======
->>>>>>> fb64d57ada70a720effbbcd1afd285744a243953
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -26,18 +23,12 @@ export default function Home() {
 
   return (
     <main className="flex flex-col min-h-screen items-center justify-center relative">
-<<<<<<< HEAD
       <div className="absolute top-6 left-6 flex items-center gap-2">
         <Logo height={30} color='green-dark-2' />
       </div>
       <GuidedIntroManager />
       <ProfileSelection/>
       {/* <div className="absolute top-8 left-1/2 -translate-x-1/2">
-=======
-      <GuidedIntroManager />
-      <ProfileSelection/>
-      <div className="absolute top-8 left-1/2 -translate-x-1/2">
->>>>>>> fb64d57ada70a720effbbcd1afd285744a243953
         <h1 className="mb-3">AP2 + Mandate Ledger Service</h1>
         <Button onClick={getMandateLedgerServiceHealth}>Check Mandate Ledger Health</Button>
         {health && (
@@ -46,11 +37,7 @@ export default function Home() {
             <pre>{JSON.stringify(health, null, 2)}</pre>
           </div>
         )}
-<<<<<<< HEAD
       </div> */}
-=======
-      </div>
->>>>>>> fb64d57ada70a720effbbcd1afd285744a243953
     </main>
   );
 }
