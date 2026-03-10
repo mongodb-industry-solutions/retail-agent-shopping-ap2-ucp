@@ -35,7 +35,11 @@ export const introSlides = [
          `<br/>
          <p>To complete an autonomous transaction, <b>AI agents</b> need to both find the product and buy it securely.</p>
          <br/>
+<<<<<<< HEAD
          <p>While the <b>Universal Commerce Protocol (UCP)</b> acts as the "common language" allowing agents to discover catalogs and navigate checkouts, <b>AP2</b> is the security layer that provides the cryptographic proof of authorization.</p>
+=======
+         <p>While the <b>Universal Commerce Protocol (UCP)</b> acts as the "common language" allowing agents to discover catalogs and navigate checkouts, <b>AP2</b> is the security layer that AP2 is the security layer that provides the cryptographic proof of authorization.</p>
+>>>>>>> fb64d57ada70a720effbbcd1afd285744a243953
          <br/>
          <p>Though our demo focuses on <b>AP2’s secure transaction mechanics</b>, they are designed to work together seamlessly.</p>
          <br/>
@@ -69,8 +73,13 @@ export const introSlides = [
   },
 ];
 
+<<<<<<< HEAD
 export const profiles = {
   straightforward: {
+=======
+export const profiles = [
+  {
+>>>>>>> fb64d57ada70a720effbbcd1afd285744a243953
     id: "straightforward",
     name: "The Straightforward Buyer",
     characteristic: "Efficient & Decisive",
@@ -81,9 +90,14 @@ export const profiles = {
     color: "primary",
     detailedInfo:
       "Objective: Introduce all agents involved in a purchase and how they communicate.",
+<<<<<<< HEAD
     profileIcon:  "Checkmark"
   },
   hunter: {
+=======
+  },
+  {
+>>>>>>> fb64d57ada70a720effbbcd1afd285744a243953
     id: "hunter",
     name: "The Hunter Buyer",
     characteristic: "Deal Seeker",
@@ -94,9 +108,14 @@ export const profiles = {
     color: "accent",
     detailedInfo:
       "Objective: Introduce the Mandate Service Layer and Role-Based Access Control (RBAC).",
+<<<<<<< HEAD
     profileIcon: "CreditCard"
   },
   disputing: {
+=======
+  },
+  {
+>>>>>>> fb64d57ada70a720effbbcd1afd285744a243953
     id: "disputing",
     name: "The Disputing Customer",
     characteristic: "Post-Purchase Advocate",
@@ -107,6 +126,7 @@ export const profiles = {
     color: "accent",
     detailedInfo:
       "Objective: Demonstrate immutability and audit trail capabilities for AP2/UCP compliance.",
+<<<<<<< HEAD
     profileIcon: "Warning"
   },
 };
@@ -212,3 +232,7 @@ export const chatFlows = {
     },
   ],
 };
+=======
+  },
+];
+>>>>>>> fb64d57ada70a720effbbcd1afd285744a243953
