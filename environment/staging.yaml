@@ -150,7 +150,6 @@ sidecarContainers:
 # GCP Workload Identity Federation configuration
 serviceAccount:
   enabled: true
-  name: retail-agent-shopping-ap2-ucp-gcp-sa  # Kubernetes service account for GCP WIF
 
 # Mount GCP credential config AND projected service account token
 extraVolumes:
