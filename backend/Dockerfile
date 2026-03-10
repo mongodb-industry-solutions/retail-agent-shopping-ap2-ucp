@@ -5,8 +5,8 @@ WORKDIR /app
 # uv installation
 RUN pip install uv
 
-# Copy the backend code
-COPY ./backend/ .
+# Copy the backend code (context is already backend/ in Kanopy)
+COPY . .
 
 # Install dependencies with uv
 RUN uv sync --no-dev
