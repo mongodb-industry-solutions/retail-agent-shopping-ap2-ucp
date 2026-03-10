@@ -42,9 +42,9 @@ sidecarContainers:
       - containerPort: 8001
         name: merchant-agent
       - containerPort: 8002
-        name: credentials-provider
+        name: creds-provider
       - containerPort: 8003
-        name: payment-processor
+        name: payment-proc
       - containerPort: 8004
         name: auditor-agent
     
