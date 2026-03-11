@@ -1,8 +1,26 @@
+import { profiles } from "@/lib/const/ux-writing";
 import { createSlice } from "@reduxjs/toolkit";
 
 const MandateLedgerSlice = createSlice({
   name: "MandateLedger",
   initialState: {
+    journeysStatus: {
+      [profiles.straightforward.id]: { 
+        session_id: null, 
+        user_id: null, 
+        isInitializing: false 
+      },
+      [profiles.hunter.id]: { 
+        session_id: null, 
+        user_id: null, 
+        isInitializing: false 
+      },
+      [profiles.disputing.id]: { 
+        session_id: null, 
+        user_id: null, 
+        isInitializing: false 
+      },
+    },
     healthStatus: null,
     /*
         {
@@ -22,9 +40,34 @@ const MandateLedgerSlice = createSlice({
     setHealthStatus(state, action) {
       state.healthStatus = action.payload;
     },
+    setSessionInitializing(state, action) {
+      const { profileId } = action.payload;
+      if (state.journeysStatus[profileId]) {
+        state.journeysStatus[profileId].isInitializing = true;
+      }
+    },
+    setSessionId(state, action) {
+      const { profileId, session_id, user_id } = action.payload;
+      if (state.journeysStatus[profileId]) {
+        state.journeysStatus[profileId].session_id = session_id;
+        state.journeysStatus[profileId].user_id = user_id;
+        state.journeysStatus[profileId].isInitializing = false;
+      }
+    },
+    clearSessionInitializing(state, action) {
+      const { profileId } = action.payload;
+      if (state.journeysStatus[profileId]) {
+        state.journeysStatus[profileId].isInitializing = false;
+      }
+    },
   },
 });
 
-export const { setHealthStatus } = MandateLedgerSlice.actions;
+export const { 
+  setHealthStatus, 
+  setSessionInitializing, 
+  setSessionId, 
+  clearSessionInitializing 
+} = MandateLedgerSlice.actions;
 
 export default MandateLedgerSlice.reducer;
