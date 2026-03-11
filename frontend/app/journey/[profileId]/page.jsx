@@ -47,7 +47,7 @@ export default function JourneyPage() {
         // Set initializing state
         dispatch(setSessionInitializing({ profileId }));
         
-        const sessionResponse = await startShoppingSessionAPI();
+        const sessionResponse = await startShoppingSessionAPI(null, dispatch, profileId);
         
         if (sessionResponse.error) {
           console.error("Failed to start session:", sessionResponse.message);

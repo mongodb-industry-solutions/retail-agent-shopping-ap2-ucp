@@ -8,17 +8,20 @@ const MandateLedgerSlice = createSlice({
       [profiles.straightforward.id]: { 
         session_id: null, 
         user_id: null, 
-        isInitializing: false 
+        isInitializing: false,
+        error: null
       },
       [profiles.hunter.id]: { 
         session_id: null, 
         user_id: null, 
-        isInitializing: false 
+        isInitializing: false,
+        error: null
       },
       [profiles.disputing.id]: { 
         session_id: null, 
         user_id: null, 
-        isInitializing: false 
+        isInitializing: false,
+        error: null
       },
     },
     healthStatus: null,
@@ -46,18 +49,27 @@ const MandateLedgerSlice = createSlice({
         state.journeysStatus[profileId].isInitializing = true;
       }
     },
+    setSessionInitialationError(state, action) {
+      const { profileId } = action.payload;
+      if (state.journeysStatus[profileId]) {
+        state.journeysStatus[profileId].isInitializing = false;
+        state.journeysStatus[profileId].error = action.payload.error;
+      }
+    },
     setSessionId(state, action) {
       const { profileId, session_id, user_id } = action.payload;
       if (state.journeysStatus[profileId]) {
         state.journeysStatus[profileId].session_id = session_id;
         state.journeysStatus[profileId].user_id = user_id;
         state.journeysStatus[profileId].isInitializing = false;
+        state.journeysStatus[profileId].error = null;
       }
     },
     clearSessionInitializing(state, action) {
       const { profileId } = action.payload;
       if (state.journeysStatus[profileId]) {
         state.journeysStatus[profileId].isInitializing = false;
+        state.journeysStatus[profileId].error = null;
       }
     },
   },
@@ -66,6 +78,7 @@ const MandateLedgerSlice = createSlice({
 export const { 
   setHealthStatus, 
   setSessionInitializing, 
+  setSessionInitialationError,
   setSessionId, 
   clearSessionInitializing 
 } = MandateLedgerSlice.actions;

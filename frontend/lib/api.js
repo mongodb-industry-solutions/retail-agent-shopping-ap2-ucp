@@ -17,8 +17,8 @@ export async function getMandateLedgerServiceHealthAPI() {
   return data;
 }
 
-export async function startShoppingSessionAPI(userId) {
-  const response = await fetch(`/api/v1/shopping/start-session`, {
+export async function startShoppingSessionAPI(userId, dispatch, profileId) {
+  const response = await fetch(`/api/shopping-start-session?user_id=${encodeURIComponent(userId)}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -27,11 +27,18 @@ export async function startShoppingSessionAPI(userId) {
   });
 
   if (!response.ok) {
-    return {
+    let error = {
       error: true,
       message: `Error starting shopping session: ${response.status}`,
       status: response.status,
     };
+    
+    if (dispatch && profileId) {
+      const { setSessionInitialationError } = await import('@/redux/slices/MandateLedgerSlice');
+      dispatch(setSessionInitialationError({ profileId, error }));
+    }
+
+    return error
   }
 
   const data = await response.json();
