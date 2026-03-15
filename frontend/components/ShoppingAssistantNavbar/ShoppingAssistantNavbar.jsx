@@ -1,6 +1,6 @@
 "use client";
 
-import { profiles } from "@/lib/const/ux-writing";
+import { journeys } from "@/lib/const/ux-writing";
 import {Badge} from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
 import Icon from "@leafygreen-ui/icon";
@@ -9,9 +9,13 @@ import { palette } from "@leafygreen-ui/palette";
 import { Body } from "@leafygreen-ui/typography";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useSelector } from "react-redux";
 
-const ShoppingAssistantNavbar = ({profileId}) => {
+const ShoppingAssistantNavbar = ({journeyId}) => {
   const router = useRouter();
+  const messages = useSelector(state => state.Global.messages);
+  
+  
   return (
     <div
       style={{
@@ -40,9 +44,9 @@ const ShoppingAssistantNavbar = ({profileId}) => {
       </div>
       <div className="d-flex flex-row align-items-center gap-2">
         <Icon size={"small"} glyph="Cursor" />
-        <Body style={{ fontSize: "14px" }}>Click any message to explore</Body>
+        <Body onClick={() => console.log("GlobalSlice.messages:", messages)} style={{ fontSize: "14px" }}>Click any message to explore</Body>
         <Badge variant="blue" size="small">
-          {profiles[profileId]?.characteristic}
+          {journeys[journeyId]?.characteristic}
         </Badge>
       </div>
     </div>

@@ -249,21 +249,85 @@ async def get_shopping_session(session_id: str, user_id: str) -> Dict[str, Any]:
     """
     Get shopping session state and conversation history
     """
-    # Get session from ADK session service
-    session = await session_service.get_session(
-        app_name="shopping_agent", 
-        user_id=user_id, 
-        session_id=session_id
-    )
-    
-    if not session:
-        raise HTTPException(status_code=404, detail="Session not found")
-    
-    return {
-        "session_id": session_id,
-        "user_id": user_id,
-        "session_data": session.model_dump() if hasattr(session, 'model_dump') else str(session)
-    }
+    try:
+        logger.info(f"Getting session: session_id={session_id}, user_id={user_id}, app_name=shopping_agent")
+        
+        # Get session from ADK session service
+        session = await session_service.get_session(
+            app_name="shopping_agent", 
+            user_id=user_id, 
+            session_id=session_id
+        )
+        
+        logger.info(f"Session retrieved: {session is not None}")
+        
+        if not session:
+            logger.warning(f"Session not found: session_id={session_id}, user_id={user_id}")
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        # Safely extract session data
+        session_data = {}
+        try:
+            # Try to get common session attributes safely
+            if hasattr(session, '__dict__'):
+                for key, value in session.__dict__.items():
+                    if key == 'events' and hasattr(value, '__iter__'):
+                        # Special handling for events - convert to JSON-friendly format
+                        events_json = []
+                        try:
+                            for event in value:
+                                event_dict = {}
+                                if hasattr(event, '__dict__'):
+                                    for event_key, event_value in event.__dict__.items():
+                                        try:
+                                            # Test if this value can be JSON serialized
+                                            import json
+                                            json.dumps(event_value)
+                                            event_dict[event_key] = event_value
+                                        except (TypeError, UnicodeDecodeError, ValueError):
+                                            # Convert problematic values to string
+                                            event_dict[event_key] = str(event_value)
+                                else:
+                                    event_dict = str(event)
+                                events_json.append(event_dict)
+                            session_data[key] = events_json
+                        except Exception:
+                            # Fallback to string if events parsing fails
+                            session_data[key] = str(value)
+                    else:
+                        try:
+                            # Test if this value can be JSON serialized
+                            import json
+                            json.dumps(value)
+                            session_data[key] = value
+                        except (TypeError, UnicodeDecodeError, ValueError):
+                            # If it can't be serialized, convert to string representation
+                            session_data[key] = str(value)
+            elif hasattr(session, 'model_dump'):
+                # Try model_dump but handle serialization errors
+                try:
+                    session_data = session.model_dump()
+                except Exception:
+                    session_data = {"raw": str(session)}
+            else:
+                session_data = {"raw": str(session)}
+        except Exception as e:
+            session_data = {"error": f"Could not extract session data: {str(e)}"}
+        
+        return {
+            "session_id": session_id,
+            "user_id": user_id,
+            "session_exists": True,
+            "session_data": session_data
+        }
+        
+    except HTTPException:
+        # Re-raise HTTP exceptions (like 404)
+        raise
+    except Exception as e:
+        logger.error(f"Error getting session {session_id} for user {user_id}: {str(e)}")
+        logger.error(f"Exception type: {type(e)}")
+        raise HTTPException(status_code=500, detail=f"Session service error: {str(e)}")
 
 router = APIRouter()
 

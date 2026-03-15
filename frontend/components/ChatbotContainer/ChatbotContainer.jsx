@@ -1,31 +1,28 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import MessageBubble from "../MessageBubble/MessageBubble";
+import { useSelector } from "react-redux";
+import { chatWithShoppingAgentAPI } from "@/lib/api";
+import AgentThinking from "../MessageBubble/AgentThinking";
 
-const ChatbotContainer = ({messages,setMessages }) => {
-      const messagesEndRef = useRef(null);
+const ChatbotContainer = ({ journeyId, setSelectedMessage }) => {
+  const messages = useSelector(state => state.Global.messages[journeyId]) || [];  
+  const agentIsThinking = useSelector(state => state.MandateLedger.journeysStatus[journeyId]?.agentIsThinking) || false;
+  const messagesEndRef = useRef(null);
 
-  const handleOptionClick = (optionId, nextMessageId, optionLabel) => {
-    const nextMessage = flow.find((m) => m.id === nextMessageId);
-
-    const userMessage = {
-      id: `user-${Date.now()}`,
-      type: "user",
-      content: optionLabel,
-      timestamp: new Date(),
-    };
-
-    if (nextMessage) {
-      setMessages((prev) => [
-        ...prev,
-        userMessage,
-        { ...nextMessage, timestamp: new Date() },
-      ]);
+  const handleOptionClick = async (optionId, nextMessageId, optionLabel) => {
+    // Call the API with the selected option
+    try {
+      await chatWithShoppingAgentAPI(journeyId, optionLabel, optionId);
+    } catch (error) {
+      console.error("Error sending message:", error);
     }
   };
-      useEffect(() => {
+  
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
   return (
     <div
       className="chatbotBody"
@@ -38,16 +35,17 @@ const ChatbotContainer = ({messages,setMessages }) => {
         width: "100%",
       }}
     >
-      {messages.map((message, index) => (
+      {messages && messages.length > 0 ? messages.map((message, index) => (
         <MessageBubble
           setSelectedMessage={setSelectedMessage}
           key={`${message.id}-${index}`}
           messageType={message.type}
           messageContent={message.content}
-          messageOptions={message.options}
+          messageOptions={message.messageOptions}
           onOptionClick={handleOptionClick}
           isLatest={index === messages.length - 1}
-          message={{
+          messageDetails={
+            {
             behindTheScenes: {
               summary: "Buyer/Shopping Agent received user intent",
               keyPoints: [
@@ -55,11 +53,6 @@ const ChatbotContainer = ({messages,setMessages }) => {
                 "Querying Seller Agents via API",
                 "Product search initiated",
               ],
-              // actor: {
-              //   name: "Buyer/Shopping Agent",
-              //   message:
-              //     "I received the user's intent to browse laptops. I will now query the Seller Agent through the merchant API to fetch available products.",
-              // },
             },
             detailedInfo: {
               title: "User Intent Processing",
@@ -93,10 +86,21 @@ const ChatbotContainer = ({messages,setMessages }) => {
                   "I received the user's intent to browse laptops. I will now query the Seller Agent through the merchant API to fetch available products from various merchants.",
               },
             },
-          }}
+          }
+        }
         />
-      ))}
+      )) : (
+        <div style={{ padding: '20px', textAlign: 'center', opacity: 0.7 }}>
+          No messages yet. Starting your shopping session...
+        </div>
+      )}
+      
+      {/* Show thinking message when agent is thinking */}
+      {agentIsThinking && (
+        <AgentThinking/>
+      )}
       <div ref={messagesEndRef} />
+
     </div>
   );
 };

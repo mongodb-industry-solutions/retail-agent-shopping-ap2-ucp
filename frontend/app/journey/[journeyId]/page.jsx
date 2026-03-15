@@ -5,11 +5,9 @@ import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
 import "../journey.css";
-import { profiles, chatFlows } from "@/lib/const/ux-writing";
 import { addStartedJourney } from "@/redux/slices/GlobalSlice";
 import { 
   setSessionInitializing, 
-  setSessionId, 
   clearSessionInitializing 
 } from "@/redux/slices/MandateLedgerSlice";
 import { startShoppingSessionAPI } from "@/lib/api";
@@ -19,20 +17,17 @@ import ChatbotContainer from "@/components/ChatbotContainer/ChatbotContainer";
 
 export default function JourneyPage() {
   const params = useParams();
-  const { profileId } = params;
-  const profile = profiles[profileId];
+  const { journeyId } = params;
+  const journeysStatus = useSelector(state => state.MandateLedger.journeysStatus[journeyId]) || null;
   const dispatch = useDispatch();
-  const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
 
   // Get session state from Redux
-  const sessionState = useSelector(state => state.MandateLedger.journeysStatus[profileId]);
+  const sessionState = useSelector(state => state.MandateLedger.journeysStatus[journeyId]);
   const { session_id, user_id, isInitializing } = sessionState || {};
 
-  // const flow = chatFlows[profileId] || chatFlows.straightforward;
-
   useEffect(() => {
-    dispatch(addStartedJourney(profileId));
+    dispatch(addStartedJourney(journeyId));
   }, []);
 
   // Start session when page loads (only if not already initialized or initializing)
@@ -44,55 +39,37 @@ export default function JourneyPage() {
       }
 
       try {
+        if (journeysStatus.isInitializing) {
+          // the start session process is already ongoing
+          return;
+        }
         // Set initializing state
-        dispatch(setSessionInitializing({ profileId }));
+        dispatch(setSessionInitializing({ journeyId }));
         
-        const sessionResponse = await startShoppingSessionAPI(null, dispatch, profileId);
+        const sessionResponse = await startShoppingSessionAPI(journeyId);
         
         if (sessionResponse.error) {
           console.error("Failed to start session:", sessionResponse.message);
-          dispatch(clearSessionInitializing({ profileId }));
           return;
         }
-
-        // Store session data in Redux
-        dispatch(setSessionId({
-          profileId,
-          session_id: sessionResponse.session_id,
-          user_id: sessionResponse.user_id
-        }));
         
-        console.log("Session started for profile", profileId, ":", {
+        console.log("Session started for profile", journeyId, ":", {
           sessionId: sessionResponse.session_id,
           userId: sessionResponse.user_id,
           status: sessionResponse.status
         });
       } catch (error) {
         console.error("Error starting session:", error);
-        dispatch(clearSessionInitializing({ profileId }));
+        dispatch(clearSessionInitializing({ journeyId }));
       }
     };
 
-    if (profileId && profile) {
+    if (journeyId) {
       initializeSession();
     }
-  }, [profileId, profile, dispatch, isInitializing, session_id]);
+  }, [journeyId, dispatch]);
 
-  // useEffect(() => {
-  //   // Only initialize messages once session is ready
-  //   if (isSessionInitialized) {
-  //     const firstMessage = flow.find((m) => m.id === "welcome");
-  //     if (firstMessage) {
-  //       setMessages([{ ...firstMessage, timestamp: new Date() }]);
-  //     }
-  //   }
-  // }, [profileId, flow, isSessionInitialized]);
-
-
-
-
-
-  if (!profile) {
+  if (!journeysStatus) {
     return <div>Shopping journey not found.</div>;
   }
 
@@ -105,11 +82,10 @@ export default function JourneyPage() {
       {/* Main Chat */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         {/* Header */}
-        <ShoppingAssistantNavbar profileId={profileId} />
+        <ShoppingAssistantNavbar journeyId={journeyId} />
         {/* Messages */}
-        <ChatbotContainer messages={messages} setMessages={setMessages}/>
+        <ChatbotContainer journeyId={journeyId} setSelectedMessage={setSelectedMessage}/>
       </div>
-
       {/* Sidebar */}
       {selectedMessage && (
         <DetailsSidebar selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} />

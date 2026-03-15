@@ -1,26 +1,29 @@
-import { profiles } from "@/lib/const/ux-writing";
+import { journeys } from "@/lib/const/ux-writing";
 import { createSlice } from "@reduxjs/toolkit";
 
 const MandateLedgerSlice = createSlice({
   name: "MandateLedger",
   initialState: {
     journeysStatus: {
-      [profiles.straightforward.id]: { 
+      [journeys.straightforward.id]: { 
         session_id: null, 
         user_id: null, 
         isInitializing: false,
+        agentIsThinking: false,
         error: null
       },
-      [profiles.hunter.id]: { 
+      [journeys.hunter.id]: { 
         session_id: null, 
         user_id: null, 
         isInitializing: false,
+        agentIsThinking: false,
         error: null
       },
-      [profiles.disputing.id]: { 
+      [journeys.disputing.id]: { 
         session_id: null, 
         user_id: null, 
         isInitializing: false,
+        agentIsThinking: false,
         error: null
       },
     },
@@ -65,6 +68,12 @@ const MandateLedgerSlice = createSlice({
         state.journeysStatus[profileId].error = null;
       }
     },
+    setAgentThinking(state, action) {
+      const { journeyId, agentIsThinking } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].agentIsThinking = agentIsThinking;
+      }
+    },
     clearSessionInitializing(state, action) {
       const { profileId } = action.payload;
       if (state.journeysStatus[profileId]) {
@@ -79,7 +88,8 @@ export const {
   setHealthStatus, 
   setSessionInitializing, 
   setSessionInitialationError,
-  setSessionId, 
+  setSessionId,
+  setAgentThinking,
   clearSessionInitializing 
 } = MandateLedgerSlice.actions;
 
