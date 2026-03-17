@@ -16,3 +16,17 @@ export const getDemoSessionId = () => {
 
   return sid;
 };
+
+/**
+ * Get current conversation stage from messages
+ * @param {Object} state - Redux state
+ * @param {string} journeyId - Journey identifier
+ * @returns {string} Current stage or 'initial' if no messages
+ */
+export const getCurrentStage = (state, journeyId) => {
+  const messages = state.messages[journeyId] || [];
+  if (messages.length === 0) return 'initial';
+  
+  const lastMessage = messages[messages.length - 1];
+  return lastMessage?.stage || 'initial';
+};

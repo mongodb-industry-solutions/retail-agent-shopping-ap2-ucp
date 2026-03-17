@@ -7,17 +7,13 @@ const GlobalSliceSlice = createSlice({
   initialState: {
     isGuidedSliceOpened: true,
     sidebarWidth: 420,
+    selectedMessage: null,
     startedJourneys: [],
     messages: {
       [`${journeys.straightforward.id}`]: [],
       [`${journeys.hunter.id}`]: [],
       [`${journeys.disputing.id}`]: [],
     },
-    chatStage: {
-      [`${journeys.straightforward.id}`]: 'initial',
-      [`${journeys.hunter.id}`]: 'initial', 
-      [`${journeys.disputing.id}`]: 'initial',
-    }
   },
   reducers: {
     setGuidedSlice(state, action) {
@@ -32,22 +28,28 @@ const GlobalSliceSlice = createSlice({
     setSidebarWidth(state, action) {
       state.sidebarWidth = action.payload;
     },
+    setSelectedMessage(state, action) {
+      state.selectedMessage = action.payload;
+    },
     addUserMessage(state, action) {
-      const { journeyId, message, sessionId, userId } = action.payload;
+      const { journeyId, message, sessionId, userId, stage, bubbleDetails, behindTheScenes } = action.payload;
       const userMessage = {
         id: `user_${Date.now()}_${Math.random()}`,
         type: USER_ROLE,
         content: message,
         timestamp: new Date().toISOString(),
         sessionId,
-        userId
+        userId,
+        stage: stage || 'initial',
+        bubbleDetails: bubbleDetails || { text: "", tags: [] },
+        behindTheScenes: behindTheScenes || { title: "" }
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(userMessage);
       }
     },
     addAgentMessage(state, action) {
-      const { journeyId, message, sessionId, userId, messageOptions, stage } = action.payload;
+      const { journeyId, message, sessionId, userId, messageOptions, stage, bubbleDetails, behindTheScenes } = action.payload;
       const agentMessage = {
         id: `agent_${Date.now()}_${Math.random()}`,
         type: AGENT_ROLE, 
@@ -56,19 +58,12 @@ const GlobalSliceSlice = createSlice({
         sessionId,
         userId,
         messageOptions: messageOptions || [],
-        stage: stage || 'general'
+        stage: stage || 'general',
+        bubbleDetails: bubbleDetails || { text: "", tags: [] },
+        behindTheScenes: behindTheScenes || { title: "" }
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(agentMessage);
-      }
-      if (stage && state.chatStage[journeyId] !== undefined) {
-        state.chatStage[journeyId] = stage;
-      }
-    },
-    setChatStage(state, action) {
-      const { profileId, stage } = action.payload;
-      if (state.chatStage[profileId] !== undefined) {
-        state.chatStage[profileId] = stage;
       }
     },
     setSessionIdToInitialUserMessage(state, action) {
@@ -85,9 +80,8 @@ const GlobalSliceSlice = createSlice({
       if (state.messages[profileId]) {
         state.messages[profileId] = [];
       }
-      if (state.chatStage[profileId] !== undefined) {
-        state.chatStage[profileId] = 'initial';
-      }
+      // Also clear selected message when clearing messages  
+      state.selectedMessage = null;
     }
   },
 });
@@ -96,9 +90,9 @@ export const {
   setGuidedSlice, 
   addStartedJourney, 
   setSidebarWidth,
+  setSelectedMessage,
   addUserMessage,
   addAgentMessage,
-  setChatStage,
   setSessionIdToInitialUserMessage,
   clearMessages
 } = GlobalSliceSlice.actions;

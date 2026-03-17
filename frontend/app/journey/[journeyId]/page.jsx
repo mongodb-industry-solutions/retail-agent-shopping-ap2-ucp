@@ -19,8 +19,8 @@ export default function JourneyPage() {
   const params = useParams();
   const { journeyId } = params;
   const journeysStatus = useSelector(state => state.MandateLedger.journeysStatus[journeyId]) || null;
+  const selectedMessage = useSelector(state => state.Global.selectedMessage);
   const dispatch = useDispatch();
-  const [selectedMessage, setSelectedMessage] = useState(null);
 
   // Get session state from Redux
   const sessionState = useSelector(state => state.MandateLedger.journeysStatus[journeyId]);
@@ -84,11 +84,11 @@ export default function JourneyPage() {
         {/* Header */}
         <ShoppingAssistantNavbar journeyId={journeyId} />
         {/* Messages */}
-        <ChatbotContainer journeyId={journeyId} setSelectedMessage={setSelectedMessage}/>
+        <ChatbotContainer journeyId={journeyId} />
       </div>
       {/* Sidebar */}
       {selectedMessage && (
-        <DetailsSidebar selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} />
+        <DetailsSidebar />
       )}
     </div>
   );

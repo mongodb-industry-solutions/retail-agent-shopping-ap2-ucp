@@ -7,11 +7,12 @@ import IconButton from "@leafygreen-ui/icon-button";
 
 import "./detailsSidebar.css";
 import { useDispatch, useSelector } from "react-redux";
-import { setSidebarWidth } from "@/redux/slices/GlobalSlice";
+import { setSidebarWidth, setSelectedMessage } from "@/redux/slices/GlobalSlice";
 
-const DetailsSidebar = ({ selectedMessage, setSelectedMessage }) => {
+const DetailsSidebar = () => {
   const dispatch = useDispatch();
-  const sidebarWidth =  useSelector((state) => state.Global.sidebarWidth);
+  const sidebarWidth = useSelector((state) => state.Global.sidebarWidth);
+  const selectedMessage = useSelector((state) => state.Global.selectedMessage);
   const [isResizing, setIsResizing] = useState(false);
 
   const handleMouseDown = () => {
@@ -40,6 +41,11 @@ const DetailsSidebar = ({ selectedMessage, setSelectedMessage }) => {
       document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isResizing, dispatch]);
+
+  useEffect(() => {
+    console.log("Selected message for details:", selectedMessage);
+  }, [selectedMessage])
+  
   return (
     <div className="d-flex flex-row h-100">
       {/* Resizer */}
@@ -86,13 +92,13 @@ const DetailsSidebar = ({ selectedMessage, setSelectedMessage }) => {
           </div>
           <IconButton
             aria-label="Close"
-            onClick={() => setSelectedMessage(null)}
+            onClick={() => dispatch(setSelectedMessage(null))}
           >
             <Icon glyph="X" />
           </IconButton>
         </div>
         <div className="container">
-          <p>Work in progress</p>
+          {selectedMessage?.title}
         </div>
       </div>
     </div>

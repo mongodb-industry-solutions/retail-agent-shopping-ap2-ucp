@@ -6,20 +6,23 @@ import Button from "@leafygreen-ui/button";
 import { Body, Subtitle } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import Icon from "@leafygreen-ui/icon";
+import { useDispatch } from "react-redux";
 import { AGENT_ROLE, USER_ROLE } from "@/lib/constants/messages";
+import { setSelectedMessage } from "@/redux/slices/GlobalSlice";
 
 const MessageBubble = ({
+  messageId,
   messageType,
   messageContent,
   messageOptions,
   onOptionClick,
   isLatest,
-  messageDetails,
-  setSelectedMessage,
+  bubbleDetails = null,
+  behindTheScenes = null,
 }) => {
+  const dispatch = useDispatch();
   const isUser = messageType === USER_ROLE;
   const isAgent = messageType === AGENT_ROLE;
-  const hasDetails = !!messageDetails?.detailedInfo || !!messageDetails?.behindTheScenes;
 
   return (
     <>
@@ -40,24 +43,27 @@ const MessageBubble = ({
         className={`speechBubble d-flex flex-col ${isUser ? "userBubble" : "agentBubble"}`}
         style={isUser ? { backgroundColor: palette.green.dark2 } : {}}
       >
-        <Body 
-          style={isUser ? { color: "white" } : {}} 
+        <Body
+          style={isUser ? { color: "white" } : {}}
           className={isUser ? "text-start messageContent" : "messageContent"}
         >
           {messageContent}
         </Body>
 
         {/* Message details section */}
-        {hasDetails && (
-          <>
-            <hr className="m-0" />
-            <div
-              className="agentDetails"
-              style={{ 
-                backgroundColor: isUser ? palette.green.light3 : palette.gray.light3 
-              }}
-            >
-              {/* Details header */}
+
+        <>
+          <hr className="m-0" />
+          <div
+            className="agentDetails"
+            style={{
+              backgroundColor: isUser
+                ? palette.green.light3
+                : palette.gray.light3,
+            }}
+          >
+            {/* Details header */}
+            {behindTheScenes && (
               <div className="d-flex justify-content-between">
                 <div className="d-flex flex-row align-items-center gap-2">
                   <Icon
@@ -75,30 +81,31 @@ const MessageBubble = ({
                   rightGlyph={<Icon glyph="ArrowRight" />}
                   size="small"
                   variant="primaryOutlined"
-                  onClick={() => setSelectedMessage(messageDetails)}
+                  onClick={() => dispatch(setSelectedMessage({ ...behindTheScenes, messageId }))}
                 >
                   Click for details
                 </Button>
               </div>
+            )}
 
-              {/* Details content */}
-              {(messageDetails?.behindTheScenes || messageDetails?.detailedInfo) && (
-                <div>
-                  <p className="behindTheScenesSummary m-0">
-                    {messageDetails.behindTheScenes?.summary || ""}
-                  </p>
-                  {messageDetails.behindTheScenes?.keyPoints && (
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {messageDetails.behindTheScenes.keyPoints.map((point, i) => (
-                        <Chip key={i} label={point} className="chip p-1" />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </>
-        )}
+            {/* Details content */}
+            {bubbleDetails && (
+              <div>
+                <p className="behindTheScenesSummary m-0">
+                  {bubbleDetails.text || ""}
+                </p>
+                {bubbleDetails.tags && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {bubbleDetails.tags.map((tag, i) => (
+                        <Chip key={i} label={tag} className="chip p-1" />
+                      ),
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </>
       </div>
 
       {/* Message options - only show for latest message with options */}

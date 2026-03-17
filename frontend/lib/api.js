@@ -1,8 +1,9 @@
 import store from '@/redux/store';
 import { setSessionInitialationError, setSessionId, setAgentThinking } from '@/redux/slices/MandateLedgerSlice';
 import { addUserMessage, addAgentMessage, setSessionIdToInitialUserMessage } from '@/redux/slices/GlobalSlice';
-import { getChatOptions, getNextStage, INITIAL_USER_MESSAGE, CHAT_STAGES } from './chatOptions';
-import { getDemoSessionId } from './helpers';
+import { getChatOptions, getNextStage, getBubbleDetails, getBehindTheScenes, INITIAL_USER_MESSAGE, CHAT_STAGES } from './chatOptions';
+import { getDemoSessionId, getCurrentStage } from './helpers';
+import { USER_ROLE, AGENT_ROLE } from './constants/messages';
 
 export async function getMandateLedgerServiceHealthAPI() {
   const response = await fetch(`/api/mandateLedgerServiceHealth`, {
@@ -29,11 +30,17 @@ export async function startShoppingSessionAPI(journeyId) {
   
   // Add initial user message immediately and set thinking state
   if (journeyId) {
+    const bubbleDetails = getBubbleDetails(USER_ROLE, CHAT_STAGES.INITIAL);
+    const behindTheScenes = getBehindTheScenes(USER_ROLE, CHAT_STAGES.INITIAL);
+    
     store.dispatch(addUserMessage({
       journeyId: journeyId,
       message: INITIAL_USER_MESSAGE,
       sessionId: null, // Will be updated when we get the session ID
-      userId: `${journeyId}-${demoSessionId}` // Use the constructed userId
+      userId: userId, // Use the already constructed userId
+      stage: CHAT_STAGES.INITIAL,
+      bubbleDetails,
+      behindTheScenes
     }));
     
     // Set agent thinking state
@@ -95,8 +102,10 @@ export async function startShoppingSessionAPI(journeyId) {
     }));
     
     // Add initial agent response with options
-    const initialStage = CHAT_STAGES.INITIAL;
+    const initialStage = CHAT_STAGES.ASK_INTENT; // Agent responds with ASK_INTENT after initial user message
     const messageOptions = getChatOptions(initialStage);
+    const bubbleDetails = getBubbleDetails(AGENT_ROLE, initialStage);
+    const behindTheScenes = getBehindTheScenes(AGENT_ROLE, initialStage);
     
     store.dispatch(addAgentMessage({
       journeyId: journeyId,
@@ -104,7 +113,9 @@ export async function startShoppingSessionAPI(journeyId) {
       sessionId: data.session_id,
       userId: data.user_id,
       messageOptions,
-      stage: initialStage
+      stage: initialStage,
+      bubbleDetails,
+      behindTheScenes
     }));
   }
   
@@ -121,11 +132,19 @@ export async function chatWithShoppingAgentAPI(journeyId, message, selectedOptio
   
   // Add user message immediately and set thinking state
   if (journeyId && sessionId) {
+    // Get current stage from Redux state
+    const currentStage = getCurrentStage(store.getState().Global, journeyId);
+    const bubbleDetails = getBubbleDetails(USER_ROLE, currentStage);
+    const behindTheScenes = getBehindTheScenes(USER_ROLE, currentStage);
+    
     store.dispatch(addUserMessage({
       journeyId: journeyId,
       message,
       sessionId,
-      userId: storedUserId
+      userId: storedUserId,
+      stage: currentStage,
+      bubbleDetails,
+      behindTheScenes
     }));
     
     // Set agent thinking state
@@ -179,8 +198,17 @@ export async function chatWithShoppingAgentAPI(journeyId, message, selectedOptio
     // Determine next stage based on selected option ID and journey type
     const nextStage = getNextStage(journeyId, selectedOptionId);
     
+    // Determine context for nested options (e.g., coffee_maker for PROVIDE_INTENT_DETAILS)
+    let context = null;
+    if (nextStage === CHAT_STAGES.PROVIDE_INTENT_DETAILS) {
+      // For PROVIDE_INTENT_DETAILS, use the current selectedOptionId as context
+      context = selectedOptionId;
+    }
+    
     // Get options for the next stage
-    const messageOptions = getChatOptions(nextStage);
+    const messageOptions = getChatOptions(nextStage, context);
+    const bubbleDetails = getBubbleDetails(AGENT_ROLE, nextStage);
+    const behindTheScenes = getBehindTheScenes(AGENT_ROLE, nextStage);
     
     // Add agent response with options
     store.dispatch(addAgentMessage({
@@ -189,7 +217,9 @@ export async function chatWithShoppingAgentAPI(journeyId, message, selectedOptio
       sessionId,
       userId: storedUserId,
       messageOptions,
-      stage: nextStage
+      stage: nextStage,
+      bubbleDetails,
+      behindTheScenes
     }));
   }
   
