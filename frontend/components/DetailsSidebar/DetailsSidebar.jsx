@@ -42,10 +42,6 @@ const DetailsSidebar = () => {
     };
   }, [isResizing, dispatch]);
 
-  useEffect(() => {
-    console.log("Selected message for details:", selectedMessage);
-  }, [selectedMessage])
-  
   return (
     <div className="d-flex flex-row h-100">
       {/* Resizer */}
