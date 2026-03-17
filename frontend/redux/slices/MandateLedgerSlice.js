@@ -47,25 +47,25 @@ const MandateLedgerSlice = createSlice({
       state.healthStatus = action.payload;
     },
     setSessionInitializing(state, action) {
-      const { profileId } = action.payload;
-      if (state.journeysStatus[profileId]) {
-        state.journeysStatus[profileId].isInitializing = true;
+      const { journeyId } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].isInitializing = true;
       }
     },
     setSessionInitializationError(state, action) {
-      const { profileId } = action.payload;
-      if (state.journeysStatus[profileId]) {
-        state.journeysStatus[profileId].isInitializing = false;
-        state.journeysStatus[profileId].error = action.payload.error;
+      const { journeyId } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].isInitializing = false;
+        state.journeysStatus[journeyId].error = action.payload.error;
       }
     },
     setSessionId(state, action) {
-      const { profileId, session_id, user_id } = action.payload;
-      if (state.journeysStatus[profileId]) {
-        state.journeysStatus[profileId].session_id = session_id;
-        state.journeysStatus[profileId].user_id = user_id;
-        state.journeysStatus[profileId].isInitializing = false;
-        state.journeysStatus[profileId].error = null;
+      const { journeyId, session_id, user_id } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].session_id = session_id;
+        state.journeysStatus[journeyId].user_id = user_id;
+        state.journeysStatus[journeyId].isInitializing = false;
+        state.journeysStatus[journeyId].error = null;
       }
     },
     setAgentThinking(state, action) {
@@ -75,10 +75,10 @@ const MandateLedgerSlice = createSlice({
       }
     },
     clearSessionInitializing(state, action) {
-      const { profileId } = action.payload;
-      if (state.journeysStatus[profileId]) {
-        state.journeysStatus[profileId].isInitializing = false;
-        state.journeysStatus[profileId].error = null;
+      const { journeyId } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].isInitializing = false;
+        state.journeysStatus[journeyId].error = null;
       }
     },
   },

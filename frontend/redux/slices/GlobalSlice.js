@@ -20,9 +20,9 @@ const GlobalSliceSlice = createSlice({
       state.isGuidedSliceOpened = action.payload;
     },
     addStartedJourney(state, action) {
-      const profileId = action.payload;
-      if (!state.startedJourneys.includes(profileId)) {
-        state.startedJourneys.push(profileId);
+      const journeyId = action.payload;
+      if (!state.startedJourneys.includes(journeyId)) {
+        state.startedJourneys.push(journeyId);
       }
     },
     setSidebarWidth(state, action) {
@@ -76,9 +76,9 @@ const GlobalSliceSlice = createSlice({
       }
     },
     clearMessages(state, action) {
-      const { profileId } = action.payload;
-      if (state.messages[profileId]) {
-        state.messages[profileId] = [];
+      const { journeyId } = action.payload;
+      if (state.messages[journeyId]) {
+        state.messages[journeyId] = [];
       }
       // Also clear selected message when clearing messages  
       state.selectedMessage = null;

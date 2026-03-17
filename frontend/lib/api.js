@@ -71,7 +71,7 @@ export async function startShoppingSessionAPI(journeyId) {
         journeyId: journeyId,
         agentIsThinking: false
       }));
-      store.dispatch(setSessionInitializationError({ profileId: journeyId, error }));
+      store.dispatch(setSessionInitializationError({ journeyId, error }));
     }
     
     return error;
@@ -83,7 +83,7 @@ export async function startShoppingSessionAPI(journeyId) {
   // Store session data in Redux
   if (journeyId && data.session_id) {
     store.dispatch(setSessionId({
-      profileId: journeyId,
+      journeyId,
       session_id: data.session_id,
       user_id: data.user_id
     }));
