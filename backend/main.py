@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from typing import Dict, Any, Optional
 from datetime import datetime
 import uuid
+import json
 
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -281,7 +282,6 @@ async def get_shopping_session(session_id: str, user_id: str) -> Dict[str, Any]:
                                     for event_key, event_value in event.__dict__.items():
                                         try:
                                             # Test if this value can be JSON serialized
-                                            import json
                                             json.dumps(event_value)
                                             event_dict[event_key] = event_value
                                         except (TypeError, UnicodeDecodeError, ValueError):
@@ -297,7 +297,6 @@ async def get_shopping_session(session_id: str, user_id: str) -> Dict[str, Any]:
                     else:
                         try:
                             # Test if this value can be JSON serialized
-                            import json
                             json.dumps(value)
                             session_data[key] = value
                         except (TypeError, UnicodeDecodeError, ValueError):
