@@ -21,6 +21,7 @@ export default function JourneyPage() {
   const journeysStatus = useSelector(state => state.MandateLedger.journeysStatus[journeyId]) || null;
   const selectedMessage = useSelector(state => state.Global.selectedMessage);
   const dispatch = useDispatch();
+  const initializingRef = useRef(false); // Track if initialization is in progress
 
   // Get session state from Redux
   const sessionState = useSelector(state => state.MandateLedger.journeysStatus[journeyId]);
@@ -34,15 +35,19 @@ export default function JourneyPage() {
   useEffect(() => {
     const initializeSession = async () => {
       // Don't start if already initialized, initializing, or session exists
-      if (isInitializing || session_id) {
+      if (isInitializing || session_id || initializingRef.current) {
         return;
       }
 
       try {
-        if (journeysStatus.isInitializing) {
+        if (journeysStatus?.isInitializing) {
           // the start session process is already ongoing
           return;
         }
+        
+        // Set local flag to prevent duplicate calls
+        initializingRef.current = true;
+        
         // Set initializing state
         dispatch(setSessionInitializing({ journeyId }));
         
@@ -61,13 +66,16 @@ export default function JourneyPage() {
       } catch (error) {
         console.error("Error starting session:", error);
         dispatch(clearSessionInitializing({ journeyId }));
+      } finally {
+        // Reset the flag
+        initializingRef.current = false;
       }
     };
 
     if (journeyId) {
       initializeSession();
     }
-  }, [journeyId, dispatch]);
+  }, [journeyId, isInitializing, session_id, journeysStatus?.isInitializing, dispatch]);
 
   if (!journeysStatus) {
     return <div>Shopping journey not found.</div>;
