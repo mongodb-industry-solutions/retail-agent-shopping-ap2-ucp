@@ -1,5 +1,5 @@
 import store from '@/redux/store';
-import { setSessionInitialationError, setSessionId, setAgentThinking } from '@/redux/slices/MandateLedgerSlice';
+import { setSessionInitializationError, setSessionId, setAgentThinking } from '@/redux/slices/MandateLedgerSlice';
 import { addUserMessage, addAgentMessage, setSessionIdToInitialUserMessage } from '@/redux/slices/GlobalSlice';
 import { getChatOptions, getNextStage, getBubbleDetails, getBehindTheScenes, INITIAL_USER_MESSAGE, CHAT_STAGES } from './chatOptions';
 import { getDemoSessionId, getCurrentStage } from './helpers';
@@ -71,7 +71,7 @@ export async function startShoppingSessionAPI(journeyId) {
         journeyId: journeyId,
         agentIsThinking: false
       }));
-      store.dispatch(setSessionInitialationError({ profileId: journeyId, error }));
+      store.dispatch(setSessionInitializationError({ profileId: journeyId, error }));
     }
     
     return error;

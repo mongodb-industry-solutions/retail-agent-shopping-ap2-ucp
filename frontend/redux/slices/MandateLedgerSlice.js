@@ -52,7 +52,7 @@ const MandateLedgerSlice = createSlice({
         state.journeysStatus[profileId].isInitializing = true;
       }
     },
-    setSessionInitialationError(state, action) {
+    setSessionInitializationError(state, action) {
       const { profileId } = action.payload;
       if (state.journeysStatus[profileId]) {
         state.journeysStatus[profileId].isInitializing = false;
@@ -87,7 +87,7 @@ const MandateLedgerSlice = createSlice({
 export const { 
   setHealthStatus, 
   setSessionInitializing, 
-  setSessionInitialationError,
+  setSessionInitializationError,
   setSessionId,
   setAgentThinking,
   clearSessionInitializing 
