@@ -324,7 +324,7 @@ async def get_shopping_session(session_id: str, user_id: str) -> Dict[str, Any]:
         # Re-raise HTTP exceptions (like 404)
         raise
     except Exception as e:
-        logger.error(f"Error getting session {session_id} for user {user_id}: {str(e)}")
+        logger.error(f"Error getting session for user {str(e)}")
         logger.error(f"Exception type: {type(e)}")
         raise HTTPException(status_code=500, detail=f"Session service error: {str(e)}")
 
