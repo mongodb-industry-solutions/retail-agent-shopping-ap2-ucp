@@ -20,7 +20,6 @@ export async function getMandateLedgerServiceHealthAPI() {
     };
   }
   let data = await response.json();
-  console.log("getMandateLedgerServiceHealth res", data);
   return data;
 }
 
@@ -78,7 +77,6 @@ export async function startShoppingSessionAPI(journeyId) {
   }
 
   const data = await response.json();
-  console.log("startShoppingSession res", data);
 
   // Store session data in Redux
   if (journeyId && data.session_id) {
@@ -185,7 +183,6 @@ export async function chatWithShoppingAgentAPI(journeyId, message, selectedOptio
   }
 
   const data = await response.json();
-  console.log("chatWithShoppingAgent res", data);
   
   // Process successful response
   if (journeyId && sessionId) {

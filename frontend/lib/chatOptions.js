@@ -27,6 +27,8 @@ export const CONVERSATION_FLOWS = {
     'yes_refundable': CHAT_STAGES.SHOW_PRODUCTS,
     'no_refundable': CHAT_STAGES.SHOW_PRODUCTS,
     'select_product_1': CHAT_STAGES.ASK_PAYMENT_METHOD,
+    'select_product_2': CHAT_STAGES.ASK_PAYMENT_METHOD,
+    'select_product_3': CHAT_STAGES.ASK_PAYMENT_METHOD,
     'see_more_products': CHAT_STAGES.SHOW_PRODUCTS,
     'credit_card': CHAT_STAGES.CONFIRM_ORDER,
     'paypal': CHAT_STAGES.CONFIRM_ORDER,
@@ -34,25 +36,11 @@ export const CONVERSATION_FLOWS = {
     'modify_order': CHAT_STAGES.SHOW_PRODUCTS
   },
   disputing: {
-    'dispute_charge': CHAT_STAGES.ASK_DISPUTE_REASON,
-    'wrong_amount': CHAT_STAGES.REQUEST_EVIDENCE, 
-    'defective_product': CHAT_STAGES.REQUEST_EVIDENCE,
-    'unauthorized_charge': CHAT_STAGES.REQUEST_EVIDENCE,
-    'submit_evidence': CHAT_STAGES.SHOW_RESOLUTION,
-    'need_help_evidence': CHAT_STAGES.REQUEST_EVIDENCE,
-    'accept_resolution': CHAT_STAGES.DISPUTE_CLOSED,
-    'reject_resolution': CHAT_STAGES.ESCALATE_DISPUTE,
-    'escalate_now': CHAT_STAGES.DISPUTE_CLOSED
+
   },
   
   hunter: {
-    'coffee_maker': CHAT_STAGES.PROVIDE_INTENT_DETAILS,
-    'headphones': CHAT_STAGES.PROVIDE_INTENT_DETAILS,
-    'compare_features': CHAT_STAGES.SHOW_PRODUCTS,
-    'check_reviews': CHAT_STAGES.ASK_PAYMENT_METHOD,
-    'select_product_1': CHAT_STAGES.ASK_PAYMENT_METHOD,
-    'credit_card': CHAT_STAGES.CONFIRM_ORDER,
-    'confirm_purchase': CHAT_STAGES.ORDER_COMPLETE
+
   }
 };
 
@@ -60,8 +48,8 @@ export const CONVERSATION_FLOWS = {
 // Important: keep option IDs in sync with CONVERSATION_FLOWS
 export const STAGE_OPTIONS = {
   [CHAT_STAGES.ASK_INTENT]: [
-    { id: 'coffee_maker', text: 'I want a coffee maker, of type of french press. I do not have any prefered merchant. Also, I want it to be refundable. Show me some options.' },
-    { id: 'headphones', text: 'Looking for headphones for gaming and noice cancelling. They dont need to be refundable, but i want the merchant Amazon. Show me some options.' },
+    { id: 'coffee_maker', text: 'I want a coffee maker, of type of french press. I do not have any preferred merchant. Also, I want it to be refundable. Show me some options.' },
+    { id: 'headphones', text: 'Looking for headphones for gaming and noise cancelling. They don\'t need to be refundable, but I want the merchant Amazon. Show me some options.' },
   ],
 
   [CHAT_STAGES.CONFIRM_INTENT]: [
