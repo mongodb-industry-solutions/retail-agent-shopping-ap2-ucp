@@ -6,13 +6,13 @@ import Button from "@leafygreen-ui/button";
 import { Body, Subtitle } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import Icon from "@leafygreen-ui/icon";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AGENT_ROLE, USER_ROLE } from "@/lib/constants/messages";
 import { setSelectedMessage } from "@/redux/slices/GlobalSlice";
 
 const MessageBubble = ({message, isLatest, onOptionClick}) => {
   const {
-    messageId,
+    id: messageId,
     type: messageType,
     content: messageContent,
     messageOptions,
@@ -22,6 +22,8 @@ const MessageBubble = ({message, isLatest, onOptionClick}) => {
   const dispatch = useDispatch();
   const isUser = messageType === USER_ROLE;
   const isAgent = messageType === AGENT_ROLE;
+  const selectedMessage = useSelector((state) => state.Global.selectedMessage);
+  const isSelectedMessage = selectedMessage?.id === messageId;  
 
   return (
     <>
@@ -39,8 +41,17 @@ const MessageBubble = ({message, isLatest, onOptionClick}) => {
 
       {/* Message bubble with conditional styling */}
       <div
+        onClick={() => console.log(isSelectedMessage)}
         className={`speechBubble d-flex flex-col ${isUser ? "userBubble" : "agentBubble"}`}
-        style={isUser ? { backgroundColor: palette.green.dark2 } : {}}
+        style={{
+          ...(isUser ? { backgroundColor: palette.green.dark2 } : {}),
+          ...(isSelectedMessage == true ? { 
+            border: `3px solid #00ff00`,
+            boxShadow: `0 0 12px rgba(0, 255, 0, 0.5)`,
+            //backgroundColor: isUser ? '#004d00' : '#ffffcc',
+            transform: 'scale(1.02)'
+          } : {})
+        }}
       >
         <Body
           style={isUser ? { color: "white" } : {whiteSpace: "pre-line"}}
@@ -80,7 +91,7 @@ const MessageBubble = ({message, isLatest, onOptionClick}) => {
                   rightGlyph={<Icon glyph="ArrowRight" />}
                   size="small"
                   variant="primaryOutlined"
-                  onClick={() => dispatch(setSelectedMessage({ ...behindTheScenes, messageId }))}
+                  onClick={() => dispatch(setSelectedMessage({ ...message, messageId }))}
                 >
                   Click for details
                 </Button>

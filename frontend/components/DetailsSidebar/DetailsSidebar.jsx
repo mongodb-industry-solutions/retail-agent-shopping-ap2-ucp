@@ -12,7 +12,7 @@ import { setSidebarWidth, setSelectedMessage } from "@/redux/slices/GlobalSlice"
 const DetailsSidebar = () => {
   const dispatch = useDispatch();
   const sidebarWidth = useSelector((state) => state.Global.sidebarWidth);
-  const selectedMessage = useSelector((state) => state.Global.selectedMessage);
+  const { behindTheScenes  } = useSelector((state) => state.Global.selectedMessage);
   const [isResizing, setIsResizing] = useState(false);
 
   const handleMouseDown = () => {
@@ -42,10 +42,6 @@ const DetailsSidebar = () => {
     };
   }, [isResizing, dispatch]);
 
-  useEffect(() => {
-    console.log("Selected message for details:", selectedMessage);
-  }, [selectedMessage])
-  
   return (
     <div className="d-flex flex-row h-100">
       {/* Resizer */}
@@ -98,7 +94,7 @@ const DetailsSidebar = () => {
           </IconButton>
         </div>
         <div className="container">
-          {selectedMessage?.title}
+          {behindTheScenes?.title}
         </div>
       </div>
     </div>

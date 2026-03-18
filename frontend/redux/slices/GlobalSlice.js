@@ -6,6 +6,7 @@ const GlobalSliceSlice = createSlice({
   name: "GlobalSlice",
   initialState: {
     isGuidedSliceOpened: true,
+    followLatestMessage: true,
     sidebarWidth: 420,
     selectedMessage: null,
     startedJourneys: [],
@@ -18,6 +19,9 @@ const GlobalSliceSlice = createSlice({
   reducers: {
     setGuidedSlice(state, action) {
       state.isGuidedSliceOpened = action.payload;
+    },
+    setFollowLatestMessage(state, action) {
+      state.followLatestMessage = action.payload;
     },
     addStartedJourney(state, action) {
       const journeyId = action.payload;
@@ -47,6 +51,9 @@ const GlobalSliceSlice = createSlice({
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(userMessage);
       }
+      if (state.followLatestMessage) {
+        state.selectedMessage = userMessage;
+      }
     },
     addAgentMessage(state, action) {
       const { journeyId, message, sessionId, userId, messageOptions, stage, bubbleDetails, behindTheScenes } = action.payload;
@@ -64,6 +71,9 @@ const GlobalSliceSlice = createSlice({
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(agentMessage);
+      }
+      if (state.followLatestMessage) {
+        state.selectedMessage = agentMessage;
       }
     },
     setSessionIdToInitialUserMessage(state, action) {
@@ -88,6 +98,7 @@ const GlobalSliceSlice = createSlice({
 
 export const { 
   setGuidedSlice, 
+  setFollowLatestMessage,
   addStartedJourney, 
   setSidebarWidth,
   setSelectedMessage,
