@@ -263,7 +263,7 @@ async def get_shopping_session(session_id: str, user_id: str) -> Dict[str, Any]:
         logger.info(f"Session retrieved: {session is not None}")
         
         if not session:
-            logger.warning(f"Session not found: session_id={session_id}, user_id={user_id}")
+            logger.warning(f"Session not found")
             raise HTTPException(status_code=404, detail="Session not found")
         
         # Safely extract session data
