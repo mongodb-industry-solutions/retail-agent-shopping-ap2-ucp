@@ -251,7 +251,7 @@ async def get_shopping_session(session_id: str, user_id: str) -> Dict[str, Any]:
     Get shopping session state and conversation history
     """
     try:
-        logger.info(f"Getting session: session_id={session_id}, user_id={user_id}, app_name=shopping_agent")
+        logger.info(f"Getting session app_name=shopping_agent")
         
         # Get session from ADK session service
         session = await session_service.get_session(
