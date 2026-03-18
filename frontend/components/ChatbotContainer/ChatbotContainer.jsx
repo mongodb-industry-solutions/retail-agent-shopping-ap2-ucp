@@ -38,13 +38,9 @@ const ChatbotContainer = ({ journeyId }) => {
       {messages && messages.length > 0 ? messages.map((message, index) => (
         <MessageBubble
           key={`${message.id}-${index}`}
-          messageType={message.type}
-          messageContent={message.content}
-          messageOptions={message.messageOptions}
           onOptionClick={handleOptionClick}
           isLatest={index === messages.length - 1}
-          bubbleDetails={message.bubbleDetails}
-          behindTheScenes={message.behindTheScenes}
+          message={message}
         />
       )) : (
         <div style={{ padding: '20px', textAlign: 'center', opacity: 0.7 }}>

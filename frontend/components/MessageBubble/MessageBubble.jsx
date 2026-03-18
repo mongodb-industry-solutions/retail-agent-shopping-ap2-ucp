@@ -10,16 +10,15 @@ import { useDispatch } from "react-redux";
 import { AGENT_ROLE, USER_ROLE } from "@/lib/constants/messages";
 import { setSelectedMessage } from "@/redux/slices/GlobalSlice";
 
-const MessageBubble = ({
-  messageId,
-  messageType,
-  messageContent,
-  messageOptions,
-  onOptionClick,
-  isLatest,
-  bubbleDetails = null,
-  behindTheScenes = null,
-}) => {
+const MessageBubble = ({message, isLatest, onOptionClick}) => {
+  const {
+    messageId,
+    type: messageType,
+    content: messageContent,
+    messageOptions,
+    bubbleDetails = null,
+    behindTheScenes = null,
+  } = message;
   const dispatch = useDispatch();
   const isUser = messageType === USER_ROLE;
   const isAgent = messageType === AGENT_ROLE;
@@ -44,16 +43,16 @@ const MessageBubble = ({
         style={isUser ? { backgroundColor: palette.green.dark2 } : {}}
       >
         <Body
-          style={isUser ? { color: "white" } : {}}
+          style={isUser ? { color: "white" } : {whiteSpace: "pre-line"}}
           className={isUser ? "text-start messageContent" : "messageContent"}
         >
           {messageContent}
         </Body>
 
         {/* Message details section */}
-
-        <>
-          <hr className="m-0" />
+        {(behindTheScenes || bubbleDetails) && (
+          <>
+            <hr className="m-0" />
           <div
             className="agentDetails"
             style={{
@@ -97,15 +96,15 @@ const MessageBubble = ({
                 {bubbleDetails.tags && (
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {bubbleDetails.tags.map((tag, i) => (
-                        <Chip key={i} label={tag} className="chip p-1" />
-                      ),
-                    )}
+                      <Chip key={i} label={tag} className="chip p-1" />
+                    ))}
                   </div>
                 )}
               </div>
             )}
           </div>
-        </>
+          </>
+        )}
       </div>
 
       {/* Message options - only show for latest message with options */}
@@ -117,6 +116,7 @@ const MessageBubble = ({
               leftGlyph={<Icon glyph="Sparkle" />}
               size="small"
               variant="default"
+              style={{height: 'fit-content'}}
               onClick={() =>
                 onOptionClick(option.id, option.nextMessageId, option.text)
               }

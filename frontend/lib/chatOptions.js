@@ -3,8 +3,7 @@
 export const CHAT_STAGES = {
   INITIAL: 'initial',
   ASK_INTENT: 'ask_intent',
-  PROVIDE_INTENT_DETAILS: 'provide_intent_details',
-  ASK_REFUNDABLE: 'ask_refundable',
+  CONFIRM_INTENT: 'confirm_intent',
   SHOW_PRODUCTS: 'show_products', 
   ASK_PAYMENT_METHOD: 'ask_payment_method',
   CONFIRM_ORDER: 'confirm_order',
@@ -20,14 +19,9 @@ export const CHAT_STAGES = {
 // Direct mapping: journey + option ID → next stage
 export const CONVERSATION_FLOWS = {
   straightforward: {
-    'coffee_maker': CHAT_STAGES.PROVIDE_INTENT_DETAILS,
-    'headphones': CHAT_STAGES.PROVIDE_INTENT_DETAILS,
-    'french_press': CHAT_STAGES.ASK_REFUNDABLE,
-    'nescafe_maker': CHAT_STAGES.ASK_REFUNDABLE,
-    'espresso_machine': CHAT_STAGES.ASK_REFUNDABLE,
-    'wireless_bluetooth': CHAT_STAGES.ASK_REFUNDABLE,
-    'noise_cancelling': CHAT_STAGES.ASK_REFUNDABLE,
-    'gaming_headset': CHAT_STAGES.ASK_REFUNDABLE,
+    'coffee_maker': CHAT_STAGES.CONFIRM_INTENT,
+    'headphones': CHAT_STAGES.CONFIRM_INTENT,
+    'confirm_intent': CHAT_STAGES.SHOW_PRODUCTS,
     'more_details': CHAT_STAGES.PROVIDE_INTENT_DETAILS,
     'price_range': CHAT_STAGES.ASK_REFUNDABLE,
     'yes_refundable': CHAT_STAGES.SHOW_PRODUCTS,
@@ -66,26 +60,12 @@ export const CONVERSATION_FLOWS = {
 // Important: keep option IDs in sync with CONVERSATION_FLOWS
 export const STAGE_OPTIONS = {
   [CHAT_STAGES.ASK_INTENT]: [
-    { id: 'coffee_maker', text: 'I want a coffee maker' },
-    { id: 'headphones', text: 'Looking for headphones' },
+    { id: 'coffee_maker', text: 'I want a coffee maker, of type of french press. I do not have any prefered merchant. Also, I want it to be refundable. Show me some options.' },
+    { id: 'headphones', text: 'Looking for headphones for gaming and noice cancelling. They dont need to be refundable, but i want the merchant Amazon. Show me some options.' },
   ],
-  
-  [CHAT_STAGES.PROVIDE_INTENT_DETAILS]: {
-    coffee_maker: [
-      { id: 'french_press', text: 'French press style' },
-      { id: 'nescafe_maker', text: 'Nescafe coffee maker' },
-      { id: 'espresso_machine', text: 'Espresso machine' }
-    ],
-    headphones: [
-      { id: 'wireless_bluetooth', text: 'Wireless Bluetooth' },
-      { id: 'noise_cancelling', text: 'Noise cancelling' },
-      { id: 'gaming_headset', text: 'Gaming headset' }
-    ]
-  },
-  
-  [CHAT_STAGES.ASK_REFUNDABLE]: [
-    { id: 'yes_refundable', text: 'Yes, refundable please' },
-    { id: 'no_refundable', text: 'No, that\'s fine' },
+
+  [CHAT_STAGES.CONFIRM_INTENT]: [
+    { id: 'confirm_intent', text: 'Yes, I confirm' },
   ],
   
   [CHAT_STAGES.SHOW_PRODUCTS]: [
