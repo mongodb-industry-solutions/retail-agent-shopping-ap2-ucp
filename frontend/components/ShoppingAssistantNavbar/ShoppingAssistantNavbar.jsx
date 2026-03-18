@@ -1,17 +1,24 @@
 "use client";
 
-import { profiles } from "@/lib/const/ux-writing";
-import {Badge} from "@leafygreen-ui/badge";
+import { journeys } from "@/lib/const/ux-writing";
+import { Badge } from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
+import {Toggle} from "@leafygreen-ui/toggle";
 import Icon from "@leafygreen-ui/icon";
 import { Logo } from "@leafygreen-ui/logo";
 import { palette } from "@leafygreen-ui/palette";
 import { Body } from "@leafygreen-ui/typography";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setFollowLatestMessage } from "@/redux/slices/GlobalSlice";
 
-const ShoppingAssistantNavbar = ({profileId}) => {
+const ShoppingAssistantNavbar = ({ journeyId }) => {
   const router = useRouter();
+  const messages = useSelector((state) => state.Global.messages);
+  const followLatestMessage = useSelector((state) => state.Global.followLatestMessage);
+  const dispatch = useDispatch();
+
   return (
     <div
       style={{
@@ -38,12 +45,31 @@ const ShoppingAssistantNavbar = ({profileId}) => {
           </small>
         </div>
       </div>
-      <div className="d-flex flex-row align-items-center gap-2">
-        <Icon size={"small"} glyph="Cursor" />
-        <Body style={{ fontSize: "14px" }}>Click any message to explore</Body>
-        <Badge variant="blue" size="small">
-          {profiles[profileId]?.characteristic}
-        </Badge>
+      <div className="d-flex flex-column gap-2">
+        <div className="d-flex flex-row align-items-center gap-2">
+          <Badge variant="blue" size="small">
+            {journeys[journeyId]?.characteristic}
+          </Badge>
+          <Icon size={"small"} glyph="Cursor" />
+          <Body
+            onClick={() => console.log("GlobalSlice.messages:", messages)}
+            style={{ fontSize: "14px" }}
+          >
+            Click any message to explore
+          </Body>
+        </div>
+        <div className="d-flex flex-row align-items-center justify-content-end gap-2">
+          <Body style={{ fontSize: "14px" }}>Follow the latest 'Behind The Scenes' message</Body>
+          <Toggle
+            id="toggle"
+            size="small"
+            aria-labelledby="label"
+            checked={followLatestMessage}
+            onChange={(checked, event) => {
+              dispatch(setFollowLatestMessage(checked));
+            }}
+          />
+        </div>
       </div>
     </div>
   );

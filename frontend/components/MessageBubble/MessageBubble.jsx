@@ -1,102 +1,87 @@
 "use client";
 
-import React from 'react'
+import React from "react";
 import { Chip } from "@leafygreen-ui/chip";
 import Button from "@leafygreen-ui/button";
 import { Body, Subtitle } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import Icon from "@leafygreen-ui/icon";
+import { useDispatch, useSelector } from "react-redux";
+import { AGENT_ROLE, USER_ROLE } from "@/lib/constants/messages";
+import { setSelectedMessage } from "@/redux/slices/GlobalSlice";
 
-const MessageBubble = ({
-  messageType,
-  messageContent,
-  messageOptions,
-  onOptionClick,
-  isLatest,
-  message,
-  setSelectedMessage,
-}) => {
+const MessageBubble = ({message, isLatest, onOptionClick}) => {
+  const {
+    id: messageId,
+    type: messageType,
+    content: messageContent,
+    messageOptions,
+    bubbleDetails = null,
+    behindTheScenes = null,
+  } = message;
+  const dispatch = useDispatch();
+  const isUser = messageType === USER_ROLE;
+  const isAgent = messageType === AGENT_ROLE;
+  const selectedMessage = useSelector((state) => state.Global.selectedMessage);
+  const isSelectedMessage = selectedMessage?.id === messageId;  
 
-  if (messageType === "user") {
-    return (
-      <div
-        className="speechBubble userBubble d-flex flex-col"
-        style={{ backgroundColor: palette.green.dark2 }}
-      >
-        <Body style={{ color: "white" }} className="text-start messageContent">
-          {messageContent}
-        </Body>
-        <>
-          <hr className="m-0" />
-          <div
-            className="agentDetails"
-            style={{ backgroundColor: palette.green.light3 }}
-          >
-            {/* Agent header for details message */}
-            <div className="d-flex justify-content-between">
-              <div className="d-flex flex-row align-items-center gap-2">
-                <Icon
-                  style={{ color: palette.green.dark2 }}
-                  glyph="Database"
-                ></Icon>
-                <Subtitle
-                  className={"agentPrefix"}
-                  style={{ color: palette.green.dark2 }}
-                >
-                  Behind The Scenes
-                </Subtitle>
-              </div>
-              <Button
-                rightGlyph={<Icon glyph="ArrowRight" />}
-                size="small"
-                variant="primaryOutlined"
-                onClick={() => setSelectedMessage(message)}
-              >
-                Click for details
-              </Button>
-            </div>
-            {/* Agent content for details message */}
-            <div>
-              <p className="behindTheScenesSummary m-0">
-                {message.behindTheScenes.summary}
-              </p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {message.behindTheScenes.keyPoints.map((point, i) => (
-                  <Chip key={i} label={point} className="chip p-1" />
-                ))}
-              </div>
-            </div>
-          </div>
-        </>
-      </div>
-    );
-  }
-  const hasDetails = !!message.detailedInfo;
   return (
     <>
-      <div className="agentHeader">
-        <img src="/icons/coachGTM_Headshot.png" className="agentImage" alt="Agent headshot" />
-        <Subtitle className="agentPrefix">Agent's response</Subtitle>
-      </div>
-      <div className="speechBubble answerBubble">
-        <Body className="messageContent">{messageContent}</Body>
-        {/* Message details */}
-        {hasDetails && (
+      {/* Agent header - only show for agent messages */}
+      {isAgent && (
+        <div className="agentHeader">
+          <img
+            src="/icons/coachGTM_Headshot.png"
+            className="agentImage"
+            alt="Agent headshot"
+          />
+          <Subtitle className="agentPrefix">Agent's response</Subtitle>
+        </div>
+      )}
+
+      {/* Message bubble with conditional styling */}
+      <div
+        onClick={() => console.log(isSelectedMessage)}
+        className={`speechBubble d-flex flex-col ${isUser ? "userBubble" : "agentBubble"}`}
+        style={{
+          ...(isUser ? { backgroundColor: palette.green.dark2 } : {}),
+          ...(isSelectedMessage == true ? { 
+            border: `3px solid #00ff00`,
+            boxShadow: `0 0 12px rgba(0, 255, 0, 0.5)`,
+            //backgroundColor: isUser ? '#004d00' : '#ffffcc',
+            transform: 'scale(1.02)'
+          } : {})
+        }}
+      >
+        <Body
+          style={isUser ? { color: "white" } : {whiteSpace: "pre-line"}}
+          className={isUser ? "text-start messageContent" : "messageContent"}
+        >
+          {messageContent}
+        </Body>
+
+        {/* Message details section */}
+        {(behindTheScenes || bubbleDetails) && (
           <>
             <hr className="m-0" />
-            <div
-              className="agentDetails"
-              style={{ backgroundColor: palette.gray.light3 }}
-            >
-              {/* Agent header for details message */}
+          <div
+            className="agentDetails"
+            style={{
+              backgroundColor: isUser
+                ? palette.green.light3
+                : palette.gray.light3,
+            }}
+          >
+            {/* Details header */}
+            {behindTheScenes && (
               <div className="d-flex justify-content-between">
                 <div className="d-flex flex-row align-items-center gap-2">
                   <Icon
                     style={{ color: palette.green.dark2 }}
                     glyph="Database"
-                  ></Icon>
+                  />
                   <Subtitle
-                    className={"agentPrefix"}
+                    className="agentPrefix"
                     style={{ color: palette.green.dark2 }}
                   >
                     Behind The Scenes
@@ -106,27 +91,34 @@ const MessageBubble = ({
                   rightGlyph={<Icon glyph="ArrowRight" />}
                   size="small"
                   variant="primaryOutlined"
-                  onClick={() => setSelectedMessage(message)}
+                  onClick={() => dispatch(setSelectedMessage({ ...message, messageId }))}
                 >
                   Click for details
                 </Button>
               </div>
-              {/* Agent content for details message */}
+            )}
+
+            {/* Details content */}
+            {bubbleDetails && (
               <div>
                 <p className="behindTheScenesSummary m-0">
-                  {message.behindTheScenes.summary}
+                  {bubbleDetails.text || ""}
                 </p>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {message.behindTheScenes.keyPoints.map((point, i) => (
-                    <Chip key={i} label={point} className="chip p-1" />
-                  ))}
-                </div>
+                {bubbleDetails.tags && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {bubbleDetails.tags.map((tag, i) => (
+                      <Chip key={i} label={tag} className="chip p-1" />
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
+            )}
+          </div>
           </>
         )}
       </div>
 
+      {/* Message options - only show for latest message with options */}
       {isLatest && messageOptions && (
         <div className="d-flex flex-row flex-wrap gap-3">
           {messageOptions.map((option) => (
@@ -135,18 +127,18 @@ const MessageBubble = ({
               leftGlyph={<Icon glyph="Sparkle" />}
               size="small"
               variant="default"
+              style={{height: 'fit-content'}}
               onClick={() =>
-                onOptionClick(option.id, option.nextMessageId, option.label)
+                onOptionClick(option.id, option.nextMessageId, option.text)
               }
             >
-              {option.label}
+              {option.text}
             </Button>
           ))}
         </div>
       )}
     </>
   );
+};
 
-}
-
-export default MessageBubble
+export default MessageBubble;
