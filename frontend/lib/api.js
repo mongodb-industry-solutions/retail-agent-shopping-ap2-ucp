@@ -195,10 +195,9 @@ export async function chatWithShoppingAgentAPI(journeyId, message, selectedOptio
     // Determine next stage based on selected option ID and journey type
     const nextStage = getNextStage(journeyId, selectedOptionId);
     
-    // Determine context for nested options (e.g., coffee_maker for PROVIDE_INTENT_DETAILS)
+    // Determine context for nested options (e.g., select_google_wallet for select_paypal)
     let context = null;
-    if (nextStage === CHAT_STAGES.PROVIDE_INTENT_DETAILS) {
-      // For PROVIDE_INTENT_DETAILS, use the current selectedOptionId as context
+    if (nextStage === CHAT_STAGES.USER_CREDENTIALS_WALLET_2) {
       context = selectedOptionId;
     }
     
