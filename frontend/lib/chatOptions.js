@@ -108,7 +108,6 @@ export const STAGE_OPTIONS = {
     { id: 'enter_verification_code', text: '123' },
   ],
   [CHAT_STAGES.ORDER_COMPLETED]: [],
-  
   // Fallback options for any stage that doesn't have specific options defined
   [CHAT_STAGES.GENERAL]: [
     { id: 'more_info', text: 'Tell me more about this' },

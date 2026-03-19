@@ -113,7 +113,6 @@ const BUBBLE_DETAILS_CONFIG = {
       text: "AI confirming successful order",
       tags: ["ai-success", "order-complete"]
     },
-
     [CHAT_STAGES.GENERAL]: {
       text: "AI providing general assistance",
       tags: ["ai-help", "general"]
