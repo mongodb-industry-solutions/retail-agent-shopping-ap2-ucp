@@ -59,11 +59,11 @@ const ShoppingAssistantNavbar = ({ journeyId }) => {
           </Body>
         </div>
         <div className="d-flex flex-row align-items-center justify-content-end gap-2">
-          <Body style={{ fontSize: "14px" }}>Follow the latest 'Behind The Scenes' message</Body>
+          <Body id="follow-latest-bts-label" style={{ fontSize: "14px" }}>Follow the latest 'Behind The Scenes' message</Body>
           <Toggle
             id="toggle"
             size="small"
-            aria-labelledby="label"
+            aria-labelledby="follow-latest-bts-label"
             checked={followLatestMessage}
             onChange={(checked, event) => {
               dispatch(setFollowLatestMessage(checked));

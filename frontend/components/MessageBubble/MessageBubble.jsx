@@ -41,7 +41,6 @@ const MessageBubble = ({message, isLatest, onOptionClick}) => {
 
       {/* Message bubble with conditional styling */}
       <div
-        onClick={() => console.log(isSelectedMessage)}
         className={`speechBubble d-flex flex-col ${isUser ? "userBubble" : "agentBubble"}`}
         style={{
           ...(isUser ? { backgroundColor: palette.green.dark2 } : {}),
@@ -91,7 +90,7 @@ const MessageBubble = ({message, isLatest, onOptionClick}) => {
                   rightGlyph={<Icon glyph="ArrowRight" />}
                   size="small"
                   variant="primaryOutlined"
-                  onClick={() => dispatch(setSelectedMessage({ ...message, messageId }))}
+                  onClick={() => dispatch(setSelectedMessage(message))}
                 >
                   Click for details
                 </Button>
