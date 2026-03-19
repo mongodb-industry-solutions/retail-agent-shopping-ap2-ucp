@@ -58,8 +58,8 @@ export const CONVERSATION_FLOWS = {
 // Important: keep option IDs in sync with CONVERSATION_FLOWS
 export const STAGE_OPTIONS = {
   [CHAT_STAGES.ASK_INTENT]: [
-    { id: 'coffee_maker', text: 'I\’m looking for a coffee maker specifically a glass french press. I don\’t have a preferred merchant, but I\’d like it to be refundable. Show me some options.' },
-    { id: 'headphones', text: 'I\’m looking for gaming headphones with noise cancellation. They don’t need to be refundable, but I\’d like them from the merchant Amazon. Show me some options.' },
+    { id: 'coffee_maker', text: 'I’m looking for a coffee maker specifically a glass french press. I don’t have a preferred merchant, but I’d like it to be refundable. Show me some options.' },
+    { id: 'headphones', text: 'I’m looking for gaming headphones with noise cancellation. They don’t need to be refundable, but I’d like them from the merchant Amazon. Show me some options.' },
   ],
 
   [CHAT_STAGES.CONFIRM_INTENT]: [
