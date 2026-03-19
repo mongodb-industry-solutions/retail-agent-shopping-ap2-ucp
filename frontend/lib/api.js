@@ -1,9 +1,9 @@
 import store from '@/redux/store';
 import { setSessionInitializationError, setSessionId, setAgentThinking } from '@/redux/slices/MandateLedgerSlice';
 import { addUserMessage, addAgentMessage, setSessionIdToInitialUserMessage } from '@/redux/slices/GlobalSlice';
-import { getChatOptions, getNextStage, getBubbleDetails, getBehindTheScenes, INITIAL_USER_MESSAGE, CHAT_STAGES } from './chatOptions';
+import { getChatOptions, getNextStage, INITIAL_USER_MESSAGE, CHAT_STAGES } from './chatOptions';
 import { getDemoSessionId, getCurrentStage } from './helpers';
-import { USER_ROLE, AGENT_ROLE } from './constants/messages';
+import { USER_ROLE, AGENT_ROLE, getBubbleDetails, getBehindTheScenes } from './constants/messages';
 
 export async function getMandateLedgerServiceHealthAPI() {
   const response = await fetch(`/api/mandateLedgerServiceHealth`, {

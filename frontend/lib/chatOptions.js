@@ -5,14 +5,16 @@ export const CHAT_STAGES = {
   ASK_INTENT: 'ask_intent',
   CONFIRM_INTENT: 'confirm_intent',
   SHOW_PRODUCTS: 'show_products', 
+  ASK_USER_CREDENTIALS: 'ask_user_credentials',
+  USER_CREDENTIALS_WALLET_1: 'select_wallet',
+  USER_CREDENTIALS_WALLET_2: 'allow_wallet_access',
+  USER_CREDENTIALS_MANUAL_1: 'provide_address',
+  USER_CREDENTIALS_MANUAL_2: 'provide_email',
   ASK_PAYMENT_METHOD: 'ask_payment_method',
   CONFIRM_ORDER: 'confirm_order',
-  ORDER_COMPLETE: 'order_complete',
-  ASK_DISPUTE_REASON: 'ask_dispute_reason',
-  REQUEST_EVIDENCE: 'request_evidence',
-  SHOW_RESOLUTION: 'show_resolution',
-  DISPUTE_CLOSED: 'dispute_closed',
-  ESCALATE_DISPUTE: 'escalate_dispute',
+  VERIFICATION_CODE: 'verification_code',
+  ORDER_COMPLETED: 'order_completed',
+
   GENERAL: 'general'
 };
 
@@ -22,18 +24,26 @@ export const CONVERSATION_FLOWS = {
     'coffee_maker': CHAT_STAGES.CONFIRM_INTENT,
     'headphones': CHAT_STAGES.CONFIRM_INTENT,
     'confirm_intent': CHAT_STAGES.SHOW_PRODUCTS,
-    'more_details': CHAT_STAGES.PROVIDE_INTENT_DETAILS,
-    'price_range': CHAT_STAGES.ASK_REFUNDABLE,
-    'yes_refundable': CHAT_STAGES.SHOW_PRODUCTS,
-    'no_refundable': CHAT_STAGES.SHOW_PRODUCTS,
-    'select_product_1': CHAT_STAGES.ASK_PAYMENT_METHOD,
-    'select_product_2': CHAT_STAGES.ASK_PAYMENT_METHOD,
-    'select_product_3': CHAT_STAGES.ASK_PAYMENT_METHOD,
-    'see_more_products': CHAT_STAGES.SHOW_PRODUCTS,
-    'credit_card': CHAT_STAGES.CONFIRM_ORDER,
-    'paypal': CHAT_STAGES.CONFIRM_ORDER,
-    'confirm_purchase': CHAT_STAGES.ORDER_COMPLETE,
-    'modify_order': CHAT_STAGES.SHOW_PRODUCTS
+
+    'select_product_1': CHAT_STAGES.ASK_USER_CREDENTIALS,
+    'select_product_2': CHAT_STAGES.ASK_USER_CREDENTIALS,
+    'select_product_3': CHAT_STAGES.ASK_USER_CREDENTIALS,
+
+    'use_wallet': CHAT_STAGES.USER_CREDENTIALS_WALLET_1,
+    'select_google_wallet': CHAT_STAGES.USER_CREDENTIALS_WALLET_2,
+    'select_paypal': CHAT_STAGES.USER_CREDENTIALS_WALLET_2,
+    'allow_wallet_access': CHAT_STAGES.ASK_PAYMENT_METHOD,
+
+    'enter_address': CHAT_STAGES.USER_CREDENTIALS_MANUAL_1,
+    'enter_manual_address': CHAT_STAGES.USER_CREDENTIALS_MANUAL_2,
+    'enter_email': CHAT_STAGES.ASK_PAYMENT_METHOD,
+
+    'amex4444': CHAT_STAGES.CONFIRM_ORDER,
+    'amex8888': CHAT_STAGES.CONFIRM_ORDER,
+
+    'confirm_order': CHAT_STAGES.VERIFICATION_CODE,
+    'enter_verification_code': CHAT_STAGES.ORDER_COMPLETED
+   
   },
   disputing: {
 
@@ -48,8 +58,8 @@ export const CONVERSATION_FLOWS = {
 // Important: keep option IDs in sync with CONVERSATION_FLOWS
 export const STAGE_OPTIONS = {
   [CHAT_STAGES.ASK_INTENT]: [
-    { id: 'coffee_maker', text: 'I want a coffee maker, of type of french press. I do not have any preferred merchant. Also, I want it to be refundable. Show me some options.' },
-    { id: 'headphones', text: 'Looking for headphones for gaming and noise cancelling. They don\'t need to be refundable, but I want the merchant Amazon. Show me some options.' },
+    { id: 'coffee_maker', text: 'I\’m looking for a coffee maker specifically a glass french press. I don\’t have a preferred merchant, but I\’d like it to be refundable. Show me some options.' },
+    { id: 'headphones', text: 'I\’m looking for gaming headphones with noise cancellation. They don’t need to be refundable, but I\’d like them from the merchant Amazon. Show me some options.' },
   ],
 
   [CHAT_STAGES.CONFIRM_INTENT]: [
@@ -62,36 +72,44 @@ export const STAGE_OPTIONS = {
     { id: 'select_product_3', text: 'Option 3 please' }
   ],
   
+  [CHAT_STAGES.ASK_USER_CREDENTIALS]: [
+    { id: 'use_wallet', text: 'I want to use one of my digital wallets.' },
+    { id: 'enter_address', text: 'Enter address manually' },
+  ],
+
+  [CHAT_STAGES.USER_CREDENTIALS_WALLET_1]: [
+    {id: 'select_google_wallet', text: 'Google Wallet'},
+    {id: 'select_paypal', text: 'PayPal'}
+  ],
+  [CHAT_STAGES.USER_CREDENTIALS_WALLET_2]: {
+    select_google_wallet: [
+      {id: 'allow_wallet_access', text: 'Yes, I allow Google Wallet to share my information with you.'}
+    ],
+    select_paypal: [
+      {id: 'allow_wallet_access', text: 'Yes, I allow PayPal to share my information with you.'}
+    ]
+  },
+
+  [CHAT_STAGES.USER_CREDENTIALS_MANUAL_1]: [
+    {id: 'enter_manual_address', text: 'Recipient is Bugs Bunny and the address is 123 Main St, Sample City, ST 00000, US'},
+  ],
+  [CHAT_STAGES.USER_CREDENTIALS_MANUAL_2]: [
+    {id: 'enter_email', text: 'Yes, I confirm. My email is bugsbunny@gmail.com'}
+  ],
+
   [CHAT_STAGES.ASK_PAYMENT_METHOD]: [
-    { id: 'credit_card', text: 'Credit Card' },
-    { id: 'paypal', text: 'PayPal' },
-    { id: 'apple_pay', text: 'Apple Pay' }
+    { id: 'amex4444', text: 'AMEX Card ending in 4444' },
+    { id: 'amex8888', text: 'AMEX Card ending in 8888' },
   ],
-  
   [CHAT_STAGES.CONFIRM_ORDER]: [
-    { id: 'confirm_purchase', text: 'Yes, confirm my order' },
-    { id: 'modify_order', text: 'I want to modify something' },
-    { id: 'cancel_order', text: 'Cancel this order' }
+    { id: 'confirm_order', text: 'Yes, I confirm the purchase and order details.' },
   ],
-  
-  [CHAT_STAGES.ASK_DISPUTE_REASON]: [
-    { id: 'wrong_amount', text: 'Wrong amount charged' },
-    { id: 'defective_product', text: 'Product was defective' },
-    { id: 'unauthorized_charge', text: 'Unauthorized charge' }
+  [CHAT_STAGES.VERIFICATION_CODE]: [
+    { id: 'enter_verification_code', text: '123' },
   ],
+  [CHAT_STAGES.ORDER_COMPLETED]: [],
   
-  [CHAT_STAGES.REQUEST_EVIDENCE]: [
-    { id: 'submit_evidence', text: 'I have the evidence ready' },
-    { id: 'need_help_evidence', text: 'I need help gathering evidence' },
-    { id: 'upload_receipt', text: 'Upload receipt/photos' }
-  ],
-  
-  [CHAT_STAGES.SHOW_RESOLUTION]: [
-    { id: 'accept_resolution', text: 'Accept this resolution' },
-    { id: 'reject_resolution', text: 'I disagree with this' },
-    { id: 'need_clarification', text: 'I need more details' }
-  ],
-  
+  // Fallback options for any stage that doesn't have specific options defined
   [CHAT_STAGES.GENERAL]: [
     { id: 'more_info', text: 'Tell me more about this' },
     { id: 'different_options', text: 'Show me something different' },
@@ -125,206 +143,3 @@ export const getNextStage = (journeyType, selectedOptionId) => {
 
 // Initial conversation starter
 export const INITIAL_USER_MESSAGE = "Hello, I'd like to start shopping";
-
-// Bubble details configuration: content displayed at bottom of message bubbles
-const BUBBLE_DETAILS_CONFIG = {
-  user: {
-    [CHAT_STAGES.INITIAL]: {
-      text: "Starting your shopping journey",
-      tags: ["user-intent", "session-start"]
-    },
-    [CHAT_STAGES.ASK_INTENT]: {
-      text: "Sharing shopping intent", 
-      tags: ["user-intent", "product-interest"]
-    },
-    [CHAT_STAGES.PROVIDE_INTENT_DETAILS]: {
-      text: "Providing more details about your needs",
-      tags: ["user-input", "clarification"]
-    },
-    [CHAT_STAGES.ASK_REFUNDABLE]: {
-      text: "Sharing refund preferences",
-      tags: ["user-preference", "refund-policy"]
-    },
-    [CHAT_STAGES.SHOW_PRODUCTS]: {
-      text: "Making product selection",
-      tags: ["user-selection", "product-choice"]
-    },
-    [CHAT_STAGES.ASK_PAYMENT_METHOD]: {
-      text: "Choosing payment method", 
-      tags: ["user-payment", "checkout"]
-    },
-    [CHAT_STAGES.CONFIRM_ORDER]: {
-      text: "Order confirmation decision",
-      tags: ["user-confirmation", "final-step"]
-    },
-    [CHAT_STAGES.ASK_DISPUTE_REASON]: {
-      text: "Explaining dispute reason",
-      tags: ["user-dispute", "issue-reporting"]
-    },
-    [CHAT_STAGES.REQUEST_EVIDENCE]: {
-      text: "Providing evidence details",
-      tags: ["user-evidence", "dispute-support"]
-    },
-    [CHAT_STAGES.SHOW_RESOLUTION]: {
-      text: "Responding to resolution",
-      tags: ["user-response", "resolution-feedback"]
-    },
-    [CHAT_STAGES.GENERAL]: {
-      text: "General inquiry",
-      tags: ["user-question", "general"]
-    }
-  },
-  agent: {
-    [CHAT_STAGES.INITIAL]: {
-      text: "AI Assistant providing shopping options",
-      tags: ["ai-response", "options-presented"]
-    },
-    [CHAT_STAGES.ASK_INTENT]: {
-      text: "AI gathering shopping preferences",
-      tags: ["ai-inquiry", "intent-collection"]
-    },
-    [CHAT_STAGES.PROVIDE_INTENT_DETAILS]: {
-      text: "AI gathering more information",
-      tags: ["ai-clarification", "data-collection"]
-    },
-    [CHAT_STAGES.ASK_REFUNDABLE]: {
-      text: "AI explaining refund policies",
-      tags: ["ai-policy", "refund-info"]
-    },
-    [CHAT_STAGES.SHOW_PRODUCTS]: {
-      text: "AI presenting product recommendations",
-      tags: ["ai-recommendations", "product-catalog"]
-    },
-    [CHAT_STAGES.ASK_PAYMENT_METHOD]: {
-      text: "AI processing payment options",
-      tags: ["ai-payment", "checkout-flow"]
-    },
-    [CHAT_STAGES.CONFIRM_ORDER]: {
-      text: "AI preparing order confirmation",
-      tags: ["ai-confirmation", "order-processing"]
-    },
-    [CHAT_STAGES.ORDER_COMPLETE]: {
-      text: "AI confirming successful order",
-      tags: ["ai-success", "order-complete"]
-    },
-    [CHAT_STAGES.ASK_DISPUTE_REASON]: {
-      text: "AI collecting dispute information",
-      tags: ["ai-dispute", "issue-resolution"]
-    },
-    [CHAT_STAGES.REQUEST_EVIDENCE]: {
-      text: "AI guiding evidence submission",
-      tags: ["ai-guidance", "evidence-help"]
-    },
-    [CHAT_STAGES.SHOW_RESOLUTION]: {
-      text: "AI presenting resolution options",
-      tags: ["ai-resolution", "dispute-outcome"]
-    },
-    [CHAT_STAGES.DISPUTE_CLOSED]: {
-      text: "AI confirming dispute closure",
-      tags: ["ai-closure", "dispute-resolved"]
-    },
-    [CHAT_STAGES.ESCALATE_DISPUTE]: {
-      text: "AI escalating to human support",
-      tags: ["ai-escalation", "human-handoff"]
-    },
-    [CHAT_STAGES.GENERAL]: {
-      text: "AI providing general assistance",
-      tags: ["ai-help", "general"]
-    }
-  }
-};
-
-// Behind the scenes configuration: content for sidebar when message is clicked
-const BEHIND_THE_SCENES_CONFIG = {
-  user: {
-    [CHAT_STAGES.INITIAL]: {
-      title: "User Session Initialization"
-    },
-    [CHAT_STAGES.ASK_INTENT]: {
-      title: "User Intent Declaration"
-    },
-    [CHAT_STAGES.PROVIDE_INTENT_DETAILS]: {
-      title: "User Intent Clarification"
-    },
-    [CHAT_STAGES.ASK_REFUNDABLE]: {
-      title: "User Refund Preference Input"
-    },
-    [CHAT_STAGES.SHOW_PRODUCTS]: {
-      title: "User Product Selection Process"
-    },
-    [CHAT_STAGES.ASK_PAYMENT_METHOD]: {
-      title: "User Payment Method Choice"
-    },
-    [CHAT_STAGES.CONFIRM_ORDER]: {
-      title: "User Order Confirmation Action"
-    },
-    [CHAT_STAGES.ASK_DISPUTE_REASON]: {
-      title: "User Dispute Reason Submission"
-    },
-    [CHAT_STAGES.REQUEST_EVIDENCE]: {
-      title: "User Evidence Preparation"
-    },
-    [CHAT_STAGES.SHOW_RESOLUTION]: {
-      title: "User Resolution Response"
-    },
-    [CHAT_STAGES.GENERAL]: {
-      title: "User General Interaction"
-    }
-  },
-  agent: {
-    [CHAT_STAGES.INITIAL]: {
-      title: "Agent Welcome & Options Presentation"
-    },
-    [CHAT_STAGES.ASK_INTENT]: {
-      title: "Agent Intent Collection Workflow"
-    },
-    [CHAT_STAGES.PROVIDE_INTENT_DETAILS]: {
-      title: "Agent Information Gathering"
-    },
-    [CHAT_STAGES.ASK_REFUNDABLE]: {
-      title: "Agent Refund Policy Explanation"
-    },
-    [CHAT_STAGES.SHOW_PRODUCTS]: {
-      title: "Agent Product Recommendation Engine"
-    },
-    [CHAT_STAGES.ASK_PAYMENT_METHOD]: {
-      title: "Agent Payment Processing Setup"
-    },
-    [CHAT_STAGES.CONFIRM_ORDER]: {
-      title: "Agent Order Validation & Confirmation"
-    },
-    [CHAT_STAGES.ORDER_COMPLETE]: {
-      title: "Agent Order Completion Processing"
-    },
-    [CHAT_STAGES.ASK_DISPUTE_REASON]: {
-      title: "Agent Dispute Analysis & Classification"
-    },
-    [CHAT_STAGES.REQUEST_EVIDENCE]: {
-      title: "Agent Evidence Collection Workflow"
-    },
-    [CHAT_STAGES.SHOW_RESOLUTION]: {
-      title: "Agent Resolution Algorithm Execution"
-    },
-    [CHAT_STAGES.DISPUTE_CLOSED]: {
-      title: "Agent Case Closure Processing"
-    },
-    [CHAT_STAGES.ESCALATE_DISPUTE]: {
-      title: "Agent Human Escalation Trigger"
-    },
-    [CHAT_STAGES.GENERAL]: {
-      title: "Agent General Assistant Mode"
-    }
-  }
-};
-
-// Get bubble details based on message type and stage
-export const getBubbleDetails = (type, stage) => {
-  const defaultDetails = { text: "", tags: [] };
-  return BUBBLE_DETAILS_CONFIG[type]?.[stage] || defaultDetails;
-};
-
-// Get behind the scenes info based on message type and stage  
-export const getBehindTheScenes = (type, stage) => {
-  const defaultBehindScenes = { title: "Message Processing" };
-  return BEHIND_THE_SCENES_CONFIG[type]?.[stage] || defaultBehindScenes;
-};

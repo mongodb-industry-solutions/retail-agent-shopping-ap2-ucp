@@ -109,7 +109,7 @@ const TestPage = () => {
 
   return (
     <div className="min-h-screen p-6 bg-gray-50">
-      <div className="max-w-4xl mx-auto">
+      <div className=" mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">Shopping API Test Interface</h1>
         
         <div className="space-y-6">
