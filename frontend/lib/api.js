@@ -1,9 +1,9 @@
 import store from '@/redux/store';
 import { setSessionInitializationError, setSessionId, setAgentThinking } from '@/redux/slices/MandateLedgerSlice';
 import { addUserMessage, addAgentMessage, setSessionIdToInitialUserMessage } from '@/redux/slices/GlobalSlice';
-import { getChatOptions, getNextStage, getBubbleDetails, getBehindTheScenes, INITIAL_USER_MESSAGE, CHAT_STAGES } from './chatOptions';
+import { getChatOptions, getNextStage, INITIAL_USER_MESSAGE, CHAT_STAGES } from './chatOptions';
 import { getDemoSessionId, getCurrentStage } from './helpers';
-import { USER_ROLE, AGENT_ROLE } from './constants/messages';
+import { USER_ROLE, AGENT_ROLE, getBubbleDetails, getBehindTheScenes } from './constants/messages';
 
 export async function getMandateLedgerServiceHealthAPI() {
   const response = await fetch(`/api/mandateLedgerServiceHealth`, {
@@ -20,7 +20,6 @@ export async function getMandateLedgerServiceHealthAPI() {
     };
   }
   let data = await response.json();
-  console.log("getMandateLedgerServiceHealth res", data);
   return data;
 }
 
@@ -78,7 +77,6 @@ export async function startShoppingSessionAPI(journeyId) {
   }
 
   const data = await response.json();
-  console.log("startShoppingSession res", data);
 
   // Store session data in Redux
   if (journeyId && data.session_id) {
@@ -185,7 +183,6 @@ export async function chatWithShoppingAgentAPI(journeyId, message, selectedOptio
   }
 
   const data = await response.json();
-  console.log("chatWithShoppingAgent res", data);
   
   // Process successful response
   if (journeyId && sessionId) {
@@ -198,10 +195,9 @@ export async function chatWithShoppingAgentAPI(journeyId, message, selectedOptio
     // Determine next stage based on selected option ID and journey type
     const nextStage = getNextStage(journeyId, selectedOptionId);
     
-    // Determine context for nested options (e.g., coffee_maker for PROVIDE_INTENT_DETAILS)
+    // Determine context for nested options (e.g., select_google_wallet for select_paypal)
     let context = null;
-    if (nextStage === CHAT_STAGES.PROVIDE_INTENT_DETAILS) {
-      // For PROVIDE_INTENT_DETAILS, use the current selectedOptionId as context
+    if (nextStage === CHAT_STAGES.USER_CREDENTIALS_WALLET_2) {
       context = selectedOptionId;
     }
     
