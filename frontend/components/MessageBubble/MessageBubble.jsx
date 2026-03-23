@@ -31,14 +31,13 @@ const MessageBubble = ({message, isLatest, onOptionClick}) => {
       {isAgent && (
         <div className="agentHeader">
           <img
-            src="/icons/coachGTM_Headshot.png"
+            src="/icons/ShoppingAgentAP2chatFlow.png"
             className="agentImage"
             alt="Agent headshot"
           />
           <Subtitle className="agentPrefix">Agent's response</Subtitle>
         </div>
       )}
-
       {/* Message bubble with conditional styling */}
       <div
         className={`speechBubble d-flex flex-col ${isUser ? "userBubble" : "agentBubble"}`}
@@ -47,7 +46,6 @@ const MessageBubble = ({message, isLatest, onOptionClick}) => {
           ...(isSelectedMessage == true ? { 
             border: `3px solid #00ff00`,
             boxShadow: `0 0 12px rgba(0, 255, 0, 0.5)`,
-            //backgroundColor: isUser ? '#004d00' : '#ffffcc',
             transform: 'scale(1.02)'
           } : {})
         }}
@@ -58,9 +56,8 @@ const MessageBubble = ({message, isLatest, onOptionClick}) => {
         >
           {messageContent}
         </Body>
-
         {/* Message details section */}
-        {(behindTheScenes || bubbleDetails) && (
+        {behindTheScenes  && (
           <>
             <hr className="m-0" />
           <div
@@ -116,7 +113,6 @@ const MessageBubble = ({message, isLatest, onOptionClick}) => {
           </>
         )}
       </div>
-
       {/* Message options - only show for latest message with options */}
       {isLatest && messageOptions && (
         <div className="d-flex flex-row flex-wrap gap-3">

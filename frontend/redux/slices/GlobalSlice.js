@@ -7,7 +7,7 @@ const GlobalSliceSlice = createSlice({
   initialState: {
     isGuidedSliceOpened: true,
     followLatestMessage: true,
-    sidebarWidth: 420,
+    sidebarWidth: 500,
     selectedMessage: null,
     startedJourneys: [],
     messages: {
@@ -45,8 +45,8 @@ const GlobalSliceSlice = createSlice({
         sessionId,
         userId,
         stage: stage || 'initial',
-        bubbleDetails: bubbleDetails || { text: "", tags: [] },
-        behindTheScenes: behindTheScenes || { title: "" }
+        bubbleDetails: bubbleDetails || null,
+        behindTheScenes: behindTheScenes ||null
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(userMessage);
@@ -66,8 +66,8 @@ const GlobalSliceSlice = createSlice({
         userId,
         messageOptions: messageOptions || [],
         stage: stage || 'general',
-        bubbleDetails: bubbleDetails || { text: "", tags: [] },
-        behindTheScenes: behindTheScenes || { title: "" }
+        bubbleDetails: bubbleDetails || null,
+        behindTheScenes: behindTheScenes || null
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(agentMessage);

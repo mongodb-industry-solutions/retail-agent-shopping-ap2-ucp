@@ -7,10 +7,10 @@ export const AGENT_ROLE = 'agent';
 // Bubble details configuration: content displayed at bottom of message bubbles
 const BUBBLE_DETAILS_CONFIG = {
   user: {
-    [CHAT_STAGES.INITIAL]: {
-      text: "Starting your shopping journey",
-      tags: ["user-intent", "session-start"]
-    },
+    // [CHAT_STAGES.INITIAL]: {
+    //   text: "Starting your shopping journey",
+    //   tags: ["user-intent", "session-start"]
+    // },
     [CHAT_STAGES.ASK_INTENT]: {
       text: "Sharing shopping intent", 
       tags: ["user-intent", "product-interest"]
@@ -66,8 +66,8 @@ const BUBBLE_DETAILS_CONFIG = {
   },
   agent: {
     [CHAT_STAGES.ASK_INTENT]: {
-      text: "AI gathering shopping preferences",
-      tags: ["ai-inquiry", "intent-collection"]
+      text: "Meet your shopping agent and how it securely connects across the agentic commerce landscape to find the best offers for you.", 
+      tags: ["Shopping Agent", "UCP", "AP2"]
     },
     [CHAT_STAGES.CONFIRM_INTENT]: {
       text: "Get user confirmation before creating a mandate.",
@@ -123,9 +123,9 @@ const BUBBLE_DETAILS_CONFIG = {
 // Behind the scenes configuration: content for sidebar when message is clicked
 const BEHIND_THE_SCENES_CONFIG = {
   user: {
-    [CHAT_STAGES.INITIAL]: {
-      title: "User Session Initialization"
-    },
+    // [CHAT_STAGES.INITIAL]: {
+    //   title: "User Session Initialization"
+    // },
     [CHAT_STAGES.ASK_INTENT]: {
       title: "User Intent Declaration"
     },
@@ -167,9 +167,9 @@ const BEHIND_THE_SCENES_CONFIG = {
     }
   },
   agent: {
-    [CHAT_STAGES.INITIAL]: {
-      title: "Agent Welcome & Options Presentation"
-    },
+    // [CHAT_STAGES.INITIAL]: {
+    //   title: "Agent Welcome & Options Presentation"
+    // },
     [CHAT_STAGES.ASK_INTENT]: {
       title: "Agent Intent Collection Workflow"
     },
@@ -220,6 +220,5 @@ export const getBubbleDetails = (type, stage) => {
 
 // Get behind the scenes info based on message type and stage  
 export const getBehindTheScenes = (type, stage) => {
-  const defaultBehindScenes = { title: "Message Processing" };
-  return BEHIND_THE_SCENES_CONFIG[type]?.[stage] || defaultBehindScenes;
+  return BEHIND_THE_SCENES_CONFIG[type]?.[stage];
 };

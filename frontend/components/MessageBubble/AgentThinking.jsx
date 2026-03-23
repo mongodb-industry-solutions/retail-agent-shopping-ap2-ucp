@@ -7,7 +7,7 @@ const AgentThinking = () => {
     <div>
       <div className="agentHeader">
         <img
-          src="/icons/coachGTM_Headshot.png"
+          src="/icons/ShoppingAgentAP2chatFlow.png"
           className="agentImage"
           alt="Agent headshot"
         />
