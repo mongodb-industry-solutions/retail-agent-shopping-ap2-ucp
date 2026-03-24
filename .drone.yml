@@ -68,7 +68,27 @@ steps:
       event:
         - push
 
-  # Step 4: Deploy combined pod (frontend + backend + mandate-ledger sidecars) to Kubernetes
+  # Step 4: Build and publish assistant service Docker image
+  - name: publish-assistant
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/retail-agent-shopping-ap2-ucp-assistant
+      dockerfile: assistant/Dockerfile
+      context: assistant
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  # Step 5: Deploy combined pod (frontend + backend + mandate-ledger + assistant sidecars) to Kubernetes
   - name: deploy-combined-staging
     image: public.ecr.aws/kanopy/drone-helm:v3
     settings:
@@ -81,6 +101,7 @@ steps:
       values:
         - "sidecarContainers[0].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-backend:git-${DRONE_COMMIT_SHA:0:7}"
         - "sidecarContainers[1].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-mandate-ledger:git-${DRONE_COMMIT_SHA:0:7}"
+        - "sidecarContainers[2].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-assistant:git-${DRONE_COMMIT_SHA:0:7}"
         - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
         - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-frontend"
         - "ingress.enabled=true"
@@ -101,6 +122,11 @@ steps:
         - "sidecarContainers[1].resources.limits.memory=512Mi"
         - "sidecarContainers[1].resources.requests.cpu=100m"
         - "sidecarContainers[1].resources.requests.memory=256Mi"
+        # Assistant sidecar resources (reduced defaults for demos - increase if OOMKilled)
+        - "sidecarContainers[2].resources.limits.cpu=500m"
+        - "sidecarContainers[2].resources.limits.memory=1Gi"
+        - "sidecarContainers[2].resources.requests.cpu=100m"
+        - "sidecarContainers[2].resources.requests.memory=512Mi"
       api_server: https://api.staging.corp.mongodb.com
       kubernetes_token:
         from_secret: staging_kubernetes_token
@@ -182,7 +208,27 @@ steps:
       event:
         - push
 
-  # Step 4: Deploy combined pod to production
+  # Step 4: Build and publish assistant service Docker image
+  - name: publish-assistant-prod
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/retail-agent-shopping-ap2-ucp-assistant-prod
+      dockerfile: assistant/Dockerfile
+      context: assistant
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  # Step 5: Deploy combined pod to production
   - name: deploy-combined-prod
     image: public.ecr.aws/kanopy/drone-helm:v3
     settings:
@@ -195,6 +241,7 @@ steps:
       values:
         - "sidecarContainers[0].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-backend-prod:git-${DRONE_COMMIT_SHA:0:7}"
         - "sidecarContainers[1].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-mandate-ledger-prod:git-${DRONE_COMMIT_SHA:0:7}"
+        - "sidecarContainers[2].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-assistant-prod:git-${DRONE_COMMIT_SHA:0:7}"
         - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
         - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-frontend-prod"
         - "ingress.enabled=true"
@@ -215,6 +262,11 @@ steps:
         - "sidecarContainers[1].resources.limits.memory=512Mi"
         - "sidecarContainers[1].resources.requests.cpu=150m"
         - "sidecarContainers[1].resources.requests.memory=256Mi"
+        # Assistant sidecar resources (production - slightly higher for reliability)
+        - "sidecarContainers[2].resources.limits.cpu=500m"
+        - "sidecarContainers[2].resources.limits.memory=512Mi"
+        - "sidecarContainers[2].resources.requests.cpu=150m"
+        - "sidecarContainers[2].resources.requests.memory=256Mi"
       api_server: https://api.prod.corp.mongodb.com
       kubernetes_token:
         from_secret: prod_kubernetes_token
