@@ -5,13 +5,13 @@ WORKDIR /app
 # uv installation
 RUN pip install uv
 
-# Copy the backend code (context is already backend/ in Kanopy)
+# Copy the assistant service source code into the image
 COPY . .
 
 # Install dependencies with uv
 RUN uv sync --no-dev
 
-# Expose main FastAPI port and all A2A agent ports
+# Expose the assistant's FastAPI port
 EXPOSE 8005
 
 CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8005"]

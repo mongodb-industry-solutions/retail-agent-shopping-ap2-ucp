@@ -41,8 +41,10 @@ class MongoDBConnector:
         result = collection.insert_many(documents)
         return result.inserted_ids
 
-    def find(self, collection_name, query={}, projection=None):
+    def find(self, collection_name, query=None, projection=None):
         """Retrieve documents from a collection."""
+        if query is None:
+            query = {}
         collection = self.get_collection(collection_name)
         return list(collection.find(query, projection))
 
