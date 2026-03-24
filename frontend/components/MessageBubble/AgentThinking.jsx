@@ -1,15 +1,17 @@
 import React from "react";
 import styles from "./MessageBubble.module.css";
 import { Body, Subtitle } from "@leafygreen-ui/typography";
+import Image from "next/image";
 
 const AgentThinking = () => {
   return (
     <div>
       <div className="agentHeader">
-        <img
-          src="/icons/coachGTM_Headshot.png"
-          className="agentImage"
+        <Image
+          src="/icons/ShoppingAgentAP2chatFlow.png"
           alt="Agent headshot"
+          width={60}
+          height={60}
         />
         <Subtitle className="agentPrefix">Agent's response</Subtitle>
       </div>
