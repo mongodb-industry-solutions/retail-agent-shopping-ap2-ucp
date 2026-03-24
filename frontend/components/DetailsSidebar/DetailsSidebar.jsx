@@ -23,9 +23,10 @@ const DetailsSidebar = () => {
   const params = useParams();
   const { journeyId } = params;
   const sidebarWidth = useSelector((state) => state.Global.sidebarWidth);
-  const { behindTheScenes, type, stage } = useSelector(
+  const selectedMessage = useSelector(
     (state) => state.Global.selectedMessage,
   );
+  const { behindTheScenes, type, stage } = selectedMessage || {};
   const [isResizing, setIsResizing] = useState(false);
   const [isRowLayout, setIsRowLayout] = useState(false);
   const followLatestMessage = useSelector((state) => state.Global.followLatestMessage);
