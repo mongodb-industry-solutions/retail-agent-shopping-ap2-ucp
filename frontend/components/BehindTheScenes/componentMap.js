@@ -3,11 +3,12 @@ import AskIntentStage from '@/components/BehindTheScenes/straightforward/AskInte
 
 // Import shared styles
 import './behindTheScenes.css';
+import { CHAT_STAGES, STAGE_OPTIONS } from '@/lib/chatOptions';
 
 // Component mapping: journey -> stage -> component
 const componentMap = {
   straightforward: {
-    ask_intent: AskIntentStage,
+    [CHAT_STAGES.ASK_INTENT]: AskIntentStage,
     // Add more stages as they are implemented:
     // confirm_intent: ConfirmIntentStage,
     // show_products: ShowProductsStage,

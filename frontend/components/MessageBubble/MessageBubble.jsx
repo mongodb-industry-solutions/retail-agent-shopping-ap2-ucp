@@ -9,6 +9,7 @@ import Icon from "@leafygreen-ui/icon";
 import { useDispatch, useSelector } from "react-redux";
 import { AGENT_ROLE, USER_ROLE } from "@/lib/constants/messages";
 import { setSelectedMessage } from "@/redux/slices/GlobalSlice";
+import Image from "next/image";
 
 const MessageBubble = ({message, isLatest, onOptionClick}) => {
   const {
@@ -30,10 +31,11 @@ const MessageBubble = ({message, isLatest, onOptionClick}) => {
       {/* Agent header - only show for agent messages */}
       {isAgent && (
         <div className="agentHeader">
-          <img
+          <Image
             src="/icons/ShoppingAgentAP2chatFlow.png"
-            className="agentImage"
             alt="Agent headshot"
+            width={60}
+            height={60}
           />
           <Subtitle className="agentPrefix">Agent's response</Subtitle>
         </div>

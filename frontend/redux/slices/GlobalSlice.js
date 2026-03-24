@@ -46,7 +46,7 @@ const GlobalSliceSlice = createSlice({
         userId,
         stage: stage || 'initial',
         bubbleDetails: bubbleDetails || null,
-        behindTheScenes: behindTheScenes ||null
+        behindTheScenes: behindTheScenes || null
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(userMessage);

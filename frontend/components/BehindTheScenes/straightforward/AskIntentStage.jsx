@@ -69,6 +69,7 @@ const AskIntentStage = ({ type }) => {
               <a
                 href="https://developers.googleblog.com/under-the-hood-universal-commerce-protocol-ucp/"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 Universal Commerce Protocol
               </a>
@@ -80,7 +81,7 @@ const AskIntentStage = ({ type }) => {
               to discover, through a standard <code>well-known endpoint</code>,
               what a merchant supports: commerce services, checkout
               capabilities, payment options, and secure{" "}
-              <a href="https://ap2-protocol.org/" target="_blank">
+              <a href="https://ap2-protocol.org/" target="_blank" rel="noopener noreferrer">
                 AP2 protocol
               </a>
               .
