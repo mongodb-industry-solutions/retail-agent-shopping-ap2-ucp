@@ -179,7 +179,7 @@ sidecarContainers:
             name: retail-ap2
             key: MONGODB_URI
 
-      - name: MONGODB_DATABASE
+      - name: DATABASE_NAME
         valueFrom:
           secretKeyRef:
             name: retail-ap2
