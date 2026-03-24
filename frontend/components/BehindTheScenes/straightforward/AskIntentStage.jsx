@@ -1,4 +1,4 @@
-import { USER_ROLE } from "@/lib/constants/messages";
+import { AGENT_ROLE, USER_ROLE } from "@/lib/constants/messages";
 import React from "react";
 import ImageContainer from "../ImageContainer";
 import { Code, Panel } from "@leafygreen-ui/code";
@@ -42,9 +42,7 @@ const wellKnownEndpointExample = {
 const AskIntentStage = ({ type }) => {
   return (
     <div>
-      {type === USER_ROLE ? (
-        <div>USER</div>
-      ) : (
+      {type === AGENT_ROLE ? (
         <div>
           <ImageContainer
             src="/BehindTheScenes/straightforward/askIntentStage_agent_01.svg"
@@ -81,20 +79,28 @@ const AskIntentStage = ({ type }) => {
               to discover, through a standard <code>well-known endpoint</code>,
               what a merchant supports: commerce services, checkout
               capabilities, payment options, and secure{" "}
-              <a href="https://ap2-protocol.org/" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://ap2-protocol.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 AP2 protocol
               </a>
               .
             </p>
           </div>
 
-          <Code 
-            style={{borderRadius: '0px'}} copyable="true" showLineNumbers expandable darkMode={true} 
-            language="json" 
+          <Code
+            style={{ borderRadius: "0px" }}
+            copyable="true"
+            showLineNumbers
+            expandable
+            darkMode={true}
+            language="json"
             collapsedLines={21}
             highlightLines={[15, 16, 17, 18, 19]}
             panel={<Panel title="Well-Known Endpoint Response" />}
-        >
+          >
             {JSON.stringify(wellKnownEndpointExample, null, 2)}
           </Code>
           <div className="info">
@@ -106,6 +112,8 @@ const AskIntentStage = ({ type }) => {
             </p>
           </div>
         </div>
+      ) : (
+        <div>TODO</div>
       )}
     </div>
   );
