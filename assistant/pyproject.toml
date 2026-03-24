@@ -1,7 +1,7 @@
 [project]
-name = "your-virtual-env"
+name = "assistant-service"
 version = "0.1.0"
-description = "Your Description"
+description = "Provides current step and reply options based on latest agent message."
 authors = [{name = "Assistant", email = "devnull@example.com"}]
 requires-python = ">=3.13,<3.14"
 dependencies = [
