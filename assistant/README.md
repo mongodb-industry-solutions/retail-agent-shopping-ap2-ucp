@@ -32,6 +32,7 @@ Before you begin, ensure you have met the following requirements:
    ```toml
    description = "Your Description"
    authors = ["Your Name <you@example.com>"]
+   ```
 2. Open the project in your preferred IDE (the standard for the team is Visual Studio Code).
 3. Open the Terminal within Visual Studio Code.
 4. Ensure you are in the root project directory where the `makefile` is located.
