@@ -1,15 +1,46 @@
-import { USER_ROLE } from "@/lib/const/bubbleDetails";
-import React from "react";
+import React from 'react'
 import ImageContainer from "../ImageContainer";
 import { Code, Panel } from "@leafygreen-ui/code";
+import { AGENT_ROLE } from '@/lib/const/bubbleDetails';
 
+const wellKnownEndpointExample = {
+  name: "Amazon Demo Store",
+  ucp_version: "2026-01-11",
 
-const AskIntentStage = ({ type }) => {
-  return (
-    <div>
-      {type === USER_ROLE ? (
-        <div>USER</div>
-      ) : (
+  services: {
+    shopping: {
+      transport: "rest",
+      endpoint: "https://amazon.example.com/api/ucp",
+    },
+  },
+
+  capabilities: [
+    {
+      name: "dev.ucp.shopping.checkout",
+      version: "2026-01-11",
+    },
+    {
+      name: "dev.ucp.shopping.ap2_mandate",
+      version: "2026-01-11",
+      extends: "dev.ucp.shopping.checkout",
+    },
+  ],
+
+  payment_handlers: ["CARD", "GOOGLE_PAY"],
+
+  signing_keys: [
+    {
+      kid: "amazon-key-2026",
+      kty: "EC",
+      crv: "P-256",
+      x: "abc123...",
+      y: "def456...",
+    },
+  ],
+};
+
+const ShoppingAgentIntroductionStep = ({ type }) => {
+  if (type === AGENT_ROLE) return (
         <div>
           <ImageContainer
             src="/BehindTheScenes/straightforward/askIntentStage_agent_01.svg"
@@ -70,10 +101,8 @@ const AskIntentStage = ({ type }) => {
               supported, move into an auditable transaction flow.
             </p>
           </div>
-        </div>
-      )}
-    </div>
-  );
-};
+        </div>  )
+    return null;
+}
 
-export default AskIntentStage;
+export default ShoppingAgentIntroductionStep

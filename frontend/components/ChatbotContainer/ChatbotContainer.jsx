@@ -4,16 +4,17 @@ import MessageBubble from "../MessageBubble/MessageBubble";
 import { useSelector } from "react-redux";
 import { chatWithShoppingAgentAPI } from "@/lib/api";
 import AgentThinking from "../MessageBubble/AgentThinking";
+import { stepHasBehindTheScenes } from "../BehindTheScenes/componentMap";
 
 const ChatbotContainer = ({ journeyId }) => {
   const messages = useSelector(state => state.Global.messages[journeyId]) || [];  
   const agentIsThinking = useSelector(state => state.MandateLedger.journeysStatus[journeyId]?.agentIsThinking) || false;
   const messagesEndRef = useRef(null);
 
-  const handleOptionClick = async (optionId, nextMessageId, optionLabel) => {
+  const handleOptionClick = async (option) => {
     // Call the API with the selected option
     try {
-      await chatWithShoppingAgentAPI(journeyId, optionLabel, optionId);
+      await chatWithShoppingAgentAPI(journeyId, option);
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -41,6 +42,7 @@ const ChatbotContainer = ({ journeyId }) => {
           onOptionClick={handleOptionClick}
           isLatest={index === messages.length - 1}
           message={message}
+          hasBehindTheScenes={stepHasBehindTheScenes(journeyId, message.step)}
         />
       )) : (
         <div style={{ padding: '20px', textAlign: 'center', opacity: 0.7 }}>
