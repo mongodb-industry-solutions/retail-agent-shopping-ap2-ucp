@@ -46,7 +46,6 @@ const ShoppingAgentIntroductionStep = ({ type }) => {
             src="/BehindTheScenes/straightforward/askIntentStage_agent_01.svg"
             alt="Meet Shopping agent"
           />
-
           <div className="info">
             <p>
               The agent you interact with to coordinate your purchase is what we
