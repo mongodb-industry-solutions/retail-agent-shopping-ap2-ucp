@@ -17,6 +17,12 @@ import {
   setSidebarWidth,
   setSelectedMessage,
 } from "@/redux/slices/GlobalSlice";
+import ShoppingAgentIntroductionStep from "../BehindTheScenes/straightforward/ShoppingAgentIntroductionStep";
+import { AGENT_ROLE } from "@/lib/const/bubbleDetails";
+import MerchantAgentIntroductionStep from "../BehindTheScenes/straightforward/MerchantAgentIntroductionStep";
+import MandatesCreatedStep from "../BehindTheScenes/straightforward/MandatesCreatedStep";
+import CartMandateSignedPaymentCredentialsStep from "../BehindTheScenes/straightforward/CartMandateSignedPaymentCredentialsStep";
+import PaymentCompletedStep from "../BehindTheScenes/straightforward/PaymentCompletedStep";
 
 const DetailsSidebar = () => {
   const dispatch = useDispatch();

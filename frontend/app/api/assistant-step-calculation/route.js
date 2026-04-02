@@ -13,19 +13,10 @@ export async function POST(request) {
       );
     }
 
-    return NextResponse.json({
-      workflowId: "straightforward",
-      stepId: "shopping-agent-introduction",
-      answers: [
-        "I'm looking for a coffee maker, specifically a glass French press. I don't have a preferred merchant, but I'd like it to be refundable. Show me some options.",
-        "I'm looking for gaming headphones with noise cancellation. They don't need to be refundable, but I'd like them from the merchant Amazon. Show me some options.",
-      ],
-    });
-
     const backendUrl =
       process.env.NEXT_PUBLIC_ASSISTANT_ENDPOINT || "http://localhost:8005";
 
-    const response = await fetch(`${backendUrl}`, {
+    const response = await fetch(`${backendUrl}/api/process`, {
       // TODO UPDATE
       method: "POST",
       headers: {

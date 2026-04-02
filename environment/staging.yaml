@@ -31,6 +31,7 @@ envSecrets:
   # Service Configuration
   SERVICE_NAME: retail-ap2
   ENVIRONMENT: retail-ap2
+  NEXT_PUBLIC_ASSISTANT_ENDPOINT: retail-ap2
 
 ## should be used in case of multiple sidecar containers
 sidecarContainers:
