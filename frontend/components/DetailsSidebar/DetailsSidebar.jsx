@@ -8,7 +8,7 @@ import IconButton from "@leafygreen-ui/icon-button";
 import {Toggle} from "@leafygreen-ui/toggle";
 import { setFollowLatestMessage } from "@/redux/slices/GlobalSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { getStageComponent } from "@/components/BehindTheScenes/componentMap";
+import { getStepComponent } from "@/components/BehindTheScenes/componentMap";
 import StageNotImplementedFallback from "./StageNotImplementedFallback";
 import EmptyStateMessage from "./EmptyStateMessage";
 
@@ -17,6 +17,12 @@ import {
   setSidebarWidth,
   setSelectedMessage,
 } from "@/redux/slices/GlobalSlice";
+import ShoppingAgentIntroductionStep from "../BehindTheScenes/straightforward/ShoppingAgentIntroductionStep";
+import { AGENT_ROLE } from "@/lib/const/bubbleDetails";
+import MerchantAgentIntroductionStep from "../BehindTheScenes/straightforward/MerchantAgentIntroductionStep";
+import MandatesCreatedStep from "../BehindTheScenes/straightforward/MandatesCreatedStep";
+import CartMandateSignedPaymentCredentialsStep from "../BehindTheScenes/straightforward/CartMandateSignedPaymentCredentialsStep";
+import PaymentCompletedStep from "../BehindTheScenes/straightforward/PaymentCompletedStep";
 
 const DetailsSidebar = () => {
   const dispatch = useDispatch();
@@ -26,25 +32,25 @@ const DetailsSidebar = () => {
   const selectedMessage = useSelector(
     (state) => state.Global.selectedMessage,
   );
-  const { behindTheScenes, type, stage } = selectedMessage || {};
+  const { type, step } = selectedMessage || {};
   const [isResizing, setIsResizing] = useState(false);
   const [isRowLayout, setIsRowLayout] = useState(false);
   const followLatestMessage = useSelector((state) => state.Global.followLatestMessage);
 
-  // Render behind the scenes component based on stage and journey
+  // Render behind the scenes component based on step and journey
   const renderBehindTheScenesComponent = () => {
-    if (!behindTheScenes || !stage || !journeyId) {
+    if (!step || !journeyId) {
       return <EmptyStateMessage />;
     }
     
-    const StageComponent = getStageComponent(journeyId, stage);
+    const StageComponent = getStepComponent(journeyId, step);
     
     if (StageComponent) {
-      return <StageComponent type={type} data={behindTheScenes} />;
+      return <StageComponent type={type} />;
     }
     
     // Fallback if component not found
-    return <StageNotImplementedFallback stage={stage} behindTheScenes={behindTheScenes} />;
+    return <StageNotImplementedFallback step={step} />;
   };
 
   const handleMouseDown = () => {
