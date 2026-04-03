@@ -153,7 +153,7 @@ class MandateLedgerClient:
         if version:
             url += f"?version={version}"
 
-        logger.info(f"Getting mandate: {entity_id} (version: {version or 'latest'})")
+        logger.debug(f"Getting mandate: {entity_id} (version: {version or 'latest'})")
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             response = await client.get(url, headers=self._get_headers())
