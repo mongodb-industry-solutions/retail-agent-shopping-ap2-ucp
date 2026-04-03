@@ -100,8 +100,8 @@ async def find_items_workflow(
         metadata={
             "source": "shopping_agent",
             "context_id": updater.context_id,
-            "user_id": user_id or "not found 5",
-            "session_id": session_id or "not found 5",
+            "user_id": user_id or None,
+            "session_id": session_id or None,
         }
     )
 
@@ -232,8 +232,8 @@ async def _create_and_add_cart_mandate_artifact(
             "source": "merchant_agent",
             "context_id": updater.context_id,
             "cart_id": cart_mandate.contents.id,
-            "user_id": user_id or "not found 6",
-            "session_id": session_id or "not found 6",
+            "user_id": user_id or None,
+            "session_id": session_id or None,
         }
     )
 

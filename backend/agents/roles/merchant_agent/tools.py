@@ -181,8 +181,8 @@ async def update_cart(
                 "context_id": updater.context_id,
                 "cart_id": cart_id,
                 "updated_with_shipping": True,
-                "user_id": user_id or "not found",
-                "session_id": session_id or "not found",
+                "user_id": user_id or None,
+                "session_id": session_id or None,
             }
         )
 
@@ -225,8 +225,8 @@ async def update_cart(
                 "cart_id": cart_id,
                 "updated_with_shipping": True,
                 "replaces_entity_id": entity_id,
-                "user_id": user_id or "not found",
-                "session_id": session_id or "not found",
+                "user_id": user_id or None,
+                "session_id": session_id or None,
             }
         )
 
@@ -323,8 +323,8 @@ async def _create_payment_record(
       metadata={
           "context_id": updater.context_id,
           "payment_mandate_id": payment_mandate_id,
-          # "user_id": user_id or "not found 1",
-          # "session_id": session_id or "not found 1",
+          # "user_id": user_id or None,
+          # "session_id": session_id or None,
       }
   )
   return result
@@ -399,8 +399,8 @@ async def initiate_payment(
             "source": "shopping_agent",
             "context_id": updater.context_id,
             "payment_mandate_id": payment_mandate_id,
-            "user_id": user_id or "not found",
-            "session_id": session_id or "not found",
+            "user_id": user_id or None,
+            "session_id": session_id or None,
         }
     )
 
