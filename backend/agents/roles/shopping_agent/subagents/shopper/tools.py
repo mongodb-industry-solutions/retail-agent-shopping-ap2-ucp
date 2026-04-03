@@ -84,6 +84,10 @@ async def find_products(
   Raises:
     RuntimeError: If the merchant agent fails to provide products.
   """
+  import logging
+  logger = logging.getLogger(__name__)
+  logger.info(f"🔥 FLOW_DEBUG: find_products called - this should trigger A2A message to merchant agent")
+  
   intent_mandate = tool_context.state["intent_mandate"]
   if not intent_mandate:
     raise RuntimeError("No IntentMandate found in tool context state.")
@@ -100,6 +104,16 @@ async def find_products(
   risk_data = _collect_risk_data(tool_context)
   if not risk_data:
     raise RuntimeError("No risk data found in tool context state.")
+
+  user_id = getattr(tool_context, 'user_id', None)
+  session = getattr(tool_context, 'session', None)
+  session_id = getattr(session, 'id', None) if session else None
+  logger.info(f"SESSION_DEBUG: Captured user_id={user_id}, session_id={session_id}")
+
+  # Store in state so other tools (update_cart, initiate_payment) can access them
+  tool_context.state["user_id"] = user_id
+  tool_context.state["session_id"] = session_id
+
   message = (
       A2aMessageBuilder()
       .add_text("Find products that match the user's IntentMandate.")
@@ -108,11 +122,17 @@ async def find_products(
       .add_data("risk_data", risk_data)
       .add_data("debug_mode", debug_mode)
       .add_data("shopping_agent_id", "trusted_shopping_agent")
+      .add_data("user_id", user_id)
+      .add_data("session_id", session_id)
       .build()
   )
+
+  logger.info(f"🔥 FLOW_DEBUG: About to send A2A message to merchant agent")
   task = await merchant_agent_client.send_a2a_message(message)
+  logger.info(f"🔥 FLOW_DEBUG: A2A message sent! Task status: {task.status.state}, context_id: {task.context_id}")
 
   if task.status.state != "completed":
+    logger.error(f"🔥 FLOW_DEBUG: A2A task FAILED! Status: {task.status}")
     raise RuntimeError(f"Failed to find products: {task.status}")
 
   tool_context.state["shopping_context_id"] = task.context_id

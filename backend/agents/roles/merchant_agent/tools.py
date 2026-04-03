@@ -166,6 +166,9 @@ async def update_cart(
             "signed_at": datetime.now(timezone.utc).isoformat()
         }
 
+        user_id = message_utils.find_data_part("user_id", data_parts)
+        session_id = message_utils.find_data_part("session_id", data_parts)
+
         ledger_entry = await ledger_client.create_mandate(
             mandate_type="CartMandate",
             mandate_data=cart_mandate.model_dump(),
@@ -177,7 +180,9 @@ async def update_cart(
                 "source": "merchant_agent",
                 "context_id": updater.context_id,
                 "cart_id": cart_id,
-                "updated_with_shipping": True
+                "updated_with_shipping": True,
+                "user_id": user_id or "not found",
+                "session_id": session_id or "not found",
             }
         )
 
@@ -203,6 +208,9 @@ async def update_cart(
             "signed_at": datetime.now(timezone.utc).isoformat()
         }
 
+        user_id = message_utils.find_data_part("user_id", data_parts)
+        session_id = message_utils.find_data_part("session_id", data_parts)
+
         # For now, create a new entry (ideally should be PUT to update)
         ledger_entry = await ledger_client.create_mandate(
             mandate_type="CartMandate",
@@ -216,7 +224,9 @@ async def update_cart(
                 "context_id": updater.context_id,
                 "cart_id": cart_id,
                 "updated_with_shipping": True,
-                "replaces_entity_id": entity_id
+                "replaces_entity_id": entity_id,
+                "user_id": user_id or "not found",
+                "session_id": session_id or "not found",
             }
         )
 
@@ -253,7 +263,9 @@ async def update_cart(
 async def _create_payment_record(
     updater: TaskUpdater,
     payment_mandate: PaymentMandate,
-    transaction_id: str
+    transaction_id: str,
+    user_id: str | None = None,
+    session_id: str | None = None,
 ) -> dict:
   """Create payment record in payments collection using cached signatures.
 
@@ -310,7 +322,9 @@ async def _create_payment_record(
       payment_method_type="CARD",
       metadata={
           "context_id": updater.context_id,
-          "payment_mandate_id": payment_mandate_id
+          "payment_mandate_id": payment_mandate_id,
+          # "user_id": user_id or "not found 1",
+          # "session_id": session_id or "not found 1",
       }
   )
   return result
@@ -349,6 +363,10 @@ async def initiate_payment(
     await _fail_task(updater, "Missing risk_data.")
     return
 
+  # Extract user_id and session_id before the try block so they're always available
+  user_id = message_utils.find_data_part("user_id", data_parts)
+  session_id = message_utils.find_data_part("session_id", data_parts)
+
   # Write PaymentMandate to Mandate Ledger Service
   from agents.common.mandate_ledger_client import MandateLedgerClient
   import os
@@ -369,6 +387,7 @@ async def initiate_payment(
 
     # Write PaymentMandate to ledger (status: "created")
     payment_mandate_id = payment_mandate.payment_mandate_contents.payment_mandate_id
+
     ledger_entry = await ledger_client.create_mandate(
         mandate_type="PaymentMandate",
         mandate_data=payment_mandate.model_dump(),
@@ -379,7 +398,9 @@ async def initiate_payment(
         metadata={
             "source": "shopping_agent",
             "context_id": updater.context_id,
-            "payment_mandate_id": payment_mandate_id
+            "payment_mandate_id": payment_mandate_id,
+            "user_id": user_id or "not found",
+            "session_id": session_id or "not found",
         }
     )
 
@@ -437,8 +458,9 @@ async def initiate_payment(
   # After payment processor responds, create payment record if successful
   if task.status.state == "completed":
     try:
-      payment_record = await _create_payment_record(updater, payment_mandate, transaction_id)
+      payment_record = await _create_payment_record(updater, payment_mandate, transaction_id, user_id, session_id)
 
+      payment_id = payment_record.get("payment_id") if payment_record else None
       # Add payment_id to the success message for the shopping agent
       success_message = updater.new_agent_message(
           parts=[

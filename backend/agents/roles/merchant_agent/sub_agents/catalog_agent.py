@@ -30,7 +30,8 @@ from a2a.types import Task
 from a2a.types import TextPart
 from google import genai
 from pydantic import ValidationError
-
+import logging
+logger = logging.getLogger(__name__)
 from .. import storage
 from agents.ap2.types.mandate import CART_MANDATE_DATA_KEY
 from agents.ap2.types.mandate import CartContents
@@ -53,11 +54,19 @@ async def find_items_workflow(
     current_task: Task | None,
 ) -> None:
   """Finds products that match the user's IntentMandate."""
+  logger.info(f"🔥 FLOW_DEBUG: find_items_workflow called in merchant agent - this should create mandates!")
+  logger.info(f"🔥 FLOW_DEBUG: context_id={updater.context_id}, data_parts count={len(data_parts)}")
+  
   llm_client = get_genai_client()
 
   intent_mandate = message_utils.parse_canonical_object(
       INTENT_MANDATE_DATA_KEY, data_parts, IntentMandate
   )
+
+  # Extract user_id and session_id from A2A data_parts (passed by shopping agent)
+  user_id = message_utils.find_data_part("user_id", data_parts)
+  session_id = message_utils.find_data_part("session_id", data_parts)
+  logger.info(f"SESSION_DEBUG: Extracted from A2A data_parts - user_id={user_id}, session_id={session_id}")
 
   # Extract signature from data_parts
   signature = message_utils.find_data_part("intent_signature", data_parts)
@@ -94,7 +103,9 @@ async def find_items_workflow(
         idempotency_key=f"intent_{updater.context_id}",
         metadata={
             "source": "shopping_agent",
-            "context_id": updater.context_id
+            "context_id": updater.context_id,
+            "user_id": user_id or "not found 5",
+            "session_id": session_id or "not found 5",
         }
     )
 
@@ -137,7 +148,7 @@ async def find_items_workflow(
     for item in items:
       item_count += 1
       await _create_and_add_cart_mandate_artifact(
-          item, item_count, current_time, updater
+          item, item_count, current_time, updater, user_id, session_id
       )
     risk_data = _collect_risk_data(updater)
     updater.add_artifact([
@@ -157,6 +168,8 @@ async def _create_and_add_cart_mandate_artifact(
     item_count: int,
     current_time: datetime,
     updater: TaskUpdater,
+    user_id: str | None = None,
+    session_id: str | None = None,
 ) -> None:
   """Creates a CartMandate and adds it as an artifact."""
   payment_request = PaymentRequest(
@@ -222,7 +235,9 @@ async def _create_and_add_cart_mandate_artifact(
         metadata={
             "source": "merchant_agent",
             "context_id": updater.context_id,
-            "cart_id": cart_mandate.contents.id
+            "cart_id": cart_mandate.contents.id,
+            "user_id": user_id or "not found 6",
+            "session_id": session_id or "not found 6",
         }
     )
 

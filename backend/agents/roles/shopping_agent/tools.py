@@ -77,6 +77,10 @@ async def update_cart(
       "signed_at": datetime.now(timezone.utc).isoformat()
   }
 
+  user_id = tool_context.state.get("user_id") or getattr(tool_context, 'user_id', None)
+  session = getattr(tool_context, 'session', None)
+  session_id = tool_context.state.get("session_id") or (getattr(session, 'id', None) if session else None)
+
   message = (
       A2aMessageBuilder()
       .set_context_id(tool_context.state["shopping_context_id"])
@@ -86,6 +90,8 @@ async def update_cart(
       .add_data("shipping_address", shipping_address)
       .add_data("shopping_agent_id", "trusted_shopping_agent")
       .add_data("debug_mode", debug_mode)
+      .add_data("user_id", user_id or "unknown")
+      .add_data("session_id", session_id or "unknown")
       .build()
   )
   task = await merchant_agent_client.send_a2a_message(message)
@@ -126,6 +132,10 @@ async def initiate_payment(tool_context: ToolContext, debug_mode: bool = False):
       "signed_at": datetime.now(timezone.utc).isoformat()
   }
 
+  user_id = tool_context.state.get("user_id") or getattr(tool_context, 'user_id', None)
+  session = getattr(tool_context, 'session', None)
+  session_id = tool_context.state.get("session_id") or (getattr(session, 'id', None) if session else None)
+
   outgoing_message_builder = (
       A2aMessageBuilder()
       .set_context_id(tool_context.state["shopping_context_id"])
@@ -135,6 +145,8 @@ async def initiate_payment(tool_context: ToolContext, debug_mode: bool = False):
       .add_data("risk_data", risk_data)
       .add_data("shopping_agent_id", "trusted_shopping_agent")
       .add_data("debug_mode", debug_mode)
+      .add_data("user_id", user_id or "unknown")
+      .add_data("session_id", session_id or "unknown")
       .build()
   )
   task = await merchant_agent_client.send_a2a_message(outgoing_message_builder)

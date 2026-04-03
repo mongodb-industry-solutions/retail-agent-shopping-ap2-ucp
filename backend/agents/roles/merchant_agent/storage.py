@@ -124,4 +124,38 @@ def get_chosen_cart_id(context_id: str) -> Optional[str]:
   return _store.get(f"chosen_cart_{context_id}")
 
 
+def set_session_info(context_id: str, user_id: str, session_id: str) -> None:
+  """Store session info for A2A agent tracking."""
+  _store[f"session_{context_id}"] = {"user_id": user_id, "session_id": session_id}
+
+
+def get_user_id(context_id: str) -> Optional[str]:
+  """Get user_id for a context."""  
+  import logging
+  logger = logging.getLogger(__name__)
+  logger.info(f"🔍 STORAGE_DEBUG: get_user_id called with context_id={context_id}")
+  
+  session_info = _store.get(f"session_{context_id}")
+  logger.info(f"🔍 STORAGE_DEBUG: session_info retrieved: {session_info}")
+  logger.info(f"🔍 STORAGE_DEBUG: _store keys: {list(_store.keys())}")
+  
+  result = session_info.get("user_id") if session_info else None
+  logger.info(f"🔍 STORAGE_DEBUG: get_user_id returning: {result}")
+  return result
+
+
+def get_session_id(context_id: str) -> Optional[str]:
+  """Get session_id for a context."""
+  import logging
+  logger = logging.getLogger(__name__)
+  logger.info(f"🔍 STORAGE_DEBUG: get_session_id called with context_id={context_id}")
+  
+  session_info = _store.get(f"session_{context_id}")
+  logger.info(f"🔍 STORAGE_DEBUG: session_info retrieved: {session_info}")
+  
+  result = session_info.get("session_id") if session_info else None
+  logger.info(f"🔍 STORAGE_DEBUG: get_session_id returning: {result}")
+  return result
+
+
 _store = {}
