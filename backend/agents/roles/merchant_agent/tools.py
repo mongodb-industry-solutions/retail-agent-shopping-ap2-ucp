@@ -323,8 +323,8 @@ async def _create_payment_record(
       metadata={
           "context_id": updater.context_id,
           "payment_mandate_id": payment_mandate_id,
-          # "user_id": user_id or None,
-          # "session_id": session_id or None,
+          "user_id": user_id or None,
+          "session_id": session_id or None,
       }
   )
   return result
