@@ -54,9 +54,6 @@ async def find_items_workflow(
     current_task: Task | None,
 ) -> None:
   """Finds products that match the user's IntentMandate."""
-  logger.info(f"🔥 FLOW_DEBUG: find_items_workflow called in merchant agent - this should create mandates!")
-  logger.info(f"🔥 FLOW_DEBUG: context_id={updater.context_id}, data_parts count={len(data_parts)}")
-  
   llm_client = get_genai_client()
 
   intent_mandate = message_utils.parse_canonical_object(
@@ -66,7 +63,6 @@ async def find_items_workflow(
   # Extract user_id and session_id from A2A data_parts (passed by shopping agent)
   user_id = message_utils.find_data_part("user_id", data_parts)
   session_id = message_utils.find_data_part("session_id", data_parts)
-  logger.info(f"SESSION_DEBUG: Extracted from A2A data_parts - user_id={user_id}, session_id={session_id}")
 
   # Extract signature from data_parts
   signature = message_utils.find_data_part("intent_signature", data_parts)

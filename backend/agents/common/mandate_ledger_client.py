@@ -61,7 +61,6 @@ class MandateLedgerClient:
 
     def _get_headers(self, idempotency_key: Optional[str] = None) -> Dict[str, str]:
         """Get headers for API requests."""
-        logger.debug(f"Getting headers with idempotency_key={idempotency_key}")
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
@@ -78,7 +77,7 @@ class MandateLedgerClient:
         idempotency_key: Optional[str] = None,
         metadata: Optional[dict] = None,
         initial_signatures: Optional[list] = None,
-        initial_status: Optional[str] = None,
+        initial_status: Optional[str] = None
     ) -> dict:
         """
         Create a new mandate in the ledger.
@@ -91,8 +90,6 @@ class MandateLedgerClient:
             metadata: Optional metadata for audit trail
             initial_signatures: Optional list of signatures (for pre-signed mandates)
             initial_status: Optional status override (e.g., 'signed' for pre-signed mandates)
-            user_id: Optional user identifier for tracking
-            session_id: Optional session identifier for tracking
 
         Returns:
             Created mandate ledger entry with entity_id and version
@@ -101,7 +98,6 @@ class MandateLedgerClient:
             httpx.HTTPStatusError: If request fails
         """
         logger.info(f"Creating {mandate_type} mandate (txn: {transaction_id})")
-        logger.info(f"SESSION_DEBUG: metadata={metadata}")
 
         payload = {
             "mandate_type": mandate_type,
@@ -120,18 +116,14 @@ class MandateLedgerClient:
             payload["initial_status"] = initial_status
             logger.info(f"Setting initial status: {initial_status}")
 
-        logger.info(f"MANDATE_LEDGER_DEBUG: Full create_mandate payload: {payload}")
-
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             response = await client.post(
                 f"{self.base_url}/api/v1/mandates",
                 headers=self._get_headers(idempotency_key),
                 json=payload
             )
-            logger.info(f"MANDATE_LEDGER_DEBUG: create_mandate response status: {response.status_code}")
             response.raise_for_status()
             result = response.json()
-            logger.info(f"MANDATE_LEDGER_DEBUG: create_mandate response: {result}")
 
             logger.info(
                 f"Created {mandate_type} mandate: entity_id={result['entity_id']}, "
@@ -236,18 +228,14 @@ class MandateLedgerClient:
             "transaction_id": transaction_id,
             "signature_data": signature_data or {}
         }
-        logger.info(f"MANDATE_LEDGER_DEBUG: Full sign_mandate payload: {sign_payload}")
-
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             response = await client.post(
                 f"{self.base_url}/api/v1/mandates/{entity_id}/sign",
                 headers=self._get_headers(),
                 json=sign_payload
             )
-            logger.info(f"MANDATE_LEDGER_DEBUG: sign_mandate response status: {response.status_code}")
             response.raise_for_status()
             result = response.json()
-            logger.info(f"MANDATE_LEDGER_DEBUG: sign_mandate response: {result}")
 
             logger.info(f"Signed mandate {entity_id}: version={result['version']}")
             return result
@@ -406,18 +394,14 @@ class MandateLedgerClient:
                 final_metadata["session_id"] = session_id
             payload["metadata"] = final_metadata
 
-        logger.info(f"MANDATE_LEDGER_DEBUG: Full create_payment payload: {payload}")
-
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             response = await client.post(
                 f"{self.base_url}/api/v1/payments",
                 json=payload,
                 headers=self._get_headers()
             )
-            logger.info(f"MANDATE_LEDGER_DEBUG: create_payment response status: {response.status_code}")
             response.raise_for_status()
             result = response.json()
-            logger.info(f"MANDATE_LEDGER_DEBUG: create_payment response: {result}")
             return result
 
     async def health_check(self) -> dict:

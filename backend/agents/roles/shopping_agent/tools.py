@@ -132,9 +132,9 @@ async def initiate_payment(tool_context: ToolContext, debug_mode: bool = False):
       "signed_at": datetime.now(timezone.utc).isoformat()
   }
 
-  user_id = tool_context.state.get("user_id") or getattr(tool_context, 'user_id', None)
+  user_id = getattr(tool_context, 'user_id', None)
   session = getattr(tool_context, 'session', None)
-  session_id = tool_context.state.get("session_id") or (getattr(session, 'id', None) if session else None)
+  session_id = getattr(session, 'id', None) if session else None
 
   outgoing_message_builder = (
       A2aMessageBuilder()
