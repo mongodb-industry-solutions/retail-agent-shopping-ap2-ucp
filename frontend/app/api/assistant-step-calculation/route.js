@@ -14,7 +14,7 @@ export async function POST(request) {
     }
 
     const backendUrl =
-      process.env.NEXT_PUBLIC_ASSISTANT_ENDPOINT || "http://localhost:8005";
+      process.env.ASSISTANT_ENDPOINT || "http://localhost:8005";
 
     const response = await fetch(`${backendUrl}/api/process`, {
       // TODO UPDATE

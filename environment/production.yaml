@@ -30,7 +30,7 @@ envSecrets:
   # Service Configuration
   SERVICE_NAME: retail-ap2
   ENVIRONMENT: retail-ap2 
-  NEXT_PUBLIC_ASSISTANT_ENDPOINT: retail-ap2
+  ASSISTANT_ENDPOINT: retail-ap2
   
 ## should be used in case of multi-pod container i.e: both frontend and backend in one pod
 sidecarContainers:
