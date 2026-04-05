@@ -1,9 +1,28 @@
 import { AGENT_ROLE } from "@/lib/const/bubbleDetails";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ImageContainer from "../ImageContainer";
 import { Code, Panel } from "@leafygreen-ui/code";
+import { getCartMandatesWithTwoSignatures } from "@/lib/api";
+import { useSelector } from "react-redux";
+import { journeys } from "@/lib/const/ux-writing";
 
 const CartMandateSignedPaymentCredentialsStep = ({ type }) => {
+  const [loadingMandates, setLoadingMandates] = useState(false);
+  const cartMandateWithTwoSignatures = useSelector(
+    (state) =>
+      state.MandateLedger.journeysStatus[journeys.straightforward.id]
+        .cartMandateWithTwoSignatures,
+  );
+
+  useEffect(() => {
+    if (cartMandateWithTwoSignatures == null && !loadingMandates) {
+      setLoadingMandates(true);
+      getCartMandatesWithTwoSignatures(journeys.straightforward.id).finally(
+        () => setLoadingMandates(false),
+      );
+    }
+  }, []);
+
   if (type === AGENT_ROLE)
     return (
       <div>
@@ -32,8 +51,10 @@ const CartMandateSignedPaymentCredentialsStep = ({ type }) => {
           language="json"
           collapsedLines={21}
           highlightLines={[]}
-          panel={<Panel title="Cart Mandate" />}
-        ></Code>
+          panel={<Panel title="Cart Mandate With 2 Signatures" />}
+        >
+          {JSON.stringify(cartMandateWithTwoSignatures, null, 2)}
+        </Code>
         <div className="info">
           <p>
             Now the <span className="purple-text">Shopping Agent</span> requests

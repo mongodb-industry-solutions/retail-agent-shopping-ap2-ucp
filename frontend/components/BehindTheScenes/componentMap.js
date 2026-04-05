@@ -8,6 +8,7 @@ import CartMandateSignedPaymentCredentialsStep from './straightforward/CartManda
 // Import shared styles
 import './behindTheScenes.css';
 import { CHAT_STEPS } from '@/lib/const/steps';
+import { USER_ROLE } from '@/lib/const/bubbleDetails';
 
 // Component mapping: workflow -> step -> component
 const componentMap = {
@@ -38,6 +39,7 @@ export const getStepComponent = (journeyId, step) => {
   return componentMap[journeyId]?.[step] || null;
 };
 
-export const stepHasBehindTheScenes = (journeyId, step) => {
-  return !!componentMap[journeyId]?.[step];
+export const stepHasBehindTheScenes = (journeyId, step, type) => {
+  // user type messages do not have behind the scenes, so we only check for agent messages
+  return (type !== USER_ROLE) && !!componentMap[journeyId]?.[step];
 };

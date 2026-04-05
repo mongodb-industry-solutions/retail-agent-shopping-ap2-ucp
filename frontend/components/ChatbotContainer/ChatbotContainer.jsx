@@ -42,7 +42,7 @@ const ChatbotContainer = ({ journeyId }) => {
           onOptionClick={handleOptionClick}
           isLatest={index === messages.length - 1}
           message={message}
-          hasBehindTheScenes={stepHasBehindTheScenes(journeyId, message.step)}
+          hasBehindTheScenes={stepHasBehindTheScenes(journeyId, message.step, message.type)}
         />
       )) : (
         <div style={{ padding: '20px', textAlign: 'center', opacity: 0.7 }}>
