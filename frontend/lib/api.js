@@ -17,6 +17,7 @@ import { INITIAL_USER_MESSAGE } from "./const/steps";
 import { getDemoSessionId, getCurrentStep, getJourneyUserAndSessionId } from "./helpers";
 import { USER_ROLE, AGENT_ROLE, getBubbleDetails } from "./const/bubbleDetails";
 import { COLLECTIONS } from "./const/data";
+import { stepHasBehindTheScenes } from "@/components/BehindTheScenes/componentMap";
 
 /**
  * Process agent response through assistant API to get step and messageOptions
@@ -99,6 +100,7 @@ async function processSuccessfulAgentResponse(
       messageOptions,
       step: step,
       bubbleDetails,
+      stepHasBehindTheScenes: stepHasBehindTheScenes(journeyId, step, AGENT_ROLE),
     }),
   );
 }
@@ -162,6 +164,7 @@ export async function startShoppingSessionAPI(journeyId) {
         userId: userId, // Use the already constructed userId
         step: "initial",
         bubbleDetails: null,
+        stepHasBehindTheScenes: stepHasBehindTheScenes(journeyId, "initial", USER_ROLE),
       }),
     );
 
@@ -246,7 +249,7 @@ export async function chatWithShoppingAgentAPI(journeyId, message) {
         userId,
         step: currentStep,
         bubbleDetails: null, // User messages don't get bubbleDetails from assistant API
-        behindTheScenes: null, // User messages don't get behindTheScenes from assistant API
+        stepHasBehindTheScenes: stepHasBehindTheScenes(journeyId, currentStep, USER_ROLE),
       }),
     );
 
