@@ -8,8 +8,17 @@ export async function POST(request) {
         projection ={},
         options={}, 
         databaseName = dbName, 
-        collectionName 
+        collectionName = null
     } = await request.json();
+    
+    if (!collectionName) {
+        console.warn("findDocuments API called without collectionName");
+        return NextResponse.json(
+            { error: "collectionName is required" }, 
+            { status: 400 }
+        );
+    }
+    
     const client = await clientPromise;
     const db = client.db(databaseName);
     const collection = db.collection(collectionName);
@@ -19,7 +28,7 @@ export async function POST(request) {
     }
 
     const result = await collection
-        .find(filter, projection, options )
+        .find(filter, {...options, projection} )
         .toArray()
     
     return NextResponse.json({ documents: result || null }, { status: 200 });
