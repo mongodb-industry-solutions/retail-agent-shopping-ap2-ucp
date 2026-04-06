@@ -1,6 +1,5 @@
 import { setJourneyUserId } from "@/redux/slices/MandateLedgerSlice";
 import store from "@/redux/store";
-import { use } from "react";
 
 /**
  * Get or generate session ID for client-side tracking

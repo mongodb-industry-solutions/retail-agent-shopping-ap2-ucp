@@ -1,7 +1,7 @@
 import store from "@/redux/store";
 import {
   setSessionInitializationError,
-  setJourneySessionAndUserIdId,
+  setJourneySessionAndUserId,
   setAgentThinking,
   setCartMandates,
   setCartMandatesWithTwoSignatures,
@@ -14,7 +14,7 @@ import {
   setSessionIdToInitialUserMessage,
 } from "@/redux/slices/GlobalSlice";
 import { INITIAL_USER_MESSAGE } from "./const/steps";
-import { getDemoSessionId, getCurrentStep, getJourneyUserAndSessionId } from "./helpers";
+import { getCurrentStep, getJourneyUserAndSessionId } from "./helpers";
 import { USER_ROLE, AGENT_ROLE, getBubbleDetails } from "./const/bubbleDetails";
 import { COLLECTIONS } from "./const/data";
 import { stepHasBehindTheScenes } from "@/components/BehindTheScenes/componentMap";
@@ -201,7 +201,7 @@ export async function startShoppingSessionAPI(journeyId) {
   // Store session data in Redux
   if (journeyId && data.session_id) {
     store.dispatch(
-      setJourneySessionAndUserIdId({
+      setJourneySessionAndUserId({
         journeyId,
         session_id: data.session_id,
         user_id: data.user_id,
@@ -427,7 +427,7 @@ export async function getPaymentMandate(journeyId) {
   if (!response.ok)
     return {
       error: true,
-      message: `Error fetching cart mandate: ${response.status}`,
+      message: `Error fetching payment mandate: ${response.status}`,
       status: response.status,
     };
 
@@ -445,10 +445,10 @@ export async function getPaymentMandate(journeyId) {
 }
 
 export async function getPaymentDocument(journeyId) {
-  let paymentMandate = store.getState().MandateLedger.journeysStatus[journeyId].paymentMandate;
+  let paymentMandate = store.getState().MandateLedger.journeysStatus?.[journeyId]?.paymentMandate;
   if (!paymentMandate) {
     await getPaymentMandate(journeyId);
-    paymentMandate = store.getState().MandateLedger.journeysStatus[journeyId].paymentMandate;
+    paymentMandate = store.getState().MandateLedger.journeysStatus?.[journeyId]?.paymentMandate;
   }
   
   if (!paymentMandate) {

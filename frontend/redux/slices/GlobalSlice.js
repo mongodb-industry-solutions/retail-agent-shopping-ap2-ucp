@@ -51,7 +51,7 @@ const GlobalSliceSlice = createSlice({
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(userMessage);
       }
-      if (state.followLatestMessage && stepHasBehindTheScenes == true) {
+      if (state.followLatestMessage && stepHasBehindTheScenes === true) {
         state.selectedMessage = userMessage;
       }
     },
@@ -72,7 +72,7 @@ const GlobalSliceSlice = createSlice({
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(agentMessage);
       }
-      if (state.followLatestMessage && stepHasBehindTheScenes == true) {
+      if (state.followLatestMessage && stepHasBehindTheScenes === true) {
         state.selectedMessage = agentMessage;
       }
     },

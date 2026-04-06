@@ -9,7 +9,6 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 3
     labels: ["dependencies", "python"]
-    reviewers: ["mongodb-industry-solutions/ist-techhub"]
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -29,7 +28,6 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 3
     labels: ["dependencies", "frontend"]
-    reviewers: ["mongodb-industry-solutions/ist-techhub"]
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -49,7 +47,6 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 3
     labels: ["dependencies", "docker"]
-    reviewers: ["mongodb-industry-solutions/ist-techhub"]
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -69,7 +66,6 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 3
     labels: ["dependencies", "docker"]
-    reviewers: ["mongodb-industry-solutions/ist-techhub"]
     commit-message:
       prefix: "chore"
       include: "scope"

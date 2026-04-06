@@ -63,7 +63,7 @@ const MandateLedgerSlice = createSlice({
         state.journeysStatus[journeyId].error = action.payload.error;
       }
     },
-    setJourneySessionAndUserIdId(state, action) {
+    setJourneySessionAndUserId(state, action) {
       const { journeyId, session_id, user_id } = action.payload;
       if (state.journeysStatus[journeyId]) {
         state.journeysStatus[journeyId].session_id = session_id;
@@ -99,7 +99,6 @@ const MandateLedgerSlice = createSlice({
     },
     setCartMandatesWithTwoSignatures(state, action) {
       const { journeyId, cartMandateWithTwoSignatures } = action.payload;
-      console.log("Setting cart mandate with two signatures in state:", cartMandateWithTwoSignatures);
       if (state.journeysStatus[journeyId]) {
         state.journeysStatus[journeyId].cartMandateWithTwoSignatures = cartMandateWithTwoSignatures;
       }
@@ -123,7 +122,7 @@ export const {
   setHealthStatus, 
   setSessionInitializing, 
   setSessionInitializationError,
-  setJourneySessionAndUserIdId,
+  setJourneySessionAndUserId,
   setAgentThinking,
   clearSessionInitializing,
   setCartMandates,
