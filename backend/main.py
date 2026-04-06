@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 from routers import mandate_ledger
-from routers import shopping_router
+from routers import shopping_router, auditor_router
 from agents_manager import agents_manager
 from agents.common.genai_client_manager import cleanup_genai_client
 
@@ -195,6 +195,8 @@ app.add_middleware(
 app.include_router(mandate_ledger.router)
 # Shopping agent router (ADK-powered conversational interface)
 app.include_router(shopping_router.router, prefix="/api/shopping", tags=["shopping"])
+# Auditor agent router (payment verification and ledger integrity)
+app.include_router(auditor_router.router, prefix="/api/auditor", tags=["auditor"])
 
 # FastAPI Shopping Agent Endpoints
 @app.post("/api/v1/shopping/chat", response_model=ShoppingResponse, tags=["Shopping Agent"])
