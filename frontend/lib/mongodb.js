@@ -5,12 +5,12 @@ import { EJSON } from "bson";
 if (!process.env.MONGODB_URI) {
   throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
 }
-if (!process.env.DATABASE_NAME) {
-  throw new Error('Invalid/Missing environment variable: "DATABASE_NAME"');
+if (!process.env.MONGODB_DATABASE) {
+  throw new Error('Invalid/Missing environment variable: "MONGODB_DATABASE"');
 }
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.DATABASE_NAME;
+const dbName = process.env.MONGODB_DATABASE;
 
 //  Provide a custom appName to identify connections in MongoDB monitoring tools (e.g., Atlas, db.currentOp)
 const options = {
