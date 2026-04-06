@@ -21,6 +21,22 @@ const TestPage = () => {
     user_id: "123",
   });
 
+  // Form states for Auditor APIs
+  const [auditorChatForm, setAuditorChatForm] = useState({
+    message: "Verify payment pay_661b6694-bf8d-463a-ab38-fb629cbe2d1e",
+    user_id: "abc",
+    session_id: "test-session",
+  });
+
+  const [auditorSessionForm, setAuditorSessionForm] = useState({
+    user_id: "abc",
+  });
+
+  const [getAuditorSessionForm, setGetAuditorSessionForm] = useState({
+    session_id: "test-session",
+    user_id: "abc",
+  });
+
   const callAPI = async (apiName, url, method = "GET", body = null) => {
     setLoading((prev) => ({ ...prev, [apiName]: true }));
 
@@ -79,6 +95,26 @@ const TestPage = () => {
     callAPI("get-session", url, "GET");
   };
 
+  // Auditor API handlers
+  const handleAuditorChatSubmit = () => {
+    callAPI("auditor-chat", "/api/auditor-chat", "POST", {
+      message: auditorChatForm.message,
+      user_id: auditorChatForm.user_id,
+      session_id: auditorChatForm.session_id,
+    });
+  };
+
+  const handleAuditorStartSessionSubmit = () => {
+    callAPI("auditor-start-session", "/api/auditor-start-session", "POST", {
+      user_id: auditorSessionForm.user_id,
+    });
+  };
+
+  const handleGetAuditorSessionSubmit = () => {
+    const url = `/api/auditor-session?session_id=${encodeURIComponent(getAuditorSessionForm.session_id)}&user_id=${encodeURIComponent(getAuditorSessionForm.user_id)}`;
+    callAPI("get-auditor-session", url, "GET");
+  };
+
   const ResponseDisplay = ({ response, apiName }) => {
     if (!response) return null;
 
@@ -113,6 +149,47 @@ const TestPage = () => {
           Shopping API Test Interface
         </h1>
         <div className="space-y-6">
+          {/* Start Session API */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4 text-green-600">
+              Start Session API
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              POST /api/v1/shopping/start-session
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  User ID
+                </label>
+                <input
+                  type="text"
+                  value={sessionForm.user_id}
+                  onChange={(e) =>
+                    setSessionForm((prev) => ({
+                      ...prev,
+                      user_id: e.target.value,
+                    }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  placeholder="User ID"
+                />
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={handleStartSessionSubmit}
+                  disabled={loading["start-session"]}
+                  className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading["start-session"] ? "Starting..." : "Send"}
+                </button>
+              </div>
+            </div>
+            <ResponseDisplay
+              response={responses["start-session"]}
+              apiName="Start Session"
+            />
+          </div>
           {/* Chat API */}
           <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4 text-blue-600">
@@ -185,47 +262,6 @@ const TestPage = () => {
             </div>
             <ResponseDisplay response={responses.chat} apiName="Chat" />
           </div>
-          {/* Start Session API */}
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4 text-green-600">
-              Start Session API
-            </h2>
-            <p className="text-sm text-gray-600 mb-4">
-              POST /api/v1/shopping/start-session
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  User ID
-                </label>
-                <input
-                  type="text"
-                  value={sessionForm.user_id}
-                  onChange={(e) =>
-                    setSessionForm((prev) => ({
-                      ...prev,
-                      user_id: e.target.value,
-                    }))
-                  }
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  placeholder="User ID"
-                />
-              </div>
-              <div className="flex items-end">
-                <button
-                  onClick={handleStartSessionSubmit}
-                  disabled={loading["start-session"]}
-                  className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading["start-session"] ? "Starting..." : "Send"}
-                </button>
-              </div>
-            </div>
-            <ResponseDisplay
-              response={responses["start-session"]}
-              apiName="Start Session"
-            />
-          </div>
           {/* Get Session API */}
           <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4 text-purple-600">
@@ -282,6 +318,186 @@ const TestPage = () => {
             <ResponseDisplay
               response={responses["get-session"]}
               apiName="Get Session"
+            />
+          </div>
+        </div>
+
+        {/* Auditor API Test Interface */}
+        <h1 className="text-3xl font-bold mb-6 mt-12 text-gray-800">
+          Auditor API Test Interface
+        </h1>
+        <div className="space-y-6">
+          {/* Auditor Start Session API */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4 text-orange-600">
+              Auditor Start Session API
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              POST /api/auditor-start-session
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  User ID
+                </label>
+                <input
+                  type="text"
+                  value={auditorSessionForm.user_id}
+                  onChange={(e) =>
+                    setAuditorSessionForm((prev) => ({
+                      ...prev,
+                      user_id: e.target.value,
+                    }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="User ID"
+                />
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={handleAuditorStartSessionSubmit}
+                  disabled={loading["auditor-start-session"]}
+                  className="w-full bg-orange-600 text-white py-2 px-4 rounded-md hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading["auditor-start-session"] ? "Starting..." : "Send"}
+                </button>
+              </div>
+            </div>
+            <ResponseDisplay
+              response={responses["auditor-start-session"]}
+              apiName="Auditor Start Session"
+            />
+          </div>
+
+          {/* Auditor Chat API */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4 text-red-600">
+              Auditor Chat API
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              POST /api/auditor-chat
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Message
+                </label>
+                <textarea
+                  value={auditorChatForm.message}
+                  onChange={(e) =>
+                    setAuditorChatForm((prev) => ({
+                      ...prev,
+                      message: e.target.value,
+                    }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  rows={3}
+                  placeholder="Enter audit message..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  User ID
+                </label>
+                <input
+                  type="text"
+                  value={auditorChatForm.user_id}
+                  onChange={(e) =>
+                    setAuditorChatForm((prev) => ({
+                      ...prev,
+                      user_id: e.target.value,
+                    }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  placeholder="User ID"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Session ID
+                </label>
+                <input
+                  type="text"
+                  value={auditorChatForm.session_id}
+                  onChange={(e) =>
+                    setAuditorChatForm((prev) => ({
+                      ...prev,
+                      session_id: e.target.value,
+                    }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  placeholder="Session ID"
+                />
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={handleAuditorChatSubmit}
+                  disabled={loading["auditor-chat"]}
+                  className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading["auditor-chat"] ? "Sending..." : "Send"}
+                </button>
+              </div>
+            </div>
+            <ResponseDisplay response={responses["auditor-chat"]} apiName="Auditor Chat" />
+          </div>
+
+          {/* Get Auditor Session API */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4 text-indigo-600">
+              Get Auditor Session API
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              GET /api/auditor-session
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Session ID
+                </label>
+                <input
+                  type="text"
+                  value={getAuditorSessionForm.session_id}
+                  onChange={(e) =>
+                    setGetAuditorSessionForm((prev) => ({
+                      ...prev,
+                      session_id: e.target.value,
+                    }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Session ID"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  User ID
+                </label>
+                <input
+                  type="text"
+                  value={getAuditorSessionForm.user_id}
+                  onChange={(e) =>
+                    setGetAuditorSessionForm((prev) => ({
+                      ...prev,
+                      user_id: e.target.value,
+                    }))
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="User ID"
+                />
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={handleGetAuditorSessionSubmit}
+                  disabled={loading["get-auditor-session"]}
+                  className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading["get-auditor-session"] ? "Getting..." : "Send"}
+                </button>
+              </div>
+            </div>
+            <ResponseDisplay
+              response={responses["get-auditor-session"]}
+              apiName="Get Auditor Session"
             />
           </div>
         </div>
