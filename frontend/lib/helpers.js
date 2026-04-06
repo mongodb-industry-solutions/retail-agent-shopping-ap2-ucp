@@ -1,9 +1,15 @@
+import { setJourneyUserId } from "@/redux/slices/MandateLedgerSlice";
+import store from "@/redux/store";
+import { use } from "react";
+
 /**
  * Get or generate session ID for client-side tracking
  * IMPORTANT: This sessionId (sid) is different from SSE changeStreams sessionId and the session_id from the shopper conversation ID.
  * 
  * @returns {string} sid - Session ID from sessionStorage, generated if not exists
- */
+ * Note: This is used for client-side tracking and should not be confused with backend session identifiers.
+ * This demo session id is used to construct the user_id of each journey by doing <journey>-<demoSessionId>
+*/
 export const getDemoSessionId = () => {
   // Get or generate sessionId (sid) - stored in sessionStorage
   let sid = sessionStorage.getItem('sid');
@@ -15,16 +21,30 @@ export const getDemoSessionId = () => {
   return sid;
 };
 
+export const getJourneyUserAndSessionId = (journeyId) => {
+  const journeyStatus = store.getState().MandateLedger.journeysStatus[journeyId] || {};
+  const sessionId = journeyStatus?.session_id || null;
+  let userId = journeyStatus?.user_id || null;
+  if(!userId) {
+    userId = `${journeyId}-${getDemoSessionId()}`;
+    store.dispatch(setJourneyUserId({
+      journeyId,
+      user_id: userId
+    }));
+  }
+  return { sessionId, userId };
+};
+
 /**
- * Get current conversation stage from messages
- * @param {Object} state - Redux state
+ * Get current conversation step from messages
+ * @param {Object} reduxState - Redux state
  * @param {string} journeyId - Journey identifier
- * @returns {string} Current stage or 'initial' if no messages
+ * @returns {string} Current step or 'initial' if no messages
  */
-export const getCurrentStage = (state, journeyId) => {
-  const messages = state.messages[journeyId] || [];
+export const getCurrentStep = (reduxState, journeyId) => {
+  const messages = reduxState.messages[journeyId] || [];
   if (messages.length === 0) return 'initial';
   
   const lastMessage = messages[messages.length - 1];
-  return lastMessage?.stage || 'initial';
+  return lastMessage?.step || 'initial';
 };

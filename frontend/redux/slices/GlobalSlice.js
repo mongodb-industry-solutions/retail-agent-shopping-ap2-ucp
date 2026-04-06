@@ -36,7 +36,7 @@ const GlobalSliceSlice = createSlice({
       state.selectedMessage = action.payload;
     },
     addUserMessage(state, action) {
-      const { journeyId, message, sessionId, userId, step, bubbleDetails } = action.payload;
+      const { journeyId, message, sessionId, userId, step, bubbleDetails, stepHasBehindTheScenes } = action.payload;
       const userMessage = {
         id: `user_${Date.now()}_${Math.random()}`,
         type: USER_ROLE,
@@ -46,16 +46,17 @@ const GlobalSliceSlice = createSlice({
         userId,
         step: step,
         bubbleDetails: bubbleDetails || null,
+        stepHasBehindTheScenes: stepHasBehindTheScenes || false,
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(userMessage);
       }
-      if (state.followLatestMessage) {
+      if (state.followLatestMessage && stepHasBehindTheScenes == true) {
         state.selectedMessage = userMessage;
       }
     },
     addAgentMessage(state, action) {
-      const { journeyId, message, sessionId, userId, messageOptions, step, bubbleDetails } = action.payload;
+      const { journeyId, message, sessionId, userId, messageOptions, step, bubbleDetails, stepHasBehindTheScenes } = action.payload;
       const agentMessage = {
         id: `agent_${Date.now()}_${Math.random()}`,
         type: AGENT_ROLE, 
@@ -66,11 +67,12 @@ const GlobalSliceSlice = createSlice({
         messageOptions: messageOptions || [],
         step: step,
         bubbleDetails: bubbleDetails || null,
+        stepHasBehindTheScenes: stepHasBehindTheScenes || false,
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(agentMessage);
       }
-      if (state.followLatestMessage) {
+      if (state.followLatestMessage && stepHasBehindTheScenes == true) {
         state.selectedMessage = agentMessage;
       }
     },
