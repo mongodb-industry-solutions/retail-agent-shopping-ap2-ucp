@@ -1,13 +1,13 @@
 import { journeys } from "@/lib/const/ux-writing";
 import { createSlice } from "@reduxjs/toolkit";
-import { USER_ROLE, AGENT_ROLE } from "@/lib/constants/messages";
+import { USER_ROLE, AGENT_ROLE } from "@/lib/const/bubbleDetails";
 
 const GlobalSliceSlice = createSlice({
   name: "GlobalSlice",
   initialState: {
     isGuidedSliceOpened: true,
     followLatestMessage: true,
-    sidebarWidth: 420,
+    sidebarWidth: 500,
     selectedMessage: null,
     startedJourneys: [],
     messages: {
@@ -36,7 +36,7 @@ const GlobalSliceSlice = createSlice({
       state.selectedMessage = action.payload;
     },
     addUserMessage(state, action) {
-      const { journeyId, message, sessionId, userId, stage, bubbleDetails, behindTheScenes } = action.payload;
+      const { journeyId, message, sessionId, userId, step, bubbleDetails } = action.payload;
       const userMessage = {
         id: `user_${Date.now()}_${Math.random()}`,
         type: USER_ROLE,
@@ -44,9 +44,8 @@ const GlobalSliceSlice = createSlice({
         timestamp: new Date().toISOString(),
         sessionId,
         userId,
-        stage: stage || 'initial',
-        bubbleDetails: bubbleDetails || { text: "", tags: [] },
-        behindTheScenes: behindTheScenes || { title: "" }
+        step: step,
+        bubbleDetails: bubbleDetails || null,
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(userMessage);
@@ -56,7 +55,7 @@ const GlobalSliceSlice = createSlice({
       }
     },
     addAgentMessage(state, action) {
-      const { journeyId, message, sessionId, userId, messageOptions, stage, bubbleDetails, behindTheScenes } = action.payload;
+      const { journeyId, message, sessionId, userId, messageOptions, step, bubbleDetails } = action.payload;
       const agentMessage = {
         id: `agent_${Date.now()}_${Math.random()}`,
         type: AGENT_ROLE, 
@@ -65,9 +64,8 @@ const GlobalSliceSlice = createSlice({
         sessionId,
         userId,
         messageOptions: messageOptions || [],
-        stage: stage || 'general',
-        bubbleDetails: bubbleDetails || { text: "", tags: [] },
-        behindTheScenes: behindTheScenes || { title: "" }
+        step: step,
+        bubbleDetails: bubbleDetails || null,
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(agentMessage);

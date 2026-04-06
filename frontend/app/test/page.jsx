@@ -7,7 +7,7 @@ const TestPage = () => {
 
   // Form states for each API
   const [chatForm, setChatForm] = useState({
-    message: "I want a coffee maker",
+    message: "I’m looking for a coffee maker specifically a glass french press. I don’t have a preferred merchant, but I’d like it to be refundable. Show me some options.",
     user_id: "123",
     session_id: "test-session",
   });

@@ -3,7 +3,6 @@
 import { journeys } from "@/lib/const/ux-writing";
 import { Badge } from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
-import {Toggle} from "@leafygreen-ui/toggle";
 import Icon from "@leafygreen-ui/icon";
 import { Logo } from "@leafygreen-ui/logo";
 import { palette } from "@leafygreen-ui/palette";
@@ -11,13 +10,11 @@ import { Body } from "@leafygreen-ui/typography";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFollowLatestMessage } from "@/redux/slices/GlobalSlice";
 
 const ShoppingAssistantNavbar = ({ journeyId }) => {
   const router = useRouter();
   const messages = useSelector((state) => state.Global.messages);
-  const followLatestMessage = useSelector((state) => state.Global.followLatestMessage);
-  const dispatch = useDispatch();
+
 
   return (
     <div
@@ -58,18 +55,7 @@ const ShoppingAssistantNavbar = ({ journeyId }) => {
             Click any message to explore
           </Body>
         </div>
-        <div className="d-flex flex-row align-items-center justify-content-end gap-2">
-          <Body id="follow-latest-bts-label" style={{ fontSize: "14px" }}>Follow the latest 'Behind The Scenes' message</Body>
-          <Toggle
-            id="toggle"
-            size="small"
-            aria-labelledby="follow-latest-bts-label"
-            checked={followLatestMessage}
-            onChange={(checked, event) => {
-              dispatch(setFollowLatestMessage(checked));
-            }}
-          />
-        </div>
+
       </div>
     </div>
   );

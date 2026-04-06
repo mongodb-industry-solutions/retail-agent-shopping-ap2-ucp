@@ -1,9 +1,105 @@
 import store from '@/redux/store';
 import { setSessionInitializationError, setSessionId, setAgentThinking } from '@/redux/slices/MandateLedgerSlice';
 import { addUserMessage, addAgentMessage, setSessionIdToInitialUserMessage } from '@/redux/slices/GlobalSlice';
-import { getChatOptions, getNextStage, INITIAL_USER_MESSAGE, CHAT_STAGES } from './chatOptions';
+import { INITIAL_USER_MESSAGE } from './const/steps';
 import { getDemoSessionId, getCurrentStage } from './helpers';
-import { USER_ROLE, AGENT_ROLE, getBubbleDetails, getBehindTheScenes } from './constants/messages';
+import { USER_ROLE, AGENT_ROLE, getBubbleDetails } from './const/bubbleDetails';
+
+/**
+ * Process agent response through assistant API to get step and messageOptions
+ * @param {string} workflowId - The workflow identifier
+ * @param {Array} conversation - Array of conversation messages
+ * @returns {Promise<{step: string|null, messageOptions: Array}>} Assistant analysis result
+ */
+async function processAgentResponseWithAssistant(workflowId, conversation) {
+  try {
+    const response = await fetch('/api/assistant-step-calculation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        workflowId,
+        conversation
+      })
+    });
+
+    if (!response.ok) {
+      console.error('Error calling assistant API:', response.status);
+      // Return fallback values on API error
+      return { step: null, messageOptions: [], bubbleDetails: null };
+    }
+
+    const data = await response.json();
+    return {
+      ...data,
+      step: data.stepId || null,
+      messageOptions: data.answers || [],
+      bubbleDetails: getBubbleDetails(AGENT_ROLE, data.stepId) || null
+    };
+  } catch (error) {
+    console.error('Error processing assistant API response:', error);
+    // Return fallback values on network error
+    return { step: null, messageOptions: [], bubbleDetails: null };
+  }
+}
+
+/**
+ * Process successful agent response and dispatch to Redux
+ */
+async function processSuccessfulAgentResponse(journeyId, sessionId, userId, message) {
+  // Stop thinking state
+  store.dispatch(setAgentThinking({
+    journeyId: journeyId,
+    agentIsThinking: false
+  }));
+  
+  // Build conversation history for assistant API
+  const messages = store.getState().Global.messages[journeyId] || [];
+  const conversationHistory = buildConversationHistory([
+    ...messages,
+    {
+      type: AGENT_ROLE,
+      content: message,
+      stage: undefined  // This will be determined by assistant API
+    }
+  ]);
+  
+  // Get step and messageOptions from assistant API
+  const { step, messageOptions, bubbleDetails } = await processAgentResponseWithAssistant(journeyId, conversationHistory);
+  
+  // Add agent response with dynamic options from assistant
+  store.dispatch(addAgentMessage({
+    journeyId: journeyId,
+    message: message,
+    sessionId: sessionId,
+    userId: userId,
+    messageOptions,
+    step: step,
+    bubbleDetails,
+  }));
+}
+
+/**
+ * Build conversation history from Redux messages for assistant API
+ * @param {Array} messages - Messages from Redux state
+ * @returns {Array} Formatted conversation history
+ */
+function buildConversationHistory(messages) {
+  return messages.map(msg => {
+    const messageObj = {
+      role: msg.type,
+      message: msg.content
+    };
+    
+    // Add step to agent messages if it exists
+    if (msg.type === AGENT_ROLE && msg.step) {
+      messageObj.step = msg.step;
+    }
+    
+    return messageObj;
+  });
+}
 
 export async function getMandateLedgerServiceHealthAPI() {
   const response = await fetch(`/api/mandateLedgerServiceHealth`, {
@@ -29,17 +125,13 @@ export async function startShoppingSessionAPI(journeyId) {
   
   // Add initial user message immediately and set thinking state
   if (journeyId) {
-    const bubbleDetails = getBubbleDetails(USER_ROLE, CHAT_STAGES.INITIAL);
-    const behindTheScenes = getBehindTheScenes(USER_ROLE, CHAT_STAGES.INITIAL);
-    
     store.dispatch(addUserMessage({
       journeyId: journeyId,
       message: INITIAL_USER_MESSAGE,
       sessionId: null, // Will be updated when we get the session ID
       userId: userId, // Use the already constructed userId
-      stage: CHAT_STAGES.INITIAL,
-      bubbleDetails,
-      behindTheScenes
+      step: 'initial',
+      bubbleDetails: null,
     }));
     
     // Set agent thinking state
@@ -57,24 +149,8 @@ export async function startShoppingSessionAPI(journeyId) {
     body: JSON.stringify({ user_id: userId }),
   });
 
-  if (!response.ok) {
-    const error = {
-      error: true,
-      message: `Error starting shopping session: ${response.status}`,
-      status: response.status,
-    };
-    
-    if (journeyId) {
-      // Stop thinking state on error
-      store.dispatch(setAgentThinking({
-        journeyId: journeyId,
-        agentIsThinking: false
-      }));
-      store.dispatch(setSessionInitializationError({ journeyId, error }));
-    }
-    
-    return error;
-  }
+  if (!response.ok)
+    return handleApiError(journeyId, response.status, `Error starting shopping session: ${response.status}`, true);
 
   const data = await response.json();
 
@@ -93,34 +169,18 @@ export async function startShoppingSessionAPI(journeyId) {
       userId: data.user_id
     }));
     
-    // Stop thinking state
-    store.dispatch(setAgentThinking({
-      journeyId: journeyId,
-      agentIsThinking: false
-    }));
-    
-    // Add initial agent response with options
-    const initialStage = CHAT_STAGES.ASK_INTENT; // Agent responds with ASK_INTENT after initial user message
-    const messageOptions = getChatOptions(initialStage);
-    const bubbleDetails = getBubbleDetails(AGENT_ROLE, initialStage);
-    const behindTheScenes = getBehindTheScenes(AGENT_ROLE, initialStage);
-    
-    store.dispatch(addAgentMessage({
-      journeyId: journeyId,
-      message: data.initial_response,
-      sessionId: data.session_id,
-      userId: data.user_id,
-      messageOptions,
-      stage: initialStage,
-      bubbleDetails,
-      behindTheScenes
-    }));
+    await processSuccessfulAgentResponse(
+      journeyId,
+      data.session_id,
+      data.user_id,
+      data.initial_response
+    );
   }
   
   return data;
 }
 
-export async function chatWithShoppingAgentAPI(journeyId, message, selectedOptionId) {
+export async function chatWithShoppingAgentAPI(journeyId, message) {
   let demoSessionId = getDemoSessionId();
   let userId = `${journeyId}-${demoSessionId}`;
   let sessionId = store.getState().MandateLedger.journeysStatus[journeyId]?.session_id || null;
@@ -130,19 +190,17 @@ export async function chatWithShoppingAgentAPI(journeyId, message, selectedOptio
   
   // Add user message immediately and set thinking state
   if (journeyId && sessionId) {
-    // Get current stage from Redux state
-    const currentStage = getCurrentStage(store.getState().Global, journeyId);
-    const bubbleDetails = getBubbleDetails(USER_ROLE, currentStage);
-    const behindTheScenes = getBehindTheScenes(USER_ROLE, currentStage);
+    // Get current step from Redux state - this might be null, which is fine
+    const currentStep = getCurrentStage(store.getState().Global, journeyId);
     
     store.dispatch(addUserMessage({
       journeyId: journeyId,
       message,
       sessionId,
       userId: storedUserId,
-      stage: currentStage,
-      bubbleDetails,
-      behindTheScenes
+      step: currentStep,
+      bubbleDetails: null, // User messages don't get bubbleDetails from assistant API
+      behindTheScenes: null // User messages don't get behindTheScenes from assistant API
     }));
     
     // Set agent thinking state
@@ -164,60 +222,42 @@ export async function chatWithShoppingAgentAPI(journeyId, message, selectedOptio
     })
   });
 
-  if (!response.ok) {
-    const error = {
-      error: true,
-      message: `Error in chat: ${response.status}`,
-      status: response.status,
-    };
-    
-    // Stop thinking state on error
-    if (journeyId) {
-      store.dispatch(setAgentThinking({
-        journeyId: journeyId,
-        agentIsThinking: false
-      }));
-    }
-    
-    return error;
-  }
+  if (!response.ok)
+    return handleApiError(journeyId, response.status, `Error in chat: ${response.status}`, false);
 
   const data = await response.json();
   
   // Process successful response
   if (journeyId && sessionId) {
-    // Stop thinking state
+    await processSuccessfulAgentResponse(
+      journeyId,
+      sessionId,
+      storedUserId,
+      data.response
+    );
+  }
+  
+  return data;
+}
+
+const handleApiError = (journeyId, responseStatus, errorMessage, dispatchSessionError = false) => {
+  const error = {
+    error: true,
+    message: errorMessage,
+    status: responseStatus,
+  };
+  
+  if (journeyId) {
+    // Stop thinking state on error
     store.dispatch(setAgentThinking({
       journeyId: journeyId,
       agentIsThinking: false
     }));
     
-    // Determine next stage based on selected option ID and journey type
-    const nextStage = getNextStage(journeyId, selectedOptionId);
-    
-    // Determine context for nested options (e.g., select_google_wallet for select_paypal)
-    let context = null;
-    if (nextStage === CHAT_STAGES.USER_CREDENTIALS_WALLET_2) {
-      context = selectedOptionId;
+    if (dispatchSessionError) {
+      store.dispatch(setSessionInitializationError({ journeyId, error }));
     }
-    
-    // Get options for the next stage
-    const messageOptions = getChatOptions(nextStage, context);
-    const bubbleDetails = getBubbleDetails(AGENT_ROLE, nextStage);
-    const behindTheScenes = getBehindTheScenes(AGENT_ROLE, nextStage);
-    
-    // Add agent response with options
-    store.dispatch(addAgentMessage({
-      journeyId: journeyId,
-      message: data.response,
-      sessionId,
-      userId: storedUserId,
-      messageOptions,
-      stage: nextStage,
-      bubbleDetails,
-      behindTheScenes
-    }));
   }
   
-  return data;
+  return error;
 }
