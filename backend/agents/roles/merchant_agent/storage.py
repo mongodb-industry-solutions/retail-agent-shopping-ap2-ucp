@@ -123,5 +123,4 @@ def get_chosen_cart_id(context_id: str) -> Optional[str]:
   """Get the chosen cart_id for a shopping session."""
   return _store.get(f"chosen_cart_{context_id}")
 
-
 _store = {}
