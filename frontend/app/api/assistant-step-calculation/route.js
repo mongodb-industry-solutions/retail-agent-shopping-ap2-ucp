@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { workflowId, conversation = [] } = body;
+    const { workflowId, conversation = [], maxAnswers = 2 } = body;
 
     // Validate required fields
     if (!workflowId) {
@@ -13,19 +13,20 @@ export async function POST(request) {
       );
     }
 
-    const backendUrl =
-      process.env.ASSISTANT_ENDPOINT || "http://localhost:8005";
+    const backendUrl = process.env.ASSISTANT_ENDPOINT || "http://localhost:8005";
 
+    const payload = {
+      workflowId,
+      conversation,
+      maxAnswers,
+    };
     const response = await fetch(`${backendUrl}/api/process`, {
-      // TODO UPDATE
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "accept": "application/json"
       },
-      body: JSON.stringify({
-        workflowId,
-        conversation,
-      }),
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {

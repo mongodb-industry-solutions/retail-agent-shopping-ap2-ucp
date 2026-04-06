@@ -26,10 +26,11 @@
     "@leafygreen-ui/typography": "^20.1.9",
     "@reduxjs/toolkit": "^2.11.2",
     "bootstrap": "^5.3.8",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.4.1",
+    "mongodb": "^7.1.1",
     "next": "^15.5.7",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-redux": "^9.2.0"
   },
   "devDependencies": {
