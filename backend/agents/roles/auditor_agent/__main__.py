@@ -29,19 +29,13 @@ class AuditorAgentExecutor:
         self.supported_extensions = supported_extensions or []
 
 def main(argv: Sequence[str]) -> None:
-    # For now, we'll create a simple server setup
-    # In production, you'd want to integrate this properly with the ADK server framework
-    print(f"Starting Auditor Agent on port {AGENT_AUDITOR_PORT}")
-    print("Note: Full ADK integration required for complete functionality")
-    
-    # TODO: Integrate with proper ADK server setup
-    # agent_card = server.load_local_agent_card(__file__)
-    # server.run_agent_blocking(
-    #     port=AGENT_AUDITOR_PORT,
-    #     agent_card=agent_card,
-    #     executor=AuditorAgentExecutor(agent_card.capabilities.extensions),
-    #     rpc_url="/a2a/auditor_agent",
-    # )
+    agent_card = server.load_local_agent_card(__file__)
+    server.run_agent_blocking(
+        port=AGENT_AUDITOR_PORT,
+        agent_card=agent_card,
+        executor=AuditorAgentExecutor(agent_card.capabilities.extensions),
+        rpc_url="/a2a/auditor_agent",
+    )
 
 if __name__ == "__main__":
     app.run(main)
