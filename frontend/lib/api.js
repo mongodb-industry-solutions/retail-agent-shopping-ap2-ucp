@@ -121,7 +121,7 @@ function buildConversationHistory(messages) {
     const isLastMessage = index === messages.length - 1;
     const isAgentMessage = msg.role === AGENT_ROLE || msg.type === AGENT_ROLE;
 
-    if (isLastMessage && isAgentMessage && msg.step === undefined) {
+    if ((isLastMessage && isAgentMessage && msg.step === undefined) || messageObj.role === USER_ROLE) {
       // Keep step undefined for the last agent message
       messageObj.step = undefined;
     } else {
