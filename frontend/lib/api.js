@@ -26,36 +26,63 @@ import { stepHasBehindTheScenes } from "@/components/BehindTheScenes/componentMa
  * @returns {Promise<{step: string|null, messageOptions: Array}>} Assistant analysis result
  */
 async function processAgentResponseWithAssistant(workflowId, conversation) {
-  try {
-    const response = await fetch("/api/assistant-step-calculation", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        workflowId,
-        conversation,
-      }),
-    });
+  const maxRetries = 2;
+  let lastError = null;
 
-    if (!response.ok) {
-      console.error("Error calling assistant API:", response.status);
-      // Return fallback values on API error
-      return { step: null, messageOptions: [], bubbleDetails: null };
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch("/api/assistant-step-calculation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          workflowId,
+          conversation,
+        }),
+      });
+
+      if (!response.ok) {
+        lastError = new Error(`HTTP ${response.status}: ${response.statusText}`);
+        console.error(`Assistant API error (attempt ${attempt + 1}/${maxRetries + 1}):`, response.status);
+        
+        // If this is not the last attempt, wait before retrying
+        if (attempt < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1))); // Progressive delay: 1s, 2s
+          continue;
+        }
+        
+        // Last attempt failed - return fallback values
+        console.error("All retry attempts failed. Using fallback values.");
+        return { step: null, messageOptions: [], bubbleDetails: null };
+      }
+
+      // Successful response
+      const data = await response.json();
+      if (attempt > 0) {
+        console.log(`Assistant API succeeded on attempt ${attempt + 1}`);
+      }
+      return {
+        ...data,
+        step: data.stepId || null,
+        messageOptions: data.answers || [],
+        bubbleDetails: getBubbleDetails(AGENT_ROLE, data.stepId) || null,
+      };
+    } catch (error) {
+      lastError = error;
+      console.error(`Network error calling assistant API (attempt ${attempt + 1}/${maxRetries + 1}):`, error);
+      
+      // If this is not the last attempt, wait before retrying
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1))); // Progressive delay: 1s, 2s
+        continue;
+      }
     }
-
-    const data = await response.json();
-    return {
-      ...data,
-      step: data.stepId || null,
-      messageOptions: data.answers || [],
-      bubbleDetails: getBubbleDetails(AGENT_ROLE, data.stepId) || null,
-    };
-  } catch (error) {
-    console.error("Error processing assistant API response:", error);
-    // Return fallback values on network error
-    return { step: null, messageOptions: [], bubbleDetails: null };
   }
+
+  // All attempts failed
+  console.error("All retry attempts failed. Using fallback values. Last error:", lastError);
+  return { step: null, messageOptions: [], bubbleDetails: null };
 }
 
 /**
@@ -74,7 +101,7 @@ async function processSuccessfulAgentResponse(
     {
       role: AGENT_ROLE,
       message: message,
-      step: undefined, // TODO. CHECK This will be determined by assistant API
+      step: undefined, // CHECK This will be determined by assistant API
     },
   ]);
 
