@@ -176,13 +176,13 @@ async def update_cart(
             initial_signatures=[cart_signature, merchant_signature],
             initial_status="signed",
             idempotency_key=f"cart_signed_{cart_id}",
+            user_id=user_id or None,
+            session_id=session_id or None,
             metadata={
                 "source": "merchant_agent",
                 "context_id": updater.context_id,
                 "cart_id": cart_id,
                 "updated_with_shipping": True,
-                "user_id": user_id or None,
-                "session_id": session_id or None,
             }
         )
 
@@ -219,14 +219,14 @@ async def update_cart(
             initial_signatures=[cart_signature, merchant_signature],
             initial_status="signed",
             idempotency_key=f"cart_signed_updated_{cart_id}",
+            user_id=user_id or None,
+            session_id=session_id or None,
             metadata={
                 "source": "merchant_agent",
                 "context_id": updater.context_id,
                 "cart_id": cart_id,
                 "updated_with_shipping": True,
                 "replaces_entity_id": entity_id,
-                "user_id": user_id or None,
-                "session_id": session_id or None,
             }
         )
 
@@ -395,12 +395,12 @@ async def initiate_payment(
         initial_signatures=[payment_signature],
         initial_status="created",
         idempotency_key=f"payment_{payment_mandate_id}",
+        user_id=user_id or None,
+        session_id=session_id or None,
         metadata={
             "source": "shopping_agent",
             "context_id": updater.context_id,
             "payment_mandate_id": payment_mandate_id,
-            "user_id": user_id or None,
-            "session_id": session_id or None,
         }
     )
 

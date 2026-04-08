@@ -52,6 +52,10 @@ class PaymentRecord(BaseModel):
     payment_id: str = Field(..., description="Unique payment ID (e.g., pay_xxx)")
     transaction_id: str = Field(..., description="Session/flow ID spanning all mandates")
 
+    # User & session context
+    user_id: Optional[str] = Field(None, description="User who initiated this payment")
+    session_id: Optional[str] = Field(None, description="Session in which payment occurred")
+
     # Mandate references (ID + signature + timestamp ONLY)
     intent_mandate: MandateReference = Field(..., description="Intent mandate reference")
     cart_mandate: MandateReference = Field(..., description="Cart mandate reference")
@@ -77,6 +81,8 @@ class PaymentResponse(BaseModel):
     """Response when retrieving a payment"""
     payment_id: str
     transaction_id: str
+    user_id: Optional[str] = None
+    session_id: Optional[str] = None
     intent_mandate: MandateReference
     cart_mandate: MandateReference
     payment_mandate: MandateReference
@@ -94,6 +100,8 @@ class PaymentResponse(BaseModel):
 class CreatePaymentRequest(BaseModel):
     """Request to manually create a payment record"""
     transaction_id: str = Field(..., description="Transaction ID")
+    user_id: Optional[str] = Field(None, description="User who initiated this payment")
+    session_id: Optional[str] = Field(None, description="Session in which payment occurred")
     intent_mandate_id: str = Field(..., description="Intent mandate entity ID")
     cart_mandate_id: str = Field(..., description="Cart mandate entity ID")
     payment_mandate_id: str = Field(..., description="Payment mandate entity ID")

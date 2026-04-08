@@ -330,8 +330,8 @@ export async function getCartMandatesAPI(journeyId) {
   const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
   const requestBody = {
     filter: {
-      "metadata.user_id": userId,
-      "metadata.session_id": sessionId,
+      "user_id": userId,
+      "session_id": sessionId,
       "entity_type": { $in: ["CartMandate", "IntentMandate"] }
     },
     collectionName: COLLECTIONS.MANDATE_LEDGER,
@@ -368,8 +368,8 @@ export async function getCartMandatesWithTwoSignatures(journeyId) {
   const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
   const requestBody = {
     filter: {
-      "metadata.user_id": userId,
-      "metadata.session_id": sessionId,
+      "user_id": userId,
+      "session_id": sessionId,
       "entity_type": "CartMandate",
       "status": "signed",
       "signatures": { $size: 2 }
@@ -408,8 +408,8 @@ export async function getPaymentMandate(journeyId) {
   const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
   const requestBody = {
     filter: {
-      "metadata.user_id": userId,
-      "metadata.session_id": sessionId,
+      "user_id": userId,
+      "session_id": sessionId,
       "entity_type": "PaymentMandate",
       "status": "created",
       "signatures": { $size: 1 }

@@ -115,6 +115,16 @@ class MandateLedgerEntry(BaseModel):
         description="Transaction ID grouping related mandates (Intent + Cart + Payment)"
     )
 
+    # User & session context
+    user_id: Optional[str] = Field(
+        None,
+        description="User who owns this mandate"
+    )
+    session_id: Optional[str] = Field(
+        None,
+        description="Session in which mandate was created"
+    )
+
     # Actor & audit
     created_by_agent: str = Field(
         ...,
@@ -198,6 +208,10 @@ class MandateCurrentState(BaseModel):
     # Transaction context
     transaction_id: str = Field(..., description="Transaction ID")
 
+    # User & session context
+    user_id: Optional[str] = Field(None, description="User who owns this mandate")
+    session_id: Optional[str] = Field(None, description="Session in which mandate was created")
+
     # Audit trail summary
     created_at: datetime = Field(..., description="When first version was created")
     created_by_agent: str = Field(..., description="Agent that created v1")
@@ -240,6 +254,8 @@ class MandateCreateRequest(BaseModel):
         description="The mandate data (must match mandate_type)"
     )
     transaction_id: str = Field(..., description="Transaction ID")
+    user_id: Optional[str] = Field(None, description="User who owns this mandate")
+    session_id: Optional[str] = Field(None, description="Session in which mandate was created")
     created_by_agent: str = Field(..., description="Agent ID creating this mandate")
     created_by_agent_type: str = Field(..., description="Agent type")
     idempotency_key: Optional[str] = Field(None, description="Idempotency key")

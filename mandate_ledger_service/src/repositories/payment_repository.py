@@ -80,6 +80,8 @@ class PaymentRepository:
         self,
         status: Optional[str] = None,
         merchant_agent: Optional[str] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
         skip: int = 0,
@@ -91,6 +93,8 @@ class PaymentRepository:
         Args:
             status: Filter by payment status
             merchant_agent: Filter by merchant agent
+            user_id: Filter by user ID
+            session_id: Filter by session ID
             start_date: Filter by start date
             end_date: Filter by end date
             skip: Number of records to skip
@@ -105,6 +109,10 @@ class PaymentRepository:
             query["status"] = status
         if merchant_agent:
             query["merchant_agent"] = merchant_agent
+        if user_id:
+            query["user_id"] = user_id
+        if session_id:
+            query["session_id"] = session_id
         if start_date or end_date:
             query["processed_at"] = {}
             if start_date:
