@@ -49,6 +49,7 @@ class ShoppingResponse(BaseModel):
     status: str = "success"
     data: Optional[Dict[str, Any]] = None
     agent_state: Optional[Dict[str, Any]] = None
+    event_logs: Optional[list] = None
 
 # FastAPI models for auditor agent integration (following shopping pattern)
 class AuditorRequest(BaseModel):
@@ -64,6 +65,7 @@ class AuditorResponse(BaseModel):
     status: str = "success"
     data: Optional[Dict[str, Any]] = None
     agent_state: Optional[Dict[str, Any]] = None
+    event_logs: Optional[list] = None
 
 # Setup ADK services (following ADK FastAPI pattern)
 session_service = InMemorySessionService()
@@ -90,6 +92,42 @@ auditor_runner = Runner(
     memory_service=memory_service,
     #credential_service=credential_service,
 )
+
+def _serialize_event(event) -> dict:
+    """Safely serialize an ADK Event to a JSON-friendly dict."""
+    event_dict = {}
+    if hasattr(event, 'author'):
+        event_dict["author"] = event.author
+    if hasattr(event, 'invocation_id'):
+        event_dict["invocation_id"] = event.invocation_id
+    if hasattr(event, 'content') and event.content:
+        if hasattr(event.content, 'parts') and event.content.parts:
+            parts = []
+            for part in event.content.parts:
+                if hasattr(part, 'text') and part.text:
+                    parts.append({"type": "text", "text": part.text})
+                elif hasattr(part, 'data') and part.data:
+                    try:
+                        json.dumps(part.data)
+                        parts.append({"type": "data", "data": part.data})
+                    except (TypeError, ValueError):
+                        parts.append({"type": "data", "data": str(part.data)})
+                else:
+                    parts.append({"type": "other", "value": str(part)})
+            event_dict["parts"] = parts
+    if hasattr(event, 'error_message') and event.error_message:
+        event_dict["error_message"] = event.error_message
+    if hasattr(event, 'actions') and event.actions:
+        try:
+            actions = event.actions
+            if hasattr(actions, 'model_dump'):
+                actions = actions.model_dump()
+            json.dumps(actions)
+            event_dict["actions"] = actions
+        except (TypeError, ValueError):
+            event_dict["actions"] = str(event.actions)
+    return event_dict
+
 
 async def call_shopping_agent(message: str, session_id: str, user_id: str) -> Dict[str, Any]:
     """Call the ADK shopping agent using the Runner pattern (same as ADK FastAPI)"""
@@ -149,6 +187,7 @@ async def call_shopping_agent(message: str, session_id: str, user_id: str) -> Di
             "user_id": user_id,
             "status": "success",
             "events_count": len(events),
+            "event_logs": [_serialize_event(e) for e in events],
             "debug_info": {
                 "message_sent": message,
                 "session_existed": session is not None,
@@ -225,6 +264,7 @@ async def call_auditor_agent(message: str, session_id: str, user_id: str) -> Dic
             "user_id": user_id,
             "status": "success",
             "events_count": len(events),
+            "event_logs": [_serialize_event(e) for e in events],
             "debug_info": {
                 "message_sent": message,
                 "session_existed": session is not None,

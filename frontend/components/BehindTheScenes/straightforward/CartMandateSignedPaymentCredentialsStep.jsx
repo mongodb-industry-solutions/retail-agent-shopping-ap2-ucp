@@ -2,7 +2,7 @@ import { AGENT_ROLE } from "@/lib/const/bubbleDetails";
 import React, { useState, useEffect } from "react";
 import ImageContainer from "../ImageContainer";
 import { Code, Panel } from "@leafygreen-ui/code";
-import { getCartMandatesWithTwoSignatures } from "@/lib/api";
+import { getCartMandatesWithTwoSignatures } from "@/lib/mongo-apis";
 import { useSelector } from "react-redux";
 import { journeys } from "@/lib/const/ux-writing";
 

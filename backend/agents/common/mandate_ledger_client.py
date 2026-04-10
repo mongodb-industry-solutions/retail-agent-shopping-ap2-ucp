@@ -77,7 +77,9 @@ class MandateLedgerClient:
         idempotency_key: Optional[str] = None,
         metadata: Optional[dict] = None,
         initial_signatures: Optional[list] = None,
-        initial_status: Optional[str] = None
+        initial_status: Optional[str] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None
     ) -> dict:
         """
         Create a new mandate in the ledger.
@@ -105,6 +107,11 @@ class MandateLedgerClient:
             "transaction_id": transaction_id,
             "metadata": metadata or {}
         }
+
+        if user_id:
+            payload["user_id"] = user_id
+        if session_id:
+            payload["session_id"] = session_id
 
         # Add initial signatures if provided
         if initial_signatures:
@@ -384,15 +391,14 @@ class MandateLedgerClient:
 
         if payment_method_type:
             payload["payment_method_type"] = payment_method_type
-        
-        # Build metadata with user_id and session_id
-        if metadata or user_id or session_id:
-            final_metadata = metadata or {}
-            if user_id:
-                final_metadata["user_id"] = user_id
-            if session_id:
-                final_metadata["session_id"] = session_id
-            payload["metadata"] = final_metadata
+
+        if user_id:
+            payload["user_id"] = user_id
+        if session_id:
+            payload["session_id"] = session_id
+
+        if metadata:
+            payload["metadata"] = metadata
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             response = await client.post(

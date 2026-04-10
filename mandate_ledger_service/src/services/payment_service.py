@@ -86,6 +86,10 @@ class PaymentService:
         payment_response = payment_contents.get("payment_response", {})
         method_name = payment_response.get("method_name")
 
+        # Extract user_id and session_id from mandate-level fields or metadata
+        user_id = payment_mandate.get("user_id") or payment_mandate.get("metadata", {}).get("user_id")
+        session_id = payment_mandate.get("session_id") or payment_mandate.get("metadata", {}).get("session_id")
+
         # Build ultra-lean mandate references (ID + signature + timestamp ONLY)
         intent_ref = self._build_mandate_reference(intent_mandate)
         cart_ref = self._build_mandate_reference(cart_mandate)
@@ -95,6 +99,8 @@ class PaymentService:
         payment_record = {
             "payment_id": payment_id,
             "transaction_id": transaction_id,
+            "user_id": user_id,
+            "session_id": session_id,
 
             # Mandate references (ID + signature + timestamp ONLY, NO content)
             "intent_mandate": intent_ref,
@@ -188,7 +194,9 @@ class PaymentService:
         merchant_agent: str,
         payment_processor_agent: str,
         payment_method_type: str = None,
-        metadata: dict = None
+        metadata: dict = None,
+        user_id: str = None,
+        session_id: str = None
     ) -> PaymentRecord:
         """
         Manually create a payment record.
@@ -247,6 +255,8 @@ class PaymentService:
         payment_record = {
             "payment_id": payment_id,
             "transaction_id": transaction_id,
+            "user_id": user_id,
+            "session_id": session_id,
 
             # Mandate references (ID + signature + timestamp ONLY)
             "intent_mandate": intent_ref,

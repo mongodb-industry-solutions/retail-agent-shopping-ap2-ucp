@@ -3,21 +3,22 @@ import {
   setSessionInitializationError,
   setJourneySessionAndUserId,
   setAgentThinking,
-  setCartMandates,
-  setCartMandatesWithTwoSignatures,
-  setPaymentMandate,
-  setPaymentDocument,
 } from "@/redux/slices/MandateLedgerSlice";
 import {
   addUserMessage,
   addAgentMessage,
   setSessionIdToInitialUserMessage,
 } from "@/redux/slices/GlobalSlice";
-import { INITIAL_USER_MESSAGE } from "./const/steps";
 import { getCurrentStep, getJourneyUserAndSessionId } from "./helpers";
 import { USER_ROLE, AGENT_ROLE, getBubbleDetails } from "./const/bubbleDetails";
-import { COLLECTIONS } from "./const/data";
 import { stepHasBehindTheScenes } from "@/components/BehindTheScenes/componentMap";
+import { journeys } from "./const/ux-writing";
+import {
+  getCartMandatesAPI,
+  getCartMandatesWithTwoSignatures,
+  getPaymentMandate,
+  getPaymentDocument,
+} from "./mongo-apis";
 
 /**
  * Process agent response through assistant API to get step and messageOptions
@@ -127,7 +128,11 @@ async function processSuccessfulAgentResponse(
       messageOptions,
       step: step,
       bubbleDetails,
-      stepHasBehindTheScenes: stepHasBehindTheScenes(journeyId, step, AGENT_ROLE),
+      stepHasBehindTheScenes: stepHasBehindTheScenes(
+        journeyId,
+        step,
+        AGENT_ROLE,
+      ),
     }),
   );
 }
@@ -178,20 +183,26 @@ export async function getMandateLedgerServiceHealthAPI() {
   return data;
 }
 
-export async function startShoppingSessionAPI(journeyId) {
-  let {userId} = getJourneyUserAndSessionId(journeyId);
+export async function startSessionAPI(journeyId) {
+  let { userId } = getJourneyUserAndSessionId(journeyId);
 
   // Add initial user message immediately and set thinking state
   if (journeyId) {
     store.dispatch(
       addUserMessage({
         journeyId: journeyId,
-        message: INITIAL_USER_MESSAGE,
+        message:
+          journeys[journeyId]?.initialMessage ||
+          "Hello, I'd like to start shopping",
         sessionId: null, // Will be updated when we get the session ID
         userId: userId, // Use the already constructed userId
         step: "initial",
         bubbleDetails: null,
-        stepHasBehindTheScenes: stepHasBehindTheScenes(journeyId, "initial", USER_ROLE),
+        stepHasBehindTheScenes: stepHasBehindTheScenes(
+          journeyId,
+          "initial",
+          USER_ROLE,
+        ),
       }),
     );
 
@@ -204,8 +215,12 @@ export async function startShoppingSessionAPI(journeyId) {
     );
   }
 
+  const endpoint =
+    journeyId === journeys.disputing.id
+      ? "/api/auditor-start-session"
+      : "/api/shopping-start-session";
   const response = await fetch(
-    `/api/shopping-start-session?user_id=${encodeURIComponent(userId)}`,
+    `${endpoint}?user_id=${encodeURIComponent(userId)}`,
     {
       method: "POST",
       headers: {
@@ -219,7 +234,7 @@ export async function startShoppingSessionAPI(journeyId) {
     return handleApiError(
       journeyId,
       response.status,
-      `Error starting shopping session: ${response.status}`,
+      `Error starting session: ${response.status}`,
       true,
     );
 
@@ -256,7 +271,7 @@ export async function startShoppingSessionAPI(journeyId) {
 }
 
 export async function chatWithShoppingAgentAPI(journeyId, message) {
-  let {userId, sessionId } = getJourneyUserAndSessionId(journeyId);
+  let { userId, sessionId } = getJourneyUserAndSessionId(journeyId);
   if (!sessionId)
     console.log(
       "Warning: No sessionId found in Redux for journeyId",
@@ -276,7 +291,11 @@ export async function chatWithShoppingAgentAPI(journeyId, message) {
         userId,
         step: currentStep,
         bubbleDetails: null, // User messages don't get bubbleDetails from assistant API
-        stepHasBehindTheScenes: stepHasBehindTheScenes(journeyId, currentStep, USER_ROLE),
+        stepHasBehindTheScenes: stepHasBehindTheScenes(
+          journeyId,
+          currentStep,
+          USER_ROLE,
+        ),
       }),
     );
 
@@ -352,170 +371,3 @@ const handleApiError = (
 
   return error;
 };
-
-export async function getCartMandatesAPI(journeyId) {
-  const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
-  const requestBody = {
-    filter: {
-      "metadata.user_id": userId,
-      "metadata.session_id": sessionId,
-      "entity_type": { $in: ["CartMandate", "IntentMandate"] }
-    },
-    collectionName: COLLECTIONS.MANDATE_LEDGER,
-  };  
-  const response = await fetch(`/api/findDocuments`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
-
-  if (!response.ok)
-    return {
-      error: true,
-      message: `Error fetching cart mandate: ${response.status}`,
-      status: response.status,
-    };
-
-  const data = await response.json();
-  console.log('getCartMandateAPI - Response data:', data);
-
-  store.dispatch(
-    setCartMandates({
-      journeyId,
-      cartMandates: data.documents || [],
-    }),
-  );
-
-  return data;
-}
-
-export async function getCartMandatesWithTwoSignatures(journeyId) {
-  const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
-  const requestBody = {
-    filter: {
-      "metadata.user_id": userId,
-      "metadata.session_id": sessionId,
-      "entity_type": "CartMandate",
-      "status": "signed",
-      "signatures": { $size: 2 }
-    },
-    collectionName: COLLECTIONS.MANDATE_LEDGER,
-  };  
-  const response = await fetch(`/api/findDocuments`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
-
-  if (!response.ok)
-    return {
-      error: true,
-      message: `Error fetching cart mandate: ${response.status}`,
-      status: response.status,
-    };
-
-  const data = await response.json();
-  console.log('getCartMandatesWithTwoSignatures - Response data:', data);
-
-  store.dispatch(
-    setCartMandatesWithTwoSignatures({
-      journeyId,
-      cartMandateWithTwoSignatures: data.documents[0] || null,
-    }),
-  );
-
-  return data;
-}
-
-export async function getPaymentMandate(journeyId) {
-  const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
-  const requestBody = {
-    filter: {
-      "metadata.user_id": userId,
-      "metadata.session_id": sessionId,
-      "entity_type": "PaymentMandate",
-      "status": "created",
-      "signatures": { $size: 1 }
-    },
-    collectionName: COLLECTIONS.MANDATE_LEDGER,
-  };  
-  const response = await fetch(`/api/findDocuments`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
-
-  if (!response.ok)
-    return {
-      error: true,
-      message: `Error fetching payment mandate: ${response.status}`,
-      status: response.status,
-    };
-
-  const data = await response.json();
-  console.log('getPaymentMandate - Response data:', data);
-
-  store.dispatch(
-    setPaymentMandate({
-      journeyId,
-      paymentMandate: data.documents[0] || null,
-    }),
-  );
-
-  return data;
-}
-
-export async function getPaymentDocument(journeyId) {
-  let paymentMandate = store.getState().MandateLedger.journeysStatus?.[journeyId]?.paymentMandate;
-  if (!paymentMandate) {
-    await getPaymentMandate(journeyId);
-    paymentMandate = store.getState().MandateLedger.journeysStatus?.[journeyId]?.paymentMandate;
-  }
-  
-  if (!paymentMandate) {
-    return {
-      error: true,
-      message: "No payment mandate found",
-      status: 404,
-    };
-  }
-  
-  const requestBody = {
-    filter: {
-      "payment_mandate.mandate_id": paymentMandate.entity_id,
-    },
-    collectionName: COLLECTIONS.PAYMENTS,
-  };  
-  const response = await fetch(`/api/findDocuments`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
-
-  if (!response.ok)
-    return {
-      error: true,
-      message: `Error fetching payment document: ${response.status}`,
-      status: response.status,
-    };
-
-  const data = await response.json();
-  console.log('getPaymentDocument - Response data:', data);
-
-  store.dispatch(
-    setPaymentDocument({
-      journeyId,
-      paymentDocument: data.documents[0] || null,
-    }),
-  );
-
-  return data;
-}

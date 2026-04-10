@@ -71,12 +71,16 @@ async def create_payment(
             merchant_agent=request_body.merchant_agent,
             payment_processor_agent=request_body.payment_processor_agent,
             payment_method_type=request_body.payment_method_type,
-            metadata=request_body.metadata
+            metadata=request_body.metadata,
+            user_id=request_body.user_id,
+            session_id=request_body.session_id
         )
 
         return PaymentResponse(
             payment_id=payment_record.payment_id,
             transaction_id=payment_record.transaction_id,
+            user_id=payment_record.user_id,
+            session_id=payment_record.session_id,
             intent_mandate=payment_record.intent_mandate,
             cart_mandate=payment_record.cart_mandate,
             payment_mandate=payment_record.payment_mandate,
@@ -126,6 +130,8 @@ async def get_payment(
     return PaymentResponse(
         payment_id=payment.payment_id,
         transaction_id=payment.transaction_id,
+        user_id=payment.user_id,
+        session_id=payment.session_id,
         intent_mandate=payment.intent_mandate,
         cart_mandate=payment.cart_mandate,
         payment_mandate=payment.payment_mandate,
@@ -158,6 +164,8 @@ async def get_payments_by_session(
         PaymentResponse(
             payment_id=p.payment_id,
             transaction_id=p.transaction_id,
+            user_id=p.user_id,
+            session_id=p.session_id,
             intent_mandate=p.intent_mandate,
             cart_mandate=p.cart_mandate,
             payment_mandate=p.payment_mandate,
@@ -184,6 +192,8 @@ async def get_payments_by_session(
 async def search_payments(
     status: Optional[str] = Query(None, description="Filter by payment status"),
     merchant_agent: Optional[str] = Query(None, description="Filter by merchant agent"),
+    user_id: Optional[str] = Query(None, description="Filter by user ID"),
+    session_id: Optional[str] = Query(None, description="Filter by session ID"),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
     agent: AuthenticatedAgent = Depends(get_authenticated_agent)
@@ -197,6 +207,8 @@ async def search_payments(
     payments, total = await service.payment_repo.search_payments(
         status=status,
         merchant_agent=merchant_agent,
+        user_id=user_id,
+        session_id=session_id,
         skip=skip,
         limit=limit
     )
@@ -205,6 +217,8 @@ async def search_payments(
         PaymentResponse(
             payment_id=p.payment_id,
             transaction_id=p.transaction_id,
+            user_id=p.user_id,
+            session_id=p.session_id,
             intent_mandate=p.intent_mandate,
             cart_mandate=p.cart_mandate,
             payment_mandate=p.payment_mandate,

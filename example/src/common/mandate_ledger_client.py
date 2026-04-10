@@ -77,7 +77,9 @@ class MandateLedgerClient:
         idempotency_key: Optional[str] = None,
         metadata: Optional[dict] = None,
         initial_signatures: Optional[list] = None,
-        initial_status: Optional[str] = None
+        initial_status: Optional[str] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None
     ) -> dict:
         """
         Create a new mandate in the ledger.
@@ -105,6 +107,11 @@ class MandateLedgerClient:
             "transaction_id": transaction_id,
             "metadata": metadata or {}
         }
+
+        if user_id:
+            payload["user_id"] = user_id
+        if session_id:
+            payload["session_id"] = session_id
 
         # Add initial signatures if provided
         if initial_signatures:
@@ -338,7 +345,9 @@ class MandateLedgerClient:
         merchant_agent: str,
         payment_processor_agent: str,
         payment_method_type: Optional[str] = None,
-        metadata: Optional[dict] = None
+        metadata: Optional[dict] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None
     ) -> dict:
         """
         Create a payment summary record in the payments collection.
@@ -381,6 +390,12 @@ class MandateLedgerClient:
 
         if payment_method_type:
             payload["payment_method_type"] = payment_method_type
+
+        if user_id:
+            payload["user_id"] = user_id
+        if session_id:
+            payload["session_id"] = session_id
+
         if metadata:
             payload["metadata"] = metadata
 

@@ -186,6 +186,10 @@ async def initiate_payment_with_otp(
       "signed_at": datetime.now(timezone.utc).isoformat()
   }
 
+  user_id = tool_context.state.get("user_id") or getattr(tool_context, 'user_id', None)
+  session = getattr(tool_context, 'session', None)
+  session_id = tool_context.state.get("session_id") or (getattr(session, 'id', None) if session else None)
+
   outgoing_message_builder = (
       A2aMessageBuilder()
       .set_context_id(tool_context.state["shopping_context_id"])
@@ -197,6 +201,8 @@ async def initiate_payment_with_otp(
       .add_data("challenge_response", challenge_response)
       .add_data("risk_data", risk_data)
       .add_data("debug_mode", debug_mode)
+      .add_data("user_id", user_id or "unknown")
+      .add_data("session_id", session_id or "unknown")
       .build()
   )
 

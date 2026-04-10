@@ -61,7 +61,9 @@ class MandateRepository:
         created_by_agent_type: str,
         transaction_id: str,
         metadata: Optional[dict] = None,
-        signatures: Optional[list] = None
+        signatures: Optional[list] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None
     ) -> MandateLedgerEntry:
         """
         Create the first version of a mandate in the ledger.
@@ -92,6 +94,8 @@ class MandateRepository:
             "created_by_agent": created_by_agent,
             "created_by_agent_type": created_by_agent_type,
             "transaction_id": transaction_id,
+            "user_id": user_id,
+            "session_id": session_id,
             "parent_version": None,
             "parent_version_hash": None,
             "metadata": metadata or {},
@@ -119,7 +123,9 @@ class MandateRepository:
         parent_version: int,
         parent_version_hash: str,
         metadata: Optional[dict] = None,
-        signatures: Optional[list] = None
+        signatures: Optional[list] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None
     ) -> MandateLedgerEntry:
         """
         Append a new version to the mandate ledger.
@@ -158,6 +164,8 @@ class MandateRepository:
             "created_by_agent": created_by_agent,
             "created_by_agent_type": created_by_agent_type,
             "transaction_id": transaction_id,
+            "user_id": user_id,
+            "session_id": session_id,
             "parent_version": parent_version,
             "parent_version_hash": parent_version_hash,
             "metadata": metadata or {},
@@ -312,6 +320,8 @@ class MandateRepository:
             status=doc["status"],
             mandate_data=doc["mandate_data"],
             transaction_id=doc["transaction_id"],
+            user_id=doc.get("user_id"),
+            session_id=doc.get("session_id"),
             created_at=doc["created_at"],
             created_by_agent=doc["created_by_agent"],
             updated_at=doc.get("created_at"),  # Use created_at of this version

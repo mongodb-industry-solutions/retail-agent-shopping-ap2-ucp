@@ -14,6 +14,7 @@ import { palette } from "@leafygreen-ui/palette";
 import { spacing } from "@leafygreen-ui/tokens";
 import { journeys } from "@/lib/const/ux-writing";
 import { setGuidedSlice } from "../../redux/slices/GlobalSlice";
+import OrderSelectionModal from "../OrderSelectionModal/OrderSelectionModal";
 
 const profileOrder = ["straightforward", "hunter", "disputing"];
 
@@ -22,9 +23,24 @@ const ProfileSelection = () => {
   const dispatch = useDispatch();
   const startedJourneys = useSelector((state) => state.Global.startedJourneys);
   const [hoveredProfile, setHoveredProfile] = useState(null);
+  const [showOrderSelectionModal, setShowOrderSelectionModal] = useState(false);
 
   const onSelectProfile = (profileId) => {
-    router.push(`/journey/${profileId}`);
+    if(profileId === journeys.disputing.id) {
+      setShowOrderSelectionModal(true);
+    }else{
+      router.push(`/journey/${profileId}`);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowOrderSelectionModal(false);
+  };
+
+  const redirectToStartDisputingJourney = () => {
+    // Logic for order selection will be implemented later
+    setShowOrderSelectionModal(false);
+    router.push(`/journey/disputing`);
   };
 
   const handleOpenIntro = () => {
@@ -47,10 +63,6 @@ const ProfileSelection = () => {
     if (profileIndex <= 0) return "";
     const previousJourney = profileOrder[profileIndex - 1];
     return journeys[previousJourney]?.name || "";
-  };
-
-  const getProfileById = (profileId) => {
-    return journeys[profileId];
   };
 
   return (
@@ -315,6 +327,13 @@ const ProfileSelection = () => {
           View Introduction Guide
         </Button>
       </div>
+
+      {/* Order Selection Modal for Disputing Journey */}
+      <OrderSelectionModal
+        show={showOrderSelectionModal}
+        onHide={handleCloseModal}
+        redirectToStartDisputingJourney={redirectToStartDisputingJourney}
+      />
     </div>
   );
 };
