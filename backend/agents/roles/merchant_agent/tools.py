@@ -320,11 +320,11 @@ async def _create_payment_record(
       merchant_agent="merchant_agent_dev",
       payment_processor_agent="payment_processor",
       payment_method_type="CARD",
+      user_id=user_id or None,
+      session_id=session_id or None,
       metadata={
           "context_id": updater.context_id,
           "payment_mandate_id": payment_mandate_id,
-          "user_id": user_id or None,
-          "session_id": session_id or None,
       }
   )
   return result
