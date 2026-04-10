@@ -22,7 +22,7 @@ export const getDemoSessionId = () => {
 
 export const getJourneyUserAndSessionId = (journeyId) => {
   const journeyStatus = store.getState().MandateLedger.journeysStatus[journeyId] || {};
-  const sessionId = journeyStatus?.session_id || null;
+  const sessionId = journeyStatus?.session_id || null; // session_id comes from the start-session API to the agents
   let userId = journeyStatus?.user_id || null;
   if(!userId) {
     userId = `${journeyId}-${getDemoSessionId()}`;

@@ -26,15 +26,17 @@ import { COLLECTIONS } from "./const/data";
  */
 export const getAvailableOrdersAPI = async () => {
   try {
-    const { userId, sessionId } = getJourneyUserAndSessionId(
-      journeys.disputing.id,
+    const { userId: straightforward_userId } = getJourneyUserAndSessionId(
+      journeys.straightforward.id,
+    );
+    const { userId: hunter_userId } = getJourneyUserAndSessionId(
+      journeys.hunter.id,
     );
 
     // First, fetch all payment documents
     const payments_requestBody = {
       filter: {
-        "metadata.user_id": userId,
-        "metadata.session_id": sessionId,
+        "user_id": { $in: [straightforward_userId, hunter_userId] },
       },
       collectionName: COLLECTIONS.PAYMENTS,
     };
@@ -70,8 +72,7 @@ export const getAvailableOrdersAPI = async () => {
     // Now fetch mandates that match these payment mandate IDs
     const cart_with_mandate_requestBody = {
       filter: {
-        "metadata.user_id": userId,
-        "metadata.session_id": sessionId,
+        "user_id": { $in: [straightforward_userId, hunter_userId] },
         entity_type: "CartMandate",
         entity_id: { $in: mandateIds }, // Search for mandates with these specific IDs
         status: "signed",
@@ -120,8 +121,8 @@ export async function getCartMandatesAPI(journeyId) {
   const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
   const requestBody = {
     filter: {
-      "metadata.user_id": userId,
-      "metadata.session_id": sessionId,
+      "user_id": userId,
+      "session_id": sessionId,
       entity_type: { $in: ["CartMandate", "IntentMandate"] },
     },
     collectionName: COLLECTIONS.MANDATE_LEDGER,
@@ -158,8 +159,8 @@ export async function getCartMandatesWithTwoSignatures(journeyId) {
   const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
   const requestBody = {
     filter: {
-      "metadata.user_id": userId,
-      "metadata.session_id": sessionId,
+      "user_id": userId,
+      "session_id": sessionId,
       entity_type: "CartMandate",
       status: "signed",
       signatures: { $size: 2 },
@@ -198,8 +199,8 @@ export async function getPaymentMandate(journeyId) {
   const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
   const requestBody = {
     filter: {
-      "metadata.user_id": userId,
-      "metadata.session_id": sessionId,
+      "user_id": userId,
+      "session_id": sessionId,
       entity_type: "PaymentMandate",
       status: "created",
       signatures: { $size: 1 },

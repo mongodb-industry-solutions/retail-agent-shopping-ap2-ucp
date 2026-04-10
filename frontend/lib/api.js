@@ -153,7 +153,7 @@ function buildConversationHistory(messages) {
     const isLastMessage = index === messages.length - 1;
     const isAgentMessage = msg.role === AGENT_ROLE || msg.type === AGENT_ROLE;
 
-    if ((isLastMessage && isAgentMessage && msg.step === undefined) || messageObj.role === USER_ROLE) {
+    if ((isLastMessage && isAgentMessage && msg.step === undefined) || messageObj.role !== AGENT_ROLE) {
       // Keep step undefined for the last agent message
       messageObj.step = undefined;
     } else {
@@ -163,24 +163,6 @@ function buildConversationHistory(messages) {
 
     return messageObj;
   });
-}
-
-export async function getMandateLedgerServiceHealthAPI() {
-  const response = await fetch(`/api/mandateLedgerServiceHealth`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  if (!response.ok) {
-    return {
-      error: true,
-      message: `Error fetching mandate ledger service health: ${response.status}`,
-      status: response.status,
-    };
-  }
-  let data = await response.json();
-  return data;
 }
 
 export async function startSessionAPI(journeyId) {
@@ -309,6 +291,79 @@ export async function chatWithShoppingAgentAPI(journeyId, message) {
   }
 
   const response = await fetch(`/api/shopping-chat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: message,
+      user_id: userId,
+      session_id: sessionId,
+    }),
+  });
+
+  if (!response.ok)
+    return handleApiError(
+      journeyId,
+      response.status,
+      `Error in chat: ${response.status}`,
+      false,
+    );
+
+  const data = await response.json();
+
+  // Process successful response
+  if (journeyId && sessionId) {
+    await processSuccessfulAgentResponse(
+      journeyId,
+      sessionId,
+      userId,
+      data.response,
+    );
+  }
+
+  return data;
+}
+
+export async function chatWithAuditorAgentAPI(journeyId, message) {
+  let { userId, sessionId } = getJourneyUserAndSessionId(journeyId);
+  if (!sessionId)
+    console.log(
+      "Warning: No sessionId found in Redux for journeyId",
+      journeyId,
+    );
+
+  // Add user message immediately and set thinking state
+  if (journeyId && sessionId) {
+    // Get current step from Redux state - this might be null, which is fine
+    const currentStep = getCurrentStep(store.getState().Global, journeyId);
+
+    store.dispatch(
+      addUserMessage({
+        journeyId: journeyId,
+        message,
+        sessionId,
+        userId,
+        step: currentStep,
+        bubbleDetails: null, // User messages don't get bubbleDetails from assistant API
+        stepHasBehindTheScenes: stepHasBehindTheScenes(
+          journeyId,
+          currentStep,
+          USER_ROLE,
+        ),
+      }),
+    );
+
+    // Set agent thinking state
+    store.dispatch(
+      setAgentThinking({
+        journeyId: journeyId,
+        agentIsThinking: true,
+      }),
+    );
+  }
+
+  const response = await fetch(`/api/auditor-chat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

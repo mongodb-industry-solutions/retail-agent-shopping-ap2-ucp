@@ -112,6 +112,9 @@ async def connect_to_mongo() -> None:
             await MongoDB.payments.create_index("merchant_agent")
             await MongoDB.payments.create_index("processed_at")
             await MongoDB.payments.create_index([("status", 1), ("processed_at", -1)])
+            await MongoDB.payments.create_index("user_id")
+            await MongoDB.payments.create_index("session_id")
+            await MongoDB.payments.create_index([("user_id", 1), ("session_id", 1)])
             logger.info("Created indexes on payments collection")
         except Exception as e:
             logger.warning(f"Could not create payment indexes (may already exist): {e}")

@@ -8,6 +8,8 @@ import { spacing } from "@leafygreen-ui/tokens";
 import { getAvailableOrdersAPI } from "@/lib/mongo-apis";
 import { useDispatch } from "react-redux";
 import { setOrder } from "@/redux/slices/MandateLedgerSlice";
+import { setDisputingSystemMessage } from "@/redux/slices/GlobalSlice";
+import { journeys } from "@/lib/const/ux-writing";
 
 const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) => {
   const [orders, setOrders] = useState([]);
@@ -15,7 +17,8 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
   const dispatch = useDispatch();
 
   const handleOrderSelection = (order) => {
-    dispatch(setOrder(order));
+    dispatch(setOrder({journeyId: journeys.disputing.id , order}));
+    dispatch(setDisputingSystemMessage({ order }));
     redirectToStartDisputingJourney();
   };
 

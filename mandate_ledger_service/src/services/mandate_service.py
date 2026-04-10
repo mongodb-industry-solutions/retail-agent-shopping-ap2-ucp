@@ -73,7 +73,9 @@ class MandateService:
         transaction_id: Optional[str] = None,
         metadata: Optional[dict] = None,
         initial_signatures: Optional[list] = None,
-        initial_status: Optional[MandateStatus] = None
+        initial_status: Optional[MandateStatus] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None
     ) -> MandateLedgerEntry:
         """
         Create a new mandate.
@@ -123,7 +125,9 @@ class MandateService:
                 created_by_agent_type=agent_type,
                 transaction_id=transaction_id,
                 metadata=metadata,
-                signatures=initial_signatures or []  # Include initial signatures if provided
+                signatures=initial_signatures or [],  # Include initial signatures if provided
+                user_id=user_id,
+                session_id=session_id
             )
 
             # NOTE: No longer creating current_state - it's queried from ledger
@@ -175,7 +179,9 @@ class MandateService:
         transaction_id: Optional[str] = None,
         metadata: Optional[dict] = None,
         signatures: Optional[list] = None,
-        max_retries: int = 3
+        max_retries: int = 3,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None
     ) -> MandateLedgerEntry:
         """
         Create a new version of a mandate with optimistic locking retry logic.
@@ -233,7 +239,9 @@ class MandateService:
                     parent_version=current.current_version,
                     parent_version_hash=current.current_version_hash,
                     metadata=metadata,
-                    signatures=signatures or []
+                    signatures=signatures or [],
+                    user_id=user_id,
+                    session_id=session_id
                 )
 
                 # NOTE: No longer updating current_state - it's queried from ledger

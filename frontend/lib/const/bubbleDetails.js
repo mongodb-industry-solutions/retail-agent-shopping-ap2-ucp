@@ -3,6 +3,7 @@ import { CHAT_STEPS } from "./steps";
 // Message type constants for dynamic workflow management
 export const USER_ROLE = "user";
 export const AGENT_ROLE = "agent";
+export const SYSTEM_ROLE = "system";
 
 const BUBBLE_DETAILS_CONFIG = {
   [AGENT_ROLE]: {
