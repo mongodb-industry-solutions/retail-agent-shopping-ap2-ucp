@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { AGENT_ROLE } from "@/lib/const/bubbleDetails";
 import ImageContainer from "../ImageContainer";
 import { Code, Panel } from "@leafygreen-ui/code";
-import { getPaymentDocument } from "@/lib/api";
+import { getPaymentDocument } from "@/lib/mongo-apis";
 import { journeys } from "@/lib/const/ux-writing";
 
 const PaymentCompletedStep = ({ type }) => {

@@ -30,7 +30,7 @@ const MandateLedgerSlice = createSlice({
         isInitializing: false,
         agentIsThinking: false,
         error: null,
-        paymentDocument: null
+        order: null, // an item with structure {payment: {...}, mandate: {...}}
       },
     },
     healthStatus: null,
@@ -105,6 +105,13 @@ const MandateLedgerSlice = createSlice({
         state.journeysStatus[journeyId].paymentDocument = paymentDocument;
       }
     },
+    setOrder(state, action) {
+      const { journeyId, order } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].order = order;
+      }
+    },
+
   },
 });
 
@@ -120,6 +127,7 @@ export const {
   setJourneyUserId,
   setPaymentMandate,
   setPaymentDocument,
+  setOrder,
 } = MandateLedgerSlice.actions;
 
 export default MandateLedgerSlice.reducer;
