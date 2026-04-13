@@ -95,9 +95,10 @@ export default function JourneyPage() {
         <ChatbotContainer journeyId={journeyId} />
       </div>
       {/* Sidebar */}
-      {selectedMessage && (
+      {/* TODO  {selectedMessage && (
         <DetailsSidebar />
-      )}
+      )} */}
+      <DetailsSidebar />
     </div>
   );
 }

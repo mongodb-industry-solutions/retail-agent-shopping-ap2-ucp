@@ -1,6 +1,7 @@
 import React from 'react'
 import ImageContainer from "../ImageContainer";
 import { Code, Panel } from "@leafygreen-ui/code";
+import { Banner } from "@leafygreen-ui/banner";
 import { AGENT_ROLE } from '@/lib/const/bubbleDetails';
 
 const wellKnownEndpointExample = {
@@ -53,7 +54,7 @@ const ShoppingAgentIntroductionStep = ({ type }) => {
             </p>
 
             <p>
-              It interprets your request, communicates with merchant agents to
+              It interprets your request, communicates with <strong>merchant agents</strong> to
               find products and offers, and coordinates the path from discovery
               to checkout.
             </p>
@@ -71,16 +72,18 @@ const ShoppingAgentIntroductionStep = ({ type }) => {
               .
             </p>
 
-            <p>
+            <Banner variant="info" className='mb-3' style={{ fontSize: "16px" }}>
               UCP allows the <span className="purple-text">Shopping Agent</span>{" "}
               to discover, through a standard <code>well-known endpoint</code>,
               what a merchant supports: commerce services, checkout
               capabilities, payment options, and secure{" "}
               <a href="https://ap2-protocol.org/" target="_blank" rel="noopener noreferrer">
-                AP2 protocol
+                Agent Payments Protocol (AP2)
               </a>
-              .
-            </p>
+              . It also provides businesses flexible ways to integrate via APIs, <a href="https://a2a-protocol.org/latest//" target="_blank" rel="noopener noreferrer">
+               Agent2Agent (A2A)</a>, and the 
+              <a href="https://mcp-protocol.org/" target="_blank" rel="noopener noreferrer"> Model Context Protocol (MCP)</a>.
+            </Banner>
           </div>
 
           <Code 
@@ -96,7 +99,7 @@ const ShoppingAgentIntroductionStep = ({ type }) => {
             <p>
               This means the agent does not need a custom integration for every
               merchant. Instead, it can read the merchant’s published
-              capabilities, understand how to interact with it, and, when AP2 is
+              capabilities, understand how to interact with it, and, when <strong>AP2</strong> is
               supported, move into an auditable transaction flow.
             </p>
           </div>

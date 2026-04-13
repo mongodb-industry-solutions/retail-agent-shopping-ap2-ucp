@@ -47,7 +47,7 @@ const MandatesCreatedStep = ({ type }) => {
             <span className="green-text">MongoDB</span>, ensuring every mandate
             is stored as an immutable document — capturing each step of the
             interaction in a way that is fully traceable, verifiable, and
-            auditable over time
+            auditable over time.
           </p>
           <p>
             At this stage, the{" "}
@@ -79,7 +79,7 @@ const MandatesCreatedStep = ({ type }) => {
         <div className="info">
           <p>
             The <span className="green-text">Merchant Agent</span> generated
-            three Cart Mandate options with a “proposed” status, not yet signed
+            one Cart Mandate per provided option with a “proposed” status, not yet signed
             by the user, and stored them in{" "}
             <span className="green-text">MongoDB</span> via the{" "}
             <strong>Mandate Ledger Service</strong> for future audit.
