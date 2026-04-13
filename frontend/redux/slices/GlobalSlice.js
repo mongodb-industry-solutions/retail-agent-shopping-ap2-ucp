@@ -1,6 +1,6 @@
 import { journeys } from "@/lib/const/ux-writing";
 import { createSlice } from "@reduxjs/toolkit";
-import { USER_ROLE, AGENT_ROLE } from "@/lib/const/bubbleDetails";
+import { USER_ROLE, AGENT_ROLE, SYSTEM_ROLE } from "@/lib/const/bubbleDetails";
 
 const GlobalSliceSlice = createSlice({
   name: "GlobalSlice",
@@ -92,6 +92,22 @@ const GlobalSliceSlice = createSlice({
       }
       // Also clear selected message when clearing messages  
       state.selectedMessage = null;
+    },
+    setDisputingSystemMessage(state, action) {
+      const journeyId = journeys.disputing.id;
+      const { order } = action.payload;
+      const payment = order?.payment;
+      console.log("Setting disputing system message with order:", order);
+      const message = `The metadata needed for the conversation is the following payment_id is ${payment?.payment_id}, 
+        transaction_id is ${payment?.transaction_id}, intent mandate id is ${payment?.intent_mandate?.mandate_id}, 
+        cart mandate id is ${payment?.cart_mandate?.mandate_id} and payment mandate id is ${payment?.payment_mandate?.mandate_id}`;
+      const systemMessage = {
+        type: SYSTEM_ROLE,
+        content: message,
+      };
+      if (state.messages[journeyId]) {
+        state.messages[journeyId] =[systemMessage];
+      }
     }
   },
 });
@@ -105,7 +121,8 @@ export const {
   addUserMessage,
   addAgentMessage,
   setSessionIdToInitialUserMessage,
-  clearMessages
+  clearMessages,
+  setDisputingSystemMessage
 } = GlobalSliceSlice.actions;
 
 export default GlobalSliceSlice.reducer;

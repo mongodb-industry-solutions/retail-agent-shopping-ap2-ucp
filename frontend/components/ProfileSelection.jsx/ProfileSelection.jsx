@@ -274,7 +274,7 @@ const ProfileSelection = () => {
                 </div>
 
                 {/* Select Button */}
-                {unlocked ? (
+                {unlocked || true ? (
                   <Button
                     variant="primary"
                     size="large"

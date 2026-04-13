@@ -26,15 +26,17 @@ import { COLLECTIONS } from "./const/data";
  */
 export const getAvailableOrdersAPI = async () => {
   try {
-    const { userId, sessionId } = getJourneyUserAndSessionId(
-      journeys.disputing.id,
+    const { userId: straightforward_userId } = getJourneyUserAndSessionId(
+      journeys.straightforward.id,
+    );
+    const { userId: hunter_userId } = getJourneyUserAndSessionId(
+      journeys.hunter.id,
     );
 
     // First, fetch all payment documents
     const payments_requestBody = {
       filter: {
-        "user_id": userId,
-        "session_id": sessionId,
+        "user_id": { $in: [straightforward_userId, hunter_userId] },
       },
       collectionName: COLLECTIONS.PAYMENTS,
     };
@@ -70,8 +72,7 @@ export const getAvailableOrdersAPI = async () => {
     // Now fetch mandates that match these payment mandate IDs
     const cart_with_mandate_requestBody = {
       filter: {
-        "user_id": userId,
-        "session_id": sessionId,
+        "user_id": { $in: [straightforward_userId, hunter_userId] },
         entity_type: "CartMandate",
         entity_id: { $in: mandateIds }, // Search for mandates with these specific IDs
         status: "signed",
