@@ -81,7 +81,8 @@ export const journeys = {
     color: "primary",
     detailedInfo:
       "Objective: Introduce all agents involved in a purchase and how they communicate.",
-    profileIcon:  "Checkmark"
+    profileIcon:  "Checkmark",
+    initialMessage: "Hello, I'd like to start shopping"
   },
   hunter: {
     id: "hunter",
@@ -94,7 +95,8 @@ export const journeys = {
     color: "accent",
     detailedInfo:
       "Objective: Introduce the Mandate Service Layer and Role-Based Access Control (RBAC).",
-    profileIcon: "CreditCard"
+    profileIcon: "CreditCard",
+    initialMessage: "Hello, I'd like to start shopping"
   },
   disputing: {
     id: "disputing",
@@ -107,6 +109,7 @@ export const journeys = {
     color: "accent",
     detailedInfo:
       "Objective: Demonstrate immutability and audit trail capabilities for AP2/UCP compliance.",
-    profileIcon: "Warning"
+    profileIcon: "Warning",
+    initialMessage: "Hello, I need help with payment auditing"
   },
 };

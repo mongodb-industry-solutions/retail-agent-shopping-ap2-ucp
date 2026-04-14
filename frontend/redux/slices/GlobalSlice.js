@@ -1,6 +1,6 @@
 import { journeys } from "@/lib/const/ux-writing";
 import { createSlice } from "@reduxjs/toolkit";
-import { USER_ROLE, AGENT_ROLE } from "@/lib/const/bubbleDetails";
+import { USER_ROLE, AGENT_ROLE, SYSTEM_ROLE } from "@/lib/const/bubbleDetails";
 
 const GlobalSliceSlice = createSlice({
   name: "GlobalSlice",
@@ -36,7 +36,7 @@ const GlobalSliceSlice = createSlice({
       state.selectedMessage = action.payload;
     },
     addUserMessage(state, action) {
-      const { journeyId, message, sessionId, userId, step, bubbleDetails } = action.payload;
+      const { journeyId, message, sessionId, userId, step, bubbleDetails, stepHasBehindTheScenes } = action.payload;
       const userMessage = {
         id: `user_${Date.now()}_${Math.random()}`,
         type: USER_ROLE,
@@ -46,16 +46,17 @@ const GlobalSliceSlice = createSlice({
         userId,
         step: step,
         bubbleDetails: bubbleDetails || null,
+        stepHasBehindTheScenes: stepHasBehindTheScenes || false,
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(userMessage);
       }
-      if (state.followLatestMessage) {
+      if (state.followLatestMessage && stepHasBehindTheScenes === true) {
         state.selectedMessage = userMessage;
       }
     },
     addAgentMessage(state, action) {
-      const { journeyId, message, sessionId, userId, messageOptions, step, bubbleDetails } = action.payload;
+      const { journeyId, message, sessionId, userId, messageOptions, step, bubbleDetails, stepHasBehindTheScenes } = action.payload;
       const agentMessage = {
         id: `agent_${Date.now()}_${Math.random()}`,
         type: AGENT_ROLE, 
@@ -66,11 +67,12 @@ const GlobalSliceSlice = createSlice({
         messageOptions: messageOptions || [],
         step: step,
         bubbleDetails: bubbleDetails || null,
+        stepHasBehindTheScenes: stepHasBehindTheScenes || false,
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(agentMessage);
       }
-      if (state.followLatestMessage) {
+      if (state.followLatestMessage && stepHasBehindTheScenes === true) {
         state.selectedMessage = agentMessage;
       }
     },
@@ -90,6 +92,22 @@ const GlobalSliceSlice = createSlice({
       }
       // Also clear selected message when clearing messages  
       state.selectedMessage = null;
+    },
+    setDisputingSystemMessage(state, action) {
+      const journeyId = journeys.disputing.id;
+      const { order } = action.payload;
+      const payment = order?.payment;
+      console.log("Setting disputing system message with order:", order);
+      const message = `The metadata needed for the conversation is the following payment_id is ${payment?.payment_id}, 
+        transaction_id is ${payment?.transaction_id}, intent mandate id is ${payment?.intent_mandate?.mandate_id}, 
+        cart mandate id is ${payment?.cart_mandate?.mandate_id} and payment mandate id is ${payment?.payment_mandate?.mandate_id}`;
+      const systemMessage = {
+        type: SYSTEM_ROLE,
+        content: message,
+      };
+      if (state.messages[journeyId]) {
+        state.messages[journeyId] =[systemMessage];
+      }
     }
   },
 });
@@ -103,7 +121,8 @@ export const {
   addUserMessage,
   addAgentMessage,
   setSessionIdToInitialUserMessage,
-  clearMessages
+  clearMessages,
+  setDisputingSystemMessage
 } = GlobalSliceSlice.actions;
 
 export default GlobalSliceSlice.reducer;

@@ -1,9 +1,27 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
+import { useSelector } from "react-redux";
 import { AGENT_ROLE } from "@/lib/const/bubbleDetails";
 import ImageContainer from "../ImageContainer";
 import { Code, Panel } from "@leafygreen-ui/code";
+import { getPaymentDocument } from "@/lib/mongo-apis";
+import { journeys } from "@/lib/const/ux-writing";
 
 const PaymentCompletedStep = ({ type }) => {
+    const [loadingPaymentDocument, setLoadingPaymentDocument] = useState(false);
+  const paymentDocument = useSelector(
+    (state) =>
+      state.MandateLedger.journeysStatus[journeys.straightforward.id]
+        .paymentDocument,
+  );
+
+  useEffect(() => {
+    if (paymentDocument == null && !loadingPaymentDocument) {
+      setLoadingPaymentDocument(true);
+      getPaymentDocument(journeys.straightforward.id).finally(
+        () => setLoadingPaymentDocument(false),
+      );
+    }
+  }, []);
   if (type === AGENT_ROLE)
     return (
       <div>
@@ -29,7 +47,9 @@ const PaymentCompletedStep = ({ type }) => {
           collapsedLines={21}
           highlightLines={[]}
           panel={<Panel title="Payment" />}
-        ></Code>
+        >
+          {JSON.stringify(paymentDocument, null, 2)}
+        </Code>
         <div className="info">
           <p>
             Finally, the <span className="green-text">Merchant Agent</span>{" "}

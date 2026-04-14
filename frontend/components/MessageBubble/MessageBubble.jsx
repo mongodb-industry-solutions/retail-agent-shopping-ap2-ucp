@@ -7,7 +7,7 @@ import { Body, Subtitle } from "@leafygreen-ui/typography";
 import { palette } from "@leafygreen-ui/palette";
 import Icon from "@leafygreen-ui/icon";
 import { useDispatch, useSelector } from "react-redux";
-import { AGENT_ROLE, USER_ROLE } from "@/lib/const/bubbleDetails";
+import { AGENT_ROLE, SYSTEM_ROLE, USER_ROLE } from "@/lib/const/bubbleDetails";
 import { setSelectedMessage } from "@/redux/slices/GlobalSlice";
 import Image from "next/image";
 
@@ -25,6 +25,8 @@ const MessageBubble = ({message, isLatest, onOptionClick, hasBehindTheScenes}) =
   const selectedMessage = useSelector((state) => state.Global.selectedMessage);
   const isSelectedMessage = selectedMessage?.id === messageId;  
 
+  if(messageType === SYSTEM_ROLE)
+    return
   return (
     <>
       {/* Agent header - only show for agent messages */}

@@ -4,7 +4,7 @@ MongoDB index creation.
 Defines and creates all indexes for the 6 collections.
 This module is called at application startup to ensure indexes exist.
 
-Total: 14 indexes across 6 collections
+Total: 15 indexes across 6 collections
 """
 
 import logging
@@ -33,6 +33,11 @@ MANDATE_LEDGER_INDEXES = [
     IndexModel(
         [("entity_id", ASCENDING), ("entity_type", ASCENDING), ("created_at", DESCENDING)],
         name="entity_type_time_idx",
+        background=True
+    ),
+    IndexModel(
+        [("user_id", ASCENDING), ("session_id", ASCENDING)],
+        name="user_session_idx",
         background=True
     ),
 ]
@@ -130,14 +135,14 @@ async def create_all_indexes() -> None:
     Index creation is idempotent - if an index already exists, it's not recreated.
 
     Creates:
-    - 3 indexes on mandate_ledger
+    - 4 indexes on mandate_ledger
     - 2 indexes on api_keys
     - 2 indexes on idempotency_records
     - 4 indexes on audit_log (including TTL)
     - 2 indexes on consistency_checks
     - 1 index on rate_limits
 
-    Total: 14 indexes
+    Total: 15 indexes
     """
     logger.info("Creating MongoDB indexes...")
 
@@ -178,7 +183,7 @@ async def create_all_indexes() -> None:
         result = await rate_limits.create_indexes(RATE_LIMITS_INDEXES)
         logger.info(f"    Created {len(result)} indexes: {result}")
 
-        logger.info("All 14 indexes created successfully!")
+        logger.info("All 15 indexes created successfully!")
 
     except Exception as e:
         logger.error(f"Error creating indexes: {e}")

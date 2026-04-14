@@ -10,7 +10,7 @@ import {
   setSessionInitializing, 
   clearSessionInitializing 
 } from "@/redux/slices/MandateLedgerSlice";
-import { startShoppingSessionAPI } from "@/lib/api";
+import { startSessionAPI } from "@/lib/api";
 import ShoppingAssistantNavbar from "@/components/ShoppingAssistantNavbar/ShoppingAssistantNavbar";
 import DetailsSidebar from "@/components/DetailsSidebar/DetailsSidebar";
 import ChatbotContainer from "@/components/ChatbotContainer/ChatbotContainer";
@@ -51,7 +51,7 @@ export default function JourneyPage() {
         // Set initializing state
         dispatch(setSessionInitializing({ journeyId }));
         
-        const sessionResponse = await startShoppingSessionAPI(journeyId);
+        const sessionResponse = await startSessionAPI(journeyId);
         
         if (sessionResponse.error) {
           console.error("Failed to start session:", sessionResponse.message);

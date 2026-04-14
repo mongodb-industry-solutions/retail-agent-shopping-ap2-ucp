@@ -1,0 +1,81 @@
+{
+  "name": "AuditorAgent",
+  "description": "An auditor agent that verifies transactions and demonstrates immutability and audit trail capabilities of the Mandate Ledger Service.",
+  "url": "http://localhost:8004/a2a/auditor_agent",
+  "preferredTransport": "JSONRPC",
+  "protocolVersion": "0.3.0",
+  "version": "1.0.0",
+  "defaultInputModes": ["json"],
+  "defaultOutputModes": ["json"],
+  "capabilities": {
+      "extensions": [
+        {
+          "uri": "https://github.com/google-agentic-commerce/ap2/v1",
+          "description": "Supports the Agent Payments Protocol for audit verification.",
+          "required": true
+        }
+      ]
+  },
+  "skills": [
+    {
+      "id": "check_ledger_by_payment_id",
+      "name": "Check Ledger by Payment ID",
+      "description": "Verifies a transaction in the mandate ledger by payment_id. Returns transaction status, confirmation that the record exists, and AP2 signature verification results.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "payment_id": {
+            "type": "string",
+            "description": "Unique payment identifier (e.g., PAY_xxx or pay_xxx-xxx-xxx)"
+          }
+        },
+        "required": ["payment_id"]
+      },
+      "tags": ["audit", "verify", "payment", "signature"]
+    },
+    {
+      "id": "get_mandate_history",
+      "name": "Get Mandate History",
+      "description": "Retrieves detailed mandate history and audit trail. Can get full transaction history by transaction_id or specific mandate history by mandate_id.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "description": "Transaction ID to retrieve all mandate histories (Intent, Cart, Payment)"
+          },
+          "mandate_id": {
+            "type": "string", 
+            "description": "Specific mandate entity ID to retrieve history for a single mandate"
+          }
+        },
+        "required": []
+      },
+      "tags": ["audit", "history", "mandate", "trail"]
+    },
+    {
+      "id": "test_mandate_integrity",
+      "name": "Test Mandate Integrity",
+      "description": "Tests the immutability of the mandate ledger by attempting prohibited operations (delete, update, modify). Demonstrates that the ledger rejects such operations to protect audit integrity.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "description": "Payment ID, transaction ID, or mandate ID that user wants to modify"
+          },
+          "operation": {
+            "type": "string",
+            "description": "Operation user is attempting (delete, update, or modify)"
+          },
+          "details": {
+            "type": "string",
+            "description": "Optional details about what the user wants to change"
+          }
+        },
+        "required": ["identifier", "operation"]
+      },
+      "tags": ["audit", "integrity", "immutability", "security"]
+    }
+  ]
+}

@@ -1,9 +1,28 @@
 import { AGENT_ROLE } from "@/lib/const/bubbleDetails";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ImageContainer from "../ImageContainer";
 import { Code, Panel } from "@leafygreen-ui/code";
+import { getCartMandatesAPI } from "@/lib/mongo-apis";
+import { journeys } from "@/lib/const/ux-writing";
+import { useSelector } from "react-redux";
 
 const MandatesCreatedStep = ({ type }) => {
+  const [loadingMandates, setLoadingMandates] = useState(false);
+  const cartMandates = useSelector(
+    (state) =>
+      state.MandateLedger.journeysStatus[journeys.straightforward.id]
+        .cartMandates,
+  );
+
+  useEffect(() => {
+    if (cartMandates.length === 0 && !loadingMandates) {
+      setLoadingMandates(true);
+      getCartMandatesAPI(journeys.straightforward.id).finally(() =>
+        setLoadingMandates(false),
+      );
+    }
+  }, []);
+
   if (type === AGENT_ROLE)
     return (
       <div>
@@ -50,7 +69,13 @@ const MandatesCreatedStep = ({ type }) => {
           collapsedLines={21}
           highlightLines={[]}
           panel={<Panel title="Intent Mandate" />}
-        ></Code>
+        >
+          {JSON.stringify(
+            cartMandates.find((mandate) => mandate.status === "signed"),
+            null,
+            2,
+          )}
+        </Code>
         <div className="info">
           <p>
             The <span className="green-text">Merchant Agent</span> generated
@@ -64,41 +89,26 @@ const MandatesCreatedStep = ({ type }) => {
           src="/BehindTheScenes/straightforward/MandatesCreatedStep_02.svg"
           alt="Meet Shopping agent"
         />
-        <Code
-          style={{ borderRadius: "0px" }}
-          copyable="true"
-          showLineNumbers
-          expandable
-          darkMode={true}
-          language="json"
-          collapsedLines={21}
-          highlightLines={[]}
-          panel={<Panel title="Cart Mandate 1" />}
-        ></Code>
-        <br></br>
-        <Code
-          style={{ borderRadius: "0px" }}
-          copyable="true"
-          showLineNumbers
-          expandable
-          darkMode={true}
-          language="json"
-          collapsedLines={21}
-          highlightLines={[]}
-          panel={<Panel title="Cart Mandate 2" />}
-        ></Code>
-        <br></br>
-        <Code
-          style={{ borderRadius: "0px" }}
-          copyable="true"
-          showLineNumbers
-          expandable
-          darkMode={true}
-          language="json"
-          collapsedLines={21}
-          highlightLines={[]}
-          panel={<Panel title="Cart Mandate 3" />}
-        ></Code>
+        {cartMandates
+          .filter((mandate) => mandate.status !== "signed")
+          .map((mandate, index) => (
+            <div key={index}>
+              <Code
+                style={{ borderRadius: "0px" }}
+                copyable="true"
+                showLineNumbers
+                expandable
+                darkMode={true}
+                language="json"
+                collapsedLines={6}
+                highlightLines={[]}
+                panel={<Panel title={`Cart Mandate ${index + 1}`} />}
+              >
+                {JSON.stringify(mandate, null, 2)}
+              </Code>
+              <br></br>
+            </div>
+          ))}
       </div>
     );
   else return null;

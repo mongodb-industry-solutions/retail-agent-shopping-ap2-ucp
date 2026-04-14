@@ -97,11 +97,11 @@ async def find_items_workflow(
         initial_signatures=[signature],
         initial_status="signed",
         idempotency_key=f"intent_{updater.context_id}",
+        user_id=user_id or None,
+        session_id=session_id or None,
         metadata={
             "source": "shopping_agent",
             "context_id": updater.context_id,
-            "user_id": user_id or None,
-            "session_id": session_id or None,
         }
     )
 
@@ -226,14 +226,14 @@ async def _create_and_add_cart_mandate_artifact(
         mandate_type="CartMandate",
         mandate_data=cart_mandate.model_dump(),
         transaction_id=transaction_id,
-        initial_status="proposed",  # Status is "proposed" until user selects and shopping agent signs
+        initial_status="proposed",
         idempotency_key=f"cart_proposed_{cart_mandate.contents.id}",
+        user_id=user_id or None,
+        session_id=session_id or None,
         metadata={
             "source": "merchant_agent",
             "context_id": updater.context_id,
             "cart_id": cart_mandate.contents.id,
-            "user_id": user_id or None,
-            "session_id": session_id or None,
         }
     )
 

@@ -51,6 +51,8 @@ class CreateMandateRequest(BaseModel):
     mandate_type: MandateType = Field(..., description="Type of mandate (INTENT, CART, PAYMENT)")
     mandate_data: dict = Field(..., description="AP2 mandate data")
     transaction_id: Optional[str] = Field(None, description="Optional transaction ID")
+    user_id: Optional[str] = Field(None, description="User who owns this mandate")
+    session_id: Optional[str] = Field(None, description="Session in which mandate was created")
     metadata: Optional[dict] = Field(None, description="Optional metadata")
     initial_signatures: Optional[list] = Field(None, description="Initial signatures (for pre-signed mandates)")
     initial_status: Optional[MandateStatus] = Field(None, description="Override initial status (e.g., 'signed' for pre-signed mandates)")
@@ -138,7 +140,9 @@ async def create_mandate(
             transaction_id=request_body.transaction_id,
             metadata=request_body.metadata,
             initial_signatures=request_body.initial_signatures,
-            initial_status=request_body.initial_status
+            initial_status=request_body.initial_status,
+            user_id=request_body.user_id,
+            session_id=request_body.session_id
         )
 
         # Build response

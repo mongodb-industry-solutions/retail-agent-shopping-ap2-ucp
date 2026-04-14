@@ -5,42 +5,35 @@ const MandateLedgerSlice = createSlice({
   name: "MandateLedger",
   initialState: {
     journeysStatus: {
-      [journeys.straightforward.id]: { 
-        session_id: null, 
-        user_id: null, 
+      [journeys.straightforward.id]: {
+        session_id: null,
+        user_id: null,
         isInitializing: false,
         agentIsThinking: false,
-        error: null
+        error: null,
+        cartMandates: [],
+        cartMandateWithTwoSignatures: null,
+        paymentMandate: null,
+        paymentDocument: null,
       },
-      [journeys.hunter.id]: { 
-        session_id: null, 
-        user_id: null, 
+      [journeys.hunter.id]: {
+        session_id: null,
+        user_id: null,
         isInitializing: false,
         agentIsThinking: false,
-        error: null
+        error: null,
+        paymentDocument: null,
       },
-      [journeys.disputing.id]: { 
-        session_id: null, 
-        user_id: null, 
+      [journeys.disputing.id]: {
+        session_id: null,
+        user_id: null,
         isInitializing: false,
         agentIsThinking: false,
-        error: null
+        error: null,
+        order: null, // an item with structure {payment: {...}, mandate: {...}}
       },
     },
     healthStatus: null,
-    /*
-        {
-            "status": "healthy",
-            "timestamp": 1771514643.94278,
-            "version": "0.1.0",
-            "uptime_seconds": 67928.2084569931,
-            "database": {
-                "status": "healthy",
-                "name": "mandate_ledger"
-            },
-            "environment": "development"
-        }
-        */
   },
   reducers: {
     setHealthStatus(state, action) {
@@ -59,13 +52,19 @@ const MandateLedgerSlice = createSlice({
         state.journeysStatus[journeyId].error = action.payload.error;
       }
     },
-    setSessionId(state, action) {
+    setJourneySessionAndUserId(state, action) {
       const { journeyId, session_id, user_id } = action.payload;
       if (state.journeysStatus[journeyId]) {
         state.journeysStatus[journeyId].session_id = session_id;
         state.journeysStatus[journeyId].user_id = user_id;
         state.journeysStatus[journeyId].isInitializing = false;
         state.journeysStatus[journeyId].error = null;
+      }
+    },
+    setJourneyUserId(state, action) {
+      const { journeyId, user_id } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].user_id = user_id;
       }
     },
     setAgentThinking(state, action) {
@@ -81,16 +80,54 @@ const MandateLedgerSlice = createSlice({
         state.journeysStatus[journeyId].error = null;
       }
     },
+    setCartMandates(state, action) {
+      const { journeyId, cartMandates } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].cartMandates = [...cartMandates];
+      }
+    },
+    setCartMandatesWithTwoSignatures(state, action) {
+      const { journeyId, cartMandateWithTwoSignatures } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].cartMandateWithTwoSignatures =
+          cartMandateWithTwoSignatures;
+      }
+    },
+    setPaymentMandate(state, action) {
+      const { journeyId, paymentMandate } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].paymentMandate = paymentMandate;
+      }
+    },
+    setPaymentDocument(state, action) {
+      const { journeyId, paymentDocument } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].paymentDocument = paymentDocument;
+      }
+    },
+    setOrder(state, action) {
+      const { journeyId, order } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].order = order;
+      }
+    },
+
   },
 });
 
-export const { 
-  setHealthStatus, 
-  setSessionInitializing, 
+export const {
+  setHealthStatus,
+  setSessionInitializing,
   setSessionInitializationError,
-  setSessionId,
+  setJourneySessionAndUserId,
   setAgentThinking,
-  clearSessionInitializing 
+  clearSessionInitializing,
+  setCartMandates,
+  setCartMandatesWithTwoSignatures,
+  setJourneyUserId,
+  setPaymentMandate,
+  setPaymentDocument,
+  setOrder,
 } = MandateLedgerSlice.actions;
 
 export default MandateLedgerSlice.reducer;
