@@ -158,65 +158,7 @@ sidecarContainers:
           secretKeyRef:
             name: retail-ap2
             key: ENVIRONMENT 
-
-  - name: assistant
-    # Image will be overridden by Drone pipeline with specific git-SHA tag
-    image: 795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-agent-shopping-ap2-ucp-assistant-prod:latest
-    
-    # Expose assistant service port (accessible via localhost from other containers)
-    ports:
-      - containerPort: 8005
-        name: assistant
-    
-    # Environment variables for assistant service container
-    env:
-      - name: NODE_ENV
-        value: prod
-      
-      - name: MONGODB_URI
-        valueFrom:
-          secretKeyRef:
-            name: retail-ap2
-            key: MONGODB_URI
-
-      - name: DATABASE_NAME
-        valueFrom:
-          secretKeyRef:
-            name: retail-ap2
-            key: MONGODB_DATABASE
-
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/gcp/credential-configuration.json
-
-      - name: GOOGLE_GENAI_USE_VERTEXAI
-        valueFrom:
-          secretKeyRef:
-            name: retail-ap2
-            key: GOOGLE_GENAI_USE_VERTEXAI
-
-      - name: GOOGLE_CLOUD_PROJECT
-        valueFrom:
-          secretKeyRef:
-            name: retail-ap2
-            key: GOOGLE_CLOUD_PROJECT
-
-      - name: GOOGLE_CLOUD_LOCATION
-        valueFrom:
-          secretKeyRef:
-            name: retail-ap2
-            key: GOOGLE_CLOUD_LOCATION
-
-      - name: MODEL_ID
-        value: gemini-2.5-flash
-    
-    volumeMounts:
-      - name: gcp-creds
-        mountPath: /etc/gcp
-        readOnly: true
-      - name: gcp-token
-        mountPath: /var/run/service-account
-        readOnly: true 
-    
+ 
 ## ----------------------------- Cloud Specific Configurations -----------------------------
 
 # GCP Workload Identity Federation configuration  
