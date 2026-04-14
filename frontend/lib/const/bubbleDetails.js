@@ -45,14 +45,6 @@ const BUBBLE_DETAILS_CONFIG = {
       text: "Understand how the ledger blocks updates and deletes, even if an agent retries, fails, or tries to correct a previous mandate.",
       tags: ["Immutability", "Mandate Ledger Service", "Append-Only Writes"],
     },
-    [CHAT_STEPS.SECOND_HUNTER_INTENT_CREATED]: {
-      text: "TODO",
-      tags: [],
-    },
-    [CHAT_STEPS.HUNTER_CARD_PURCHASE_CHANGE]: {
-      text: "TODO",
-      tags: [],
-    },
     [CHAT_STEPS.HUNTER_QUESTIONS_IDEMPOTENCY]: {
       text: "TODO",
       tags: [],

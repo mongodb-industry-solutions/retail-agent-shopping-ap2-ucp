@@ -8,8 +8,6 @@ import CartMandateSignedPaymentCredentialsStep from './straightforward/CartManda
 // Hunter workflow components
 import FirstHunterIntentCreatedStep from '@/components/BehindTheScenes/hunter/FirstHunterIntentCreatedStep';
 import { HunterIntentImmutabilityStep } from './hunter/HunterIntentImmutabilityStep';
-import SecondHunterIntentCreatedStep from '@/components/BehindTheScenes/hunter/SecondHunterIntentCreatedStep';
-import HunterCardPurchaseChangeStep from '@/components/BehindTheScenes/hunter/HunterCardPurchaseChangeStep';
 import HunterQuestionsIdempotencyStep from '@/components/BehindTheScenes/hunter/HunterQuestionsIdempotencyStep';
 
 // Import shared styles
@@ -30,8 +28,6 @@ const componentMap = {
   hunter: {
     [CHAT_STEPS.FIRST_HUNTER_INTENT_CREATED]: FirstHunterIntentCreatedStep,
     [CHAT_STEPS.HUNTER_INTENT_IMMUTABILITY]: HunterIntentImmutabilityStep,
-    [CHAT_STEPS.SECOND_HUNTER_INTENT_CREATED]: SecondHunterIntentCreatedStep,
-    [CHAT_STEPS.HUNTER_CARD_PURCHASE_CHANGE]: HunterCardPurchaseChangeStep,
     [CHAT_STEPS.HUNTER_QUESTIONS_IDEMPOTENCY]: HunterQuestionsIdempotencyStep
   },
   
