@@ -5,6 +5,13 @@ import MandatesCreatedStep from '@/components/BehindTheScenes/straightforward/Ma
 import PaymentCompletedStep from '@/components/BehindTheScenes/straightforward/PaymentCompletedStep';
 import CartMandateSignedPaymentCredentialsStep from './straightforward/CartMandateSignedPaymentCredentialsStep';
 
+// Hunter workflow components
+import FirstHunterIntentCreatedStep from '@/components/BehindTheScenes/hunter/FirstHunterIntentCreatedStep';
+import { HunterIntentImmutabilityStep } from './hunter/HunterIntentImmutabilityStep';
+import SecondHunterIntentCreatedStep from '@/components/BehindTheScenes/hunter/SecondHunterIntentCreatedStep';
+import HunterCardPurchaseChangeStep from '@/components/BehindTheScenes/hunter/HunterCardPurchaseChangeStep';
+import HunterQuestionsIdempotencyStep from '@/components/BehindTheScenes/hunter/HunterQuestionsIdempotencyStep';
+
 // Import shared styles
 import './behindTheScenes.css';
 import { CHAT_STEPS } from '@/lib/const/steps';
@@ -17,11 +24,15 @@ const componentMap = {
     [CHAT_STEPS.MERCHANT_AGENT_INTRODUCTION]: MerchantAgentIntroductionStep,
     [CHAT_STEPS.MANDATES_CREATED]: MandatesCreatedStep,
     [CHAT_STEPS.CART_MANDATE_SIGNED_PAYMENT_CREDENTIALS]: CartMandateSignedPaymentCredentialsStep,
-    [CHAT_STEPS.PAYMENT_COMPLETED]: PaymentCompletedStep,
+    [CHAT_STEPS.PAYMENT_COMPLETED]: PaymentCompletedStep
   },
   
   hunter: {
-    // Add hunter workflow step components here when implemented
+    [CHAT_STEPS.FIRST_HUNTER_INTENT_CREATED]: FirstHunterIntentCreatedStep,
+    [CHAT_STEPS.HUNTER_INTENT_IMMUTABILITY]: HunterIntentImmutabilityStep,
+    [CHAT_STEPS.SECOND_HUNTER_INTENT_CREATED]: SecondHunterIntentCreatedStep,
+    [CHAT_STEPS.HUNTER_CARD_PURCHASE_CHANGE]: HunterCardPurchaseChangeStep,
+    [CHAT_STEPS.HUNTER_QUESTIONS_IDEMPOTENCY]: HunterQuestionsIdempotencyStep
   },
   
   disputing: {

@@ -80,7 +80,7 @@ const ShoppingAgentIntroductionStep = ({ type }) => {
               <a href="https://ap2-protocol.org/" target="_blank" rel="noopener noreferrer">
                 Agent Payments Protocol (AP2)
               </a>
-              . It also provides businesses flexible ways to integrate via APIs, <a href="https://a2a-protocol.org/latest//" target="_blank" rel="noopener noreferrer">
+              . It also provides businesses flexible ways to integrate via APIs, <a href="https://a2a-protocol.org/latest" target="_blank" rel="noopener noreferrer">
                Agent2Agent (A2A)</a>, and the 
               <a href="https://mcp-protocol.org/" target="_blank" rel="noopener noreferrer"> Model Context Protocol (MCP)</a>.
             </Banner>
