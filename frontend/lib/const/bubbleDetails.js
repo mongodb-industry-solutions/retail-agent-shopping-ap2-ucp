@@ -33,7 +33,7 @@ const BUBBLE_DETAILS_CONFIG = {
     },
     [CHAT_STEPS.PAYMENT_COMPLETED]: {
       text: "Discover how the completed purchase is stored as a secure, reliable, and auditable transaction.",
-      tags: ["AP2", "Mandate Ledger Service on MongoDB"],
+      tags: ["Payment Mandate", "AP2", "Mandate Ledger Service on MongoDB"],
     },
   },
   [USER_ROLE]: {},

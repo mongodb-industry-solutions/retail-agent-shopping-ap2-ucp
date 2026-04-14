@@ -13,6 +13,11 @@ const PaymentCompletedStep = ({ type }) => {
       state.MandateLedger.journeysStatus[journeys.straightforward.id]
         .paymentDocument,
   );
+    const paymentMandate = useSelector(
+    (state) =>
+      state.MandateLedger.journeysStatus[journeys.straightforward.id]
+        .paymentMandate,
+  );
 
   useEffect(() => {
     if (paymentDocument == null && !loadingPaymentDocument) {
@@ -49,6 +54,20 @@ const PaymentCompletedStep = ({ type }) => {
           panel={<Panel title="Payment" />}
         >
           {JSON.stringify(paymentDocument, null, 2)}
+        </Code>
+        <br></br>
+        <Code
+          style={{ borderRadius: "0px" }}
+          copyable="true"
+          showLineNumbers
+          expandable
+          darkMode={true}
+          language="json"
+          collapsedLines={21}
+          highlightLines={[]}
+          panel={<Panel title="Payment Mandate" />}
+        >
+          {JSON.stringify(paymentMandate, null, 2)}
         </Code>
         <div className="info">
           <p>
