@@ -34,8 +34,8 @@ const CartMandateSignedPaymentCredentialsStep = ({ type }) => {
           <p>
             As part of the AP2 protocol, the{" "}
             <span className="purple-text">Shopping Agent</span> sends a{" "}
-            <strong>signed Cart Mandate</strong> on behalf of the user,
-            including all required shipping details, to the 
+            <strong>signed Cart Mandate</strong> on behalf of the user,{" "}
+            including all required shipping details, to the{" "}
             <span className="green-text">Merchant Agent</span>. 
           </p>
         </div>

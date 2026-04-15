@@ -367,16 +367,20 @@ async def shopping_chat(request: ShoppingRequest) -> ShoppingResponse:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/v1/shopping/start-session", tags=["Shopping Agent"])
-async def start_shopping_session(user_id: Optional[str] = None) -> Dict[str, Any]:
+async def start_shopping_session(user_id: Optional[str] = None, message: Optional[str] = None) -> Dict[str, Any]:
     """
     Start a new shopping session
     """
+    
     session_id = str(uuid.uuid4())
     user_id = user_id or str(uuid.uuid4())
     
+    # Use provided message or default greeting
+    initial_message = message or "Hello, I'd like to start shopping"
+    
     # Initialize with a greeting
     result = await call_shopping_agent(
-        message="Hello, I'd like to start shopping",
+        message=initial_message,
         session_id=session_id,
         user_id=user_id
     )

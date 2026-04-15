@@ -46,8 +46,8 @@ const BUBBLE_DETAILS_CONFIG = {
       tags: ["Immutability", "Mandate Ledger Service", "Append-Only Writes"],
     },
     [CHAT_STEPS.HUNTER_QUESTIONS_IDEMPOTENCY]: {
-      text: "Understand how the ledger blocks updates and deletes, even if an agent retries, fails, or tries to correct a previous mandate.",
-      tags: ["Immutability", "Mandate Ledger Service","Append-Only Writes"],
+      text: "See how duplicate executions are prevented",
+      tags: ["Idempotency", "Mandate Ledger Service"],
     },
     // dispute journey bubble details
   },

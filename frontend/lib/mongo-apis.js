@@ -295,7 +295,8 @@ export async function getIntentMandateAPI(journeyId) {
     filter: {
       "user_id": userId,
       "session_id": sessionId,
-      entity_type: "IntentMandate",
+      "entity_type": "IntentMandate",
+      "sort": { _id: -1 },
     },
     collectionName: COLLECTIONS.MANDATE_LEDGER,
   };
