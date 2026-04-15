@@ -23,6 +23,8 @@ const MandateLedgerSlice = createSlice({
         agentIsThinking: false,
         error: null,
         paymentDocument: null,
+        intentMandate: null,
+        secondIntentMandate: null,
       },
       [journeys.disputing.id]: {
         session_id: null,
@@ -111,7 +113,18 @@ const MandateLedgerSlice = createSlice({
         state.journeysStatus[journeyId].order = order;
       }
     },
-
+    setIntentMandate(state, action) {
+      const { journeyId, intentMandate } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].intentMandate = intentMandate;
+      }
+    },
+    setSecondIntentMandate(state, action) {
+      const { journeyId, secondIntentMandate } = action.payload;
+      if (state.journeysStatus[journeyId]) {
+        state.journeysStatus[journeyId].secondIntentMandate = secondIntentMandate;
+      }
+    }
   },
 });
 
@@ -128,6 +141,8 @@ export const {
   setPaymentMandate,
   setPaymentDocument,
   setOrder,
+  setIntentMandate,
+  setSecondIntentMandate
 } = MandateLedgerSlice.actions;
 
 export default MandateLedgerSlice.reducer;
