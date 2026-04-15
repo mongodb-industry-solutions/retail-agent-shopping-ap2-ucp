@@ -40,7 +40,7 @@ const MerchantAgentIntroductionStep = () => {
           As part of that interaction, the{" "}
           <span className="purple-text">Shopping Agent</span> needs to send the
           user’s purchase intent to the{" "}
-          <span className="green-text">Merchant Agent</span>, packaged as a
+          <span className="green-text">Merchant Agent</span>, packaged as a{" "}
           <strong>Mandate</strong> — one of the core building blocks of the{" "}
           <strong>AP2 protocol</strong>.
         </p>

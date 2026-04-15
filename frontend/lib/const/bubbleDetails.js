@@ -7,6 +7,7 @@ export const SYSTEM_ROLE = "system";
 
 const BUBBLE_DETAILS_CONFIG = {
   [AGENT_ROLE]: {
+    // straightforward shopping journey bubble details
     [CHAT_STEPS.SHOPPING_AGENT_INTRODUCTION]: {
       text: "Meet your shopping agent and how it securely connects across the agentic commerce landscape to find the best offers for you.",
       tags: ["Shopping Agent", "UCP", "AP2"],
@@ -35,6 +36,20 @@ const BUBBLE_DETAILS_CONFIG = {
       text: "Discover how the completed purchase is stored as a secure, reliable, and auditable transaction.",
       tags: ["Payment Mandate", "AP2", "Mandate Ledger Service on MongoDB"],
     },
+    // hunter shopping journey bubble details
+    [CHAT_STEPS.FIRST_HUNTER_INTENT_CREATED]: {
+      text: "The purchase intent becomes a verifiable digital contract",
+      tags: ["Digital Contracts", "Authorization & Auditability", "Authenticity of Intent", "MongoDB's Flexible Document Model"],
+    },
+    [CHAT_STEPS.HUNTER_INTENT_IMMUTABILITY]: {
+      text: "Understand how the ledger blocks updates and deletes, even if an agent retries, fails, or tries to correct a previous mandate.",
+      tags: ["Immutability", "Mandate Ledger Service", "Append-Only Writes"],
+    },
+    [CHAT_STEPS.HUNTER_QUESTIONS_IDEMPOTENCY]: {
+      text: "See how duplicate executions are prevented",
+      tags: ["Idempotency", "Mandate Ledger Service"],
+    },
+    // dispute journey bubble details
   },
   [USER_ROLE]: {},
 };

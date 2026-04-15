@@ -4,6 +4,8 @@ export async function POST(request) {
   try {
     const { searchParams } = new URL(request.url)
     const user_id = searchParams.get('user_id')
+    const body = await request.json()
+    const { message } = body
 
     // Validate required fields
     if (!user_id) {
@@ -14,8 +16,9 @@ export async function POST(request) {
     }
 
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT || 'http://localhost:8000'
-    
-    const response = await fetch(`${backendUrl}/api/v1/shopping/start-session?user_id=${encodeURIComponent(user_id)}`, {
+    const finalUrl = `${backendUrl}/api/v1/shopping/start-session?user_id=${encodeURIComponent(user_id)}&message=${encodeURIComponent(message)}`
+        
+    const response = await fetch(finalUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
