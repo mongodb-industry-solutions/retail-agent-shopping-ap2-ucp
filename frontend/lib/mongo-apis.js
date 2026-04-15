@@ -5,6 +5,8 @@ import {
   setCartMandatesWithTwoSignatures,
   setPaymentMandate,
   setPaymentDocument,
+  setIntentMandate,
+  setSecondIntentMandate,
 } from "@/redux/slices/MandateLedgerSlice";
 import { getJourneyUserAndSessionId } from "./helpers";
 import { COLLECTIONS } from "./const/data";
@@ -285,4 +287,70 @@ export async function getPaymentDocument(journeyId) {
   );
 
   return data;
+}
+
+export async function getIntentMandateAPI(journeyId) {
+  const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
+  const requestBody = {
+    filter: {
+      "user_id": userId,
+      "session_id": sessionId,
+      entity_type: "IntentMandate",
+    },
+    collectionName: COLLECTIONS.MANDATE_LEDGER,
+  };
+  const response = await fetch(`/api/findDocuments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok)
+    return {
+      error: true,
+      message: `Error fetching intent mandate: ${response.status}`,
+      status: response.status,
+    };
+
+  const data = await response.json();
+  console.log("getIntentMandate - Response data:", data);
+
+  store.dispatch(setIntentMandate({ journeyId, intentMandate: data.documents[0] || null }));
+  return data?.documents[0] || null;
+}
+
+export async function getSecondIntentMandateAPI(journeyId) {
+  const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
+  const requestBody = {
+    filter: {
+      "user_id": userId,
+      "session_id": sessionId,
+      entity_type: "IntentMandate",
+    },
+    collectionName: COLLECTIONS.MANDATE_LEDGER,
+  };
+  const response = await fetch(`/api/findDocuments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok)
+    return {
+      error: true,
+      message: `Error fetching second intent mandate: ${response.status}`,
+      status: response.status,
+    };
+
+  const data = await response.json();
+  console.log("getSecondIntentMandate - Response data:", data);
+
+  // Get the second intent mandate (index 1 if it exists)
+  const secondIntentMandate = data?.documents[1] || null;
+  store.dispatch(setSecondIntentMandate({ journeyId, secondIntentMandate }));
+  return secondIntentMandate;
 }
