@@ -2,8 +2,10 @@ import { NextResponse } from 'next/server'
 
 export async function POST(request) {
   try {
+    const { searchParams } = new URL(request.url)
+    const user_id = searchParams.get('user_id')
     const body = await request.json()
-    const { user_id } = body
+    const { message } = body
 
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT || 'http://localhost:8000'
     
@@ -13,7 +15,8 @@ export async function POST(request) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user_id: user_id || undefined
+        user_id: user_id || undefined,
+        message: message || undefined
       })
     })
 

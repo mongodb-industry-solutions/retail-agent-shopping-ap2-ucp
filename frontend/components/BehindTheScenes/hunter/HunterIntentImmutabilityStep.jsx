@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { AGENT_ROLE } from "@/lib/const/bubbleDetails";
 import ImageContainer from "../ImageContainer";
 import { Code, Panel } from "@leafygreen-ui/code";
-import { H1, H2, H3, Body } from "@leafygreen-ui/typography";
+import { H1 } from "@leafygreen-ui/typography";
 import { journeys } from "@/lib/const/ux-writing";
-import { getSecondIntentMandateAPI } from "@/lib/mongo-apis";
+import { getIntentMandateAPI } from "@/lib/mongo-apis";
 import { useSelector } from "react-redux";
 
 export const HunterIntentImmutabilityStep = ({ type }) => {
@@ -12,13 +12,13 @@ export const HunterIntentImmutabilityStep = ({ type }) => {
   
   const secondIntentMandate = useSelector(
     (state) =>
-      state.MandateLedger.journeysStatus[journeys.hunter.id].secondIntentMandate,
+      state.MandateLedger.journeysStatus[journeys.hunter.id].intentMandates?.[1],
   );
 
   useEffect(() => {
     if (!secondIntentMandate && !loadingSecondIntentMandate) {
       setLoadingSecondIntentMandate(true);
-      getSecondIntentMandateAPI(journeys.hunter.id).finally(() =>
+      getIntentMandateAPI(journeys.hunter.id, 2).finally(() =>
         setLoadingSecondIntentMandate(false),
       );
     }

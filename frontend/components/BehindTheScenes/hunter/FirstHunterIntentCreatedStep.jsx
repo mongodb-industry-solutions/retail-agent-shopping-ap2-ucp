@@ -12,13 +12,13 @@ const FirstHunterIntentCreatedStep = ({ type }) => {
   
   const intentMandate = useSelector(
     (state) =>
-      state.MandateLedger.journeysStatus[journeys.hunter.id].intentMandate,
+      state.MandateLedger.journeysStatus[journeys.hunter.id].intentMandates?.[0],
   );
 
   useEffect(() => {
     if (!intentMandate && !loadingIntentMandate) {
       setLoadingIntentMandate(true);
-      getIntentMandateAPI(journeys.hunter.id).finally(() =>
+      getIntentMandateAPI(journeys.hunter.id, 1).finally(() =>
         setLoadingIntentMandate(false),
       );
     }

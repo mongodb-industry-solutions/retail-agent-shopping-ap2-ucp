@@ -6,7 +6,6 @@ import {
   setPaymentMandate,
   setPaymentDocument,
   setIntentMandate,
-  setSecondIntentMandate,
 } from "@/redux/slices/MandateLedgerSlice";
 import { getJourneyUserAndSessionId } from "./helpers";
 import { COLLECTIONS } from "./const/data";
@@ -289,14 +288,30 @@ export async function getPaymentDocument(journeyId) {
   return data;
 }
 
-export async function getIntentMandateAPI(journeyId) {
+/**
+ * Fetches a specific IntentMandate document for a journey, ordered by creation time (newest first).
+ * 
+ * @param {string} journeyId - The journey identifier to scope the search to a specific user session
+ * @param {number} recentMandateIndex - Which IntentMandate to retrieve (1 = most recent, 2 = second most recent, etc.)
+ * @returns {Promise<Object|null>} The IntentMandate document at the specified index, or null if not found
+ * 
+ * @example
+ * // Get the most recently created IntentMandate
+ * const latestMandate = await getIntentMandateAPI('hunter', 1);
+ * 
+ * // Get the second most recently created IntentMandate
+ * const secondLatest = await getIntentMandateAPI('hunter', 2);
+ */
+export async function getIntentMandateAPI(journeyId, recentMandateIndex = 1) {
   const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
   const requestBody = {
     filter: {
       "user_id": userId,
       "session_id": sessionId,
-      "entity_type": "IntentMandate",
-      "sort": { _id: -1 },
+      "entity_type": "IntentMandate"
+    },
+    options: { 
+      "sort": { "_id": -1 }
     },
     collectionName: COLLECTIONS.MANDATE_LEDGER,
   };
@@ -318,40 +333,10 @@ export async function getIntentMandateAPI(journeyId) {
   const data = await response.json();
   console.log("getIntentMandate - Response data:", data);
 
-  store.dispatch(setIntentMandate({ journeyId, intentMandate: data.documents[0] || null }));
-  return data?.documents[0] || null;
-}
-
-export async function getSecondIntentMandateAPI(journeyId) {
-  const { sessionId, userId } = getJourneyUserAndSessionId(journeyId);
-  const requestBody = {
-    filter: {
-      "user_id": userId,
-      "session_id": sessionId,
-      entity_type: "IntentMandate",
-    },
-    collectionName: COLLECTIONS.MANDATE_LEDGER,
-  };
-  const response = await fetch(`/api/findDocuments`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
-
-  if (!response.ok)
-    return {
-      error: true,
-      message: `Error fetching second intent mandate: ${response.status}`,
-      status: response.status,
-    };
-
-  const data = await response.json();
-  console.log("getSecondIntentMandate - Response data:", data);
-
-  // Get the second intent mandate (index 1 if it exists)
-  const secondIntentMandate = data?.documents[1] || null;
-  store.dispatch(setSecondIntentMandate({ journeyId, secondIntentMandate }));
-  return secondIntentMandate;
+  store.dispatch(setIntentMandate({ 
+    journeyId, 
+    intentMandate: data.documents[recentMandateIndex-1] || null,
+    index: recentMandateIndex - 1
+  }));
+  return data?.documents[recentMandateIndex-1] || null;
 }
