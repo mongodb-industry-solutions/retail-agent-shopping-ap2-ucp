@@ -13,12 +13,6 @@ import { getCurrentStep, getJourneyUserAndSessionId } from "./helpers";
 import { USER_ROLE, AGENT_ROLE, getBubbleDetails } from "./const/bubbleDetails";
 import { stepHasBehindTheScenes } from "@/components/BehindTheScenes/componentMap";
 import { journeys } from "./const/ux-writing";
-import {
-  getCartMandatesAPI,
-  getCartMandatesWithTwoSignatures,
-  getPaymentMandate,
-  getPaymentDocument,
-} from "./mongo-apis";
 
 /**
  * Process agent response through assistant API to get step and messageOptions
@@ -165,17 +159,18 @@ function buildConversationHistory(messages) {
   });
 }
 
-export async function startSessionAPI(journeyId) {
+export async function startSessionAPI(journeyId, initialMessage = null) {
   let { userId } = getJourneyUserAndSessionId(journeyId);
+  if(!initialMessage)
+    initialMessage = journeys[journeyId]?.initialMessage || "Hello, I'd like to start shopping";
 
+  console.log(`Starting session for journeyId=${journeyId}, userId=${userId}, initialMessage=${initialMessage}`);
   // Add initial user message immediately and set thinking state
   if (journeyId) {
     store.dispatch(
       addUserMessage({
         journeyId: journeyId,
-        message:
-          journeys[journeyId]?.initialMessage ||
-          "Hello, I'd like to start shopping",
+        message: initialMessage,
         sessionId: null, // Will be updated when we get the session ID
         userId: userId, // Use the already constructed userId
         step: "initial",
@@ -208,7 +203,7 @@ export async function startSessionAPI(journeyId) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ user_id: userId }),
+      body: JSON.stringify({ message: initialMessage }),
     },
   );
 
