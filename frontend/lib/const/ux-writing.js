@@ -96,7 +96,7 @@ export const journeys = {
     detailedInfo:
       "Objective: Introduce the Mandate Service Layer and Role-Based Access Control (RBAC).",
     profileIcon: "CreditCard",
-    initialMessage: "Hello, I'd like to start shopping"
+    initialMessage: "I’m looking for the cheapest refundable french press coffee maker available. I don't have a merchant preference, as long as the price is the best."
   },
   disputing: {
     id: "disputing",
