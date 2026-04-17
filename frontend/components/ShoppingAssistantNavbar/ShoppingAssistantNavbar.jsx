@@ -1,6 +1,7 @@
 "use client";
 
 import { journeys } from "@/lib/const/ux-writing";
+import { setSelectedMessage } from "@/redux/slices/GlobalSlice";
 import { Badge } from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
 import Icon from "@leafygreen-ui/icon";
@@ -14,8 +15,12 @@ import { useDispatch, useSelector } from "react-redux";
 const ShoppingAssistantNavbar = ({ journeyId }) => {
   const router = useRouter();
   const messages = useSelector((state) => state.Global.messages);
+  const dispatch = useDispatch();
 
-
+  const goBack = () => {
+    router.push(`/`);
+    dispatch(setSelectedMessage(null));
+  };
   return (
     <div
       style={{
@@ -29,7 +34,7 @@ const ShoppingAssistantNavbar = ({ journeyId }) => {
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <Button
           variant="ghost"
-          onClick={() => router.push(`/`)}
+          onClick={() => goBack()}
           leftGlyph={<Icon size={"xlarge"} glyph="ChevronLeft" />}
         />
         <div>
