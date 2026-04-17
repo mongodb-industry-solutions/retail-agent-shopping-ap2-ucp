@@ -28,8 +28,8 @@ export async function POST(request) {
     }
 
     const result = await collection
-        .find(filter, {...options, projection} )
-        .toArray()
+        .find(filter, {...options, projection})
+        .toArray();
     
     return NextResponse.json({ documents: result || null }, { status: 200 });
 }

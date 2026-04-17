@@ -96,7 +96,7 @@ export const journeys = {
     detailedInfo:
       "Objective: Introduce the Mandate Service Layer and Role-Based Access Control (RBAC).",
     profileIcon: "CreditCard",
-    initialMessage: "Hello, I'd like to start shopping"
+    initialMessage: "I’m looking for the cheapest refundable french press coffee maker available. I don't have a merchant preference, as long as the price is the best."
   },
   disputing: {
     id: "disputing",
@@ -110,6 +110,6 @@ export const journeys = {
     detailedInfo:
       "Objective: Demonstrate immutability and audit trail capabilities for AP2/UCP compliance.",
     profileIcon: "Warning",
-    initialMessage: "Hello, I need help with payment auditing"
+    initialMessage: "Hi, I'm not happy with the purchase. How can you help me?"
   },
 };

@@ -47,3 +47,22 @@ export const getCurrentStep = (reduxState, journeyId) => {
   const lastMessage = messages[messages.length - 1];
   return lastMessage?.step || 'initial';
 };
+
+/**
+ * Check if a journey is completed (reached its final step)
+ * @param {Object} reduxState - Redux state
+ * @param {string} journeyId - Journey identifier
+ * @returns {boolean} True if journey is completed
+ */
+export const isJourneyCompleted = (reduxState, journeyId) => {
+  const currentStep = getCurrentStep(reduxState, journeyId);
+  
+  // Define completion steps for each journey
+  const completionSteps = {
+    'straightforward': 'payment-completed',
+    'hunter': 'hunter-questions-idempotency', // Last step in hunter journey
+    'disputing': 'why-mongodb-for-mandate-ledger' // Last step in disputing journey
+  };
+  
+  return currentStep === completionSteps[journeyId];
+};
