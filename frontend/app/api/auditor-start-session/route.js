@@ -8,16 +8,13 @@ export async function POST(request) {
     const { message } = body
 
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_ENDPOINT || 'http://localhost:8000'
-    
-    const response = await fetch(`${backendUrl}/api/v1/auditor/start-session`, {
+    const finalUrl = `${backendUrl}/api/v1/auditor/start-session?user_id=${encodeURIComponent(user_id)}&message=${encodeURIComponent(message)}`
+
+    const response = await fetch(finalUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_id: user_id || undefined,
-        message: message || undefined
-      })
+      }
     })
 
     if (!response.ok) {

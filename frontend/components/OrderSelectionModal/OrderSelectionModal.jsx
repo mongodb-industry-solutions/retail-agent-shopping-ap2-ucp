@@ -123,14 +123,37 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
             )
           }
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: spacing[2],
-            }}
-          >
-            {orders.map((order) => (
+          {
+            !isLoading && orders.length === 0 && (
+              <div 
+                className="d-flex flex-column align-items-center justify-content-center text-center p-5"
+                style={{ 
+                  height: "200px",
+                  backgroundColor: palette.gray.light3,
+                  borderRadius: "8px",
+                  border: `1px solid ${palette.gray.light1}`
+                }}
+              >
+                <H3 style={{ margin: spacing[3] + " 0 " + spacing[2] + " 0", color: palette.gray.dark1 }}>
+                  No Orders Available
+                </H3>
+                <Body style={{ color: palette.gray.base, fontSize: "16px", maxWidth: "300px", lineHeight: "1.5" }}>
+                  You don't have any orders yet. Please complete at least one journey to start an auditing process.
+                </Body>
+              </div>
+            )
+          }
+
+          {
+            !isLoading && orders.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: spacing[2],
+                }}
+              >
+                {orders.map((order) => (
               <div
                 key={order?.payment?._id}
                 className="border rounded p-3 cursor-pointer"
@@ -196,7 +219,9 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
                 </div>
               </div>
             ))}
-          </div>
+              </div>
+            )
+          }
         </div>
       </Modal.Body>
     </Modal>

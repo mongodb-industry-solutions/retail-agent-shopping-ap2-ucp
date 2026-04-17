@@ -110,6 +110,6 @@ export const journeys = {
     detailedInfo:
       "Objective: Demonstrate immutability and audit trail capabilities for AP2/UCP compliance.",
     profileIcon: "Warning",
-    initialMessage: "Hello, I need help with payment auditing"
+    initialMessage: "Hi, I'm not happy with the purchase. How can you help me?"
   },
 };
