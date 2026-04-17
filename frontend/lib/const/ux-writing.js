@@ -80,7 +80,7 @@ export const journeys = {
     avatar: "/profiles/straightforward.jpg",
     color: "primary",
     detailedInfo:
-      "Objective: Introduce all agents involved in a purchase and how they communicate.",
+      "Build a clear mental model of this new agentic commerce landscape: who the agents are, how they interact, and why AP2 and MongoDB matter in making the flow trustworthy from the start.",
     profileIcon:  "Checkmark",
     initialMessage: "Hello, I'd like to start shopping"
   },
@@ -90,11 +90,11 @@ export const journeys = {
     characteristic: "Deal Seeker",
     experienceType: "Looking for Advantages",
     description:
-      "A savvy shopper who hunts for deals, and tries to maximize value from every purchase.",
+      "Go deeper through a less direct purchase journey, using a more complex case to understand how trust, history, and security-related concepts become more visible as AP2 and MongoDB handle changing intent and safe execution.",
     avatar: "/profiles/hunter.jpg",
     color: "accent",
     detailedInfo:
-      "Objective: Introduce the Mandate Service Layer and Role-Based Access Control (RBAC).",
+      "",
     profileIcon: "CreditCard",
     initialMessage: "I’m looking for the cheapest refundable french press coffee maker available. I don't have a merchant preference, as long as the price is the best."
   },
@@ -108,8 +108,14 @@ export const journeys = {
     avatar: "/profiles/disputing.jpg",
     color: "accent",
     detailedInfo:
-      "Objective: Demonstrate immutability and audit trail capabilities for AP2/UCP compliance.",
+      "Shift from execution to verification, showing how AP2 and MongoDB help reconstruct the full story behind a completed purchase and make authorization, authenticity, and accountability verifiable.",
     profileIcon: "Warning",
     initialMessage: "Hi, I'm not happy with the purchase. How can you help me?"
   },
 };
+
+export const auditor_popup = {
+  startText: "You are about to start an auditing process. Please select one of your available orders to audit.",
+  bannerText: "Explore one of the hardest problems in agentic commerce: who actually authorized the transaction, did the agent reflect the user’s real intent, and who is accountable if something went wrong? This journey shows how AP2 and MongoDB help answer those questions through verification, traceability, and trusted records.",
+
+}
