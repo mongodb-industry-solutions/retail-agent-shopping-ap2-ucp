@@ -56,7 +56,7 @@ const GlobalSliceSlice = createSlice({
       }
     },
     addAgentMessage(state, action) {
-      const { journeyId, message, sessionId, userId, messageOptions, step, bubbleDetails, stepHasBehindTheScenes } = action.payload;
+      const { journeyId, message, sessionId, userId, messageOptions, step, bubbleDetails, stepHasBehindTheScenes, event_logs } = action.payload;
       const agentMessage = {
         id: `agent_${Date.now()}_${Math.random()}`,
         type: AGENT_ROLE, 
@@ -68,6 +68,7 @@ const GlobalSliceSlice = createSlice({
         step: step,
         bubbleDetails: bubbleDetails || null,
         stepHasBehindTheScenes: stepHasBehindTheScenes || false,
+        event_logs: event_logs || [],
       };
       if (state.messages[journeyId]) {
         state.messages[journeyId].push(agentMessage);

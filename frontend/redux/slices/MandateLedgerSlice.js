@@ -23,7 +23,7 @@ const MandateLedgerSlice = createSlice({
         agentIsThinking: false,
         error: null,
         paymentDocument: null,
-        intentMandates: [],
+        intentMandates: [null, null], // to store multiple intent mandates if needed, initialized with 2 slots for the hunter journey
       },
       [journeys.disputing.id]: {
         session_id: null,
@@ -115,10 +115,6 @@ const MandateLedgerSlice = createSlice({
     setIntentMandate(state, action) {
       const { journeyId, intentMandate, index = 0 } = action.payload;
       if (state.journeysStatus[journeyId]) {
-        // Ensure the array is large enough
-        while (state.journeysStatus[journeyId].intentMandates.length <= index) {
-          state.journeysStatus[journeyId].intentMandates.push(null);
-        }
         state.journeysStatus[journeyId].intentMandates[index] = intentMandate;
       }
     }

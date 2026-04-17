@@ -89,12 +89,11 @@ export const journeys = {
     name: "The Hunter Buyer",
     characteristic: "Deal Seeker",
     experienceType: "Looking for Advantages",
-    description:
-      "Go deeper through a less direct purchase journey, using a more complex case to understand how trust, history, and security-related concepts become more visible as AP2 and MongoDB handle changing intent and safe execution.",
+    description: "A savvy shopper who hunts for deals, and tries to maximize value from every purchase.",
     avatar: "/profiles/hunter.jpg",
     color: "accent",
     detailedInfo:
-      "",
+      "Go deeper through a less direct purchase journey, using a more complex case to understand how trust, history, and security-related concepts become more visible as AP2 and MongoDB handle changing intent and safe execution.",
     profileIcon: "CreditCard",
     initialMessage: "I’m looking for the cheapest refundable french press coffee maker available. I don't have a merchant preference, as long as the price is the best."
   },
