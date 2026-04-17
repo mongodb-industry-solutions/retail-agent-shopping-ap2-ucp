@@ -10,6 +10,13 @@ import FirstHunterIntentCreatedStep from '@/components/BehindTheScenes/hunter/Fi
 import { HunterIntentImmutabilityStep } from './hunter/HunterIntentImmutabilityStep';
 import HunterQuestionsIdempotencyStep from '@/components/BehindTheScenes/hunter/HunterQuestionsIdempotencyStep';
 
+// Disputing workflow components
+import MeetAuditorAgentStep from '@/components/BehindTheScenes/disputing/MeetAuditorAgentStep';
+import SignatureFlowAndAuditTraceStep from '@/components/BehindTheScenes/disputing/SignatureFlowAndAuditTraceStep';
+import WhySignaturesMatterStep from '@/components/BehindTheScenes/disputing/WhySignaturesMatterStep';
+import ImmutabilityAndRbacProtectionsStep from '@/components/BehindTheScenes/disputing/ImmutabilityAndRbacProtectionsStep';
+import WhyMongodbForMandateLedgerStep from '@/components/BehindTheScenes/disputing/WhyMongodbForMandateLedgerStep';
+
 // Import shared styles
 import './behindTheScenes.css';
 import { CHAT_STEPS } from '@/lib/const/steps';
@@ -32,7 +39,11 @@ const componentMap = {
   },
   
   disputing: {
-    // Add disputing workflow step components here when implemented
+    [CHAT_STEPS.MEET_AUDITOR_AGENT]: MeetAuditorAgentStep,
+    [CHAT_STEPS.SIGNATURE_FLOW_AND_AUDIT_TRACE]: SignatureFlowAndAuditTraceStep,
+    [CHAT_STEPS.WHY_SIGNATURES_MATTER]: WhySignaturesMatterStep,
+    [CHAT_STEPS.IMMUTABILITY_AND_RBAC_PROTECTIONS]: ImmutabilityAndRbacProtectionsStep,
+    [CHAT_STEPS.WHY_MONGODB_FOR_MANDATE_LEDGER]: WhyMongodbForMandateLedgerStep
   }
 };
 

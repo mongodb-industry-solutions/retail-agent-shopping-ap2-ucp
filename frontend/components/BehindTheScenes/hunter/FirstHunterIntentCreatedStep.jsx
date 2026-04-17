@@ -118,17 +118,8 @@ const FirstHunterIntentCreatedStep = ({ type }) => {
             tables and joins.
           </p>
           <p>
-            The core issue is that the EdDSA signature was generated from the
-            hash of one exact JSON document, serialized in a specific way. If
-            that mandate is later split across relational tables, verifying the
-            signature requires reconstructing the original JSON through joins,
-            reserializing it, and applying canonicalization correctly. Each of
-            those steps introduces risk: a missing field, different array order,
-            serialization difference, or type change can produce different
-            bytes, a different hash, and a failed verification, even if the data
-            is logically the same. That is why storing the mandate as one
-            complete document is much safer for preserving signature integrity
-            over time.
+            The core issue is that the EdDSA signature was generated from the hash of one exact JSON document, serialized in a specific way. If that mandate is later split across relational tables, verifying the signature requires reconstructing the original JSON 
+            through joins, reserializing it, and applying canonicalization correctly. Each of those steps introduces risk: a missing field, different array order, serialization difference, or type change can produce different bytes, a different hash, and a failed verification, even if the data is logically the same. It also adds unnecessary processing overhead, since the mandate must be rebuilt before it can be verified. Storing the mandate as one complete document in MongoDB avoids that reconstruction step, improves performance, and is much safer for preserving signature integrity over time.
           </p>
         </div>
 
