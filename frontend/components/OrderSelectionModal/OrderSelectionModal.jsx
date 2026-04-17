@@ -9,7 +9,7 @@ import { getAvailableOrdersAPI } from "@/lib/mongo-apis";
 import { useDispatch } from "react-redux";
 import { setOrder } from "@/redux/slices/MandateLedgerSlice";
 import { setDisputingSystemMessage } from "@/redux/slices/GlobalSlice";
-import { journeys } from "@/lib/const/ux-writing";
+import { auditor_popup, journeys } from "@/lib/const/ux-writing";
 
 const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) => {
   const [orders, setOrders] = useState([]);
@@ -68,8 +68,7 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
               Start Audit Process
             </H2>
             <Body style={{ color: palette.gray.dark1, margin: 0, fontSize: "16px" }}>
-              You are about to start an auditing process. Please select one of
-              your available orders to audit.
+              {auditor_popup.startText}
             </Body>
           </div>
         </div>
@@ -90,12 +89,7 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
                 AP2 Cryptographic Audit Trail
               </H3>
               <Body style={{ fontSize: "16px", color: palette.gray.dark1, margin: 0 }}>
-                The Agent Payments Protocol (AP2) embeds a non-repudiable,
-                cryptographic audit trail directly into every transaction. It
-                achieves this through Verifiable Digital Credentials
-                (VDCs)—specifically the Intent, Cart, and Payment Mandates—which
-                function together as a continuous, tamper-evident chain of
-                evidence.
+                {auditor_popup.bannerText}
               </Body>
             </div>
           </div>
