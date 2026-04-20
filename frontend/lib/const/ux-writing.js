@@ -113,7 +113,7 @@ export const journeys = {
   },
 };
 
-export const auditor_popup = {
+export const auditorPopup = {
   startText: "You are about to start an auditing process. Please select one of your available orders to audit.",
   bannerText: "Explore one of the hardest problems in agentic commerce: who actually authorized the transaction, did the agent reflect the user’s real intent, and who is accountable if something went wrong? This journey shows how AP2 and MongoDB help answer those questions through verification, traceability, and trusted records.",
 
