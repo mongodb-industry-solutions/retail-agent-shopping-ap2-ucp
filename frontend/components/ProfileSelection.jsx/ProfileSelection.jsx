@@ -26,7 +26,7 @@ const ProfileSelection = () => {
   const [showOrderSelectionModal, setShowOrderSelectionModal] = useState(false);
 
   const onSelectProfile = (profileId) => {
-    if(profileId === journeys.disputing.id) {
+    if(profileId === journeys.disputing.id && !startedJourneys.includes(journeys.disputing.id)){
       setShowOrderSelectionModal(true);
     }else{
       router.push(`/journey/${profileId}`);

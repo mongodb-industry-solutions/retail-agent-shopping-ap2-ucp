@@ -9,7 +9,7 @@ import { getAvailableOrdersAPI } from "@/lib/mongo-apis";
 import { useDispatch } from "react-redux";
 import { setOrder } from "@/redux/slices/MandateLedgerSlice";
 import { setDisputingSystemMessage } from "@/redux/slices/GlobalSlice";
-import { auditor_popup, journeys } from "@/lib/const/ux-writing";
+import { auditorPopup, journeys } from "@/lib/const/ux-writing";
 
 const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) => {
   const [orders, setOrders] = useState([]);
@@ -68,7 +68,7 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
               Start Audit Process
             </H2>
             <Body style={{ color: palette.gray.dark1, margin: 0, fontSize: "16px" }}>
-              {auditor_popup.startText}
+              {auditorPopup.startText}
             </Body>
           </div>
         </div>
@@ -89,7 +89,7 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
                 AP2 Cryptographic Audit Trail
               </H3>
               <Body style={{ fontSize: "16px", color: palette.gray.dark1, margin: 0 }}>
-                {auditor_popup.bannerText}
+                {auditorPopup.bannerText}
               </Body>
             </div>
           </div>
