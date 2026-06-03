@@ -88,6 +88,7 @@ async function processSuccessfulAgentResponse(
   sessionId,
   userId,
   message,
+  event_logs = [],
 ) {
   // Build conversation history for assistant API
   const messages = store.getState().Global.messages[journeyId] || [];
@@ -127,6 +128,7 @@ async function processSuccessfulAgentResponse(
         step,
         AGENT_ROLE,
       ),
+      event_logs
     }),
   );
 }
@@ -241,6 +243,7 @@ export async function startSessionAPI(journeyId, initialMessage = null) {
       data.session_id,
       data.user_id,
       data.initial_response,
+      data.event_logs || [],
     );
   }
 
@@ -314,6 +317,7 @@ export async function chatWithShoppingAgentAPI(journeyId, message) {
       sessionId,
       userId,
       data.response,
+      data.event_logs || [],
     );
   }
 
@@ -387,6 +391,7 @@ export async function chatWithAuditorAgentAPI(journeyId, message) {
       sessionId,
       userId,
       data.response,
+      data.event_logs || [],
     );
   }
 

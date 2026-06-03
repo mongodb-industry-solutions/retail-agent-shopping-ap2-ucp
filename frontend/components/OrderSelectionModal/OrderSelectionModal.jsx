@@ -9,7 +9,7 @@ import { getAvailableOrdersAPI } from "@/lib/mongo-apis";
 import { useDispatch } from "react-redux";
 import { setOrder } from "@/redux/slices/MandateLedgerSlice";
 import { setDisputingSystemMessage } from "@/redux/slices/GlobalSlice";
-import { journeys } from "@/lib/const/ux-writing";
+import { auditorPopup, journeys } from "@/lib/const/ux-writing";
 
 const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) => {
   const [orders, setOrders] = useState([]);
@@ -68,8 +68,7 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
               Start Audit Process
             </H2>
             <Body style={{ color: palette.gray.dark1, margin: 0, fontSize: "16px" }}>
-              You are about to start an auditing process. Please select one of
-              your available orders to audit.
+              {auditorPopup.startText}
             </Body>
           </div>
         </div>
@@ -90,12 +89,7 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
                 AP2 Cryptographic Audit Trail
               </H3>
               <Body style={{ fontSize: "16px", color: palette.gray.dark1, margin: 0 }}>
-                The Agent Payments Protocol (AP2) embeds a non-repudiable,
-                cryptographic audit trail directly into every transaction. It
-                achieves this through Verifiable Digital Credentials
-                (VDCs)—specifically the Intent, Cart, and Payment Mandates—which
-                function together as a continuous, tamper-evident chain of
-                evidence.
+                {auditorPopup.bannerText}
               </Body>
             </div>
           </div>
@@ -123,14 +117,37 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
             )
           }
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: spacing[2],
-            }}
-          >
-            {orders.map((order) => (
+          {
+            !isLoading && orders.length === 0 && (
+              <div 
+                className="d-flex flex-column align-items-center justify-content-center text-center p-5"
+                style={{ 
+                  height: "200px",
+                  backgroundColor: palette.gray.light3,
+                  borderRadius: "8px",
+                  border: `1px solid ${palette.gray.light1}`
+                }}
+              >
+                <H3 style={{ margin: spacing[3] + " 0 " + spacing[2] + " 0", color: palette.gray.dark1 }}>
+                  No Orders Available
+                </H3>
+                <Body style={{ color: palette.gray.base, fontSize: "16px", maxWidth: "300px", lineHeight: "1.5" }}>
+                  You don't have any orders yet. Please complete at least one journey to start an auditing process.
+                </Body>
+              </div>
+            )
+          }
+
+          {
+            !isLoading && orders.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: spacing[2],
+                }}
+              >
+                {orders.map((order) => (
               <div
                 key={order?.payment?._id}
                 className="border rounded p-3 cursor-pointer"
@@ -196,7 +213,9 @@ const OrderSelectionModal = ({ show, onHide, redirectToStartDisputingJourney }) 
                 </div>
               </div>
             ))}
-          </div>
+              </div>
+            )
+          }
         </div>
       </Modal.Body>
     </Modal>

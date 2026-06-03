@@ -50,6 +50,26 @@ const BUBBLE_DETAILS_CONFIG = {
       tags: ["Idempotency", "Mandate Ledger Service"],
     },
     // dispute journey bubble details
+    [CHAT_STEPS.MEET_AUDITOR_AGENT]: {
+      text: "Meet the auditor agent",
+      tags: ["Auditor Agent", "Audit Trail", "Trust Verification"],
+    },
+    [CHAT_STEPS.SIGNATURE_FLOW_AND_AUDIT_TRACE]: {
+      text: "See how the Auditor Agent can reconstruct the full transaction history",
+      tags: ["Signed Mandates", "Transaction Trace", "MongoDB"],
+    },
+    [CHAT_STEPS.WHY_SIGNATURES_MATTER]: {
+      text: "How trust is proven, not assumed: Verify authenticity and integrity",
+      tags: ["Tamper Evidence", "Cryptographic Signatures","Authenticity Proof"],
+    },
+    [CHAT_STEPS.IMMUTABILITY_AND_RBAC_PROTECTIONS]: {
+      text: "See why attempts to change or delete signed transaction records are rejected, and how role-based permissions protect the ledger",
+      tags: ["Append-Only", "Minimum Necessary Permissions", "Role Based Access Control"],
+    },
+    [CHAT_STEPS.WHY_MONGODB_FOR_MANDATE_LEDGER]: {
+      text: "Why MongoDB is the ideal foundation for the Mandate Ledger",
+      tags: ["MongoDB", "Mandate Ledger Service", "Scalability", "Reliability"],
+    },
   },
   [USER_ROLE]: {},
 };

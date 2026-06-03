@@ -11,6 +11,119 @@ import { AGENT_ROLE, SYSTEM_ROLE, USER_ROLE } from "@/lib/const/bubbleDetails";
 import { setSelectedMessage } from "@/redux/slices/GlobalSlice";
 import Image from "next/image";
 
+/**
+ * Parse inline formatting like **bold** and *italic*
+ */
+const parseInlineFormatting = (text) => {
+  const elements = [];
+  let currentIndex = 0;
+
+  // Pattern to match **bold** and *italic* text
+  const formatRegex = /(\*\*([^*]+)\*\*|\*([^*]+)\*)/g;
+  let match;
+
+  while ((match = formatRegex.exec(text)) !== null) {
+    // Add text before the match
+    if (match.index > currentIndex) {
+      elements.push(text.substring(currentIndex, match.index));
+    }
+
+    // Add formatted text
+    if (match[1].startsWith('**')) {
+      // Bold text (**text**)
+      elements.push(
+        <strong key={`bold-${match.index}`} style={{ fontWeight: 'bold' }}>
+          {match[2]}
+        </strong>
+      );
+    } else {
+      // Italic/emphasis text (*text*)
+      elements.push(
+        <em key={`italic-${match.index}`} style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
+          {match[3]}
+        </em>
+      );
+    }
+
+    currentIndex = match.index + match[1].length;
+  }
+
+  // Add remaining text
+  if (currentIndex < text.length) {
+    elements.push(text.substring(currentIndex));
+  }
+
+  return elements.length > 0 ? elements : text;
+};
+
+/**
+ * Parse markdown-like text content and return JSX elements
+ * Handles: **bold**, *italic*, ### headings, bullet points, line breaks
+ */
+const parseMarkdownContent = (text) => {
+  if (!text) return '';
+
+  const lines = text.split('\n');
+  const elements = [];
+
+  lines.forEach((line, lineIndex) => {
+    // Skip empty lines but preserve spacing
+    if (line.trim() === '') {
+      elements.push(<br key={`br-${lineIndex}`} />);
+      return;
+    }
+
+    // Handle headings (### **text** or ### text)
+    if (line.trim().startsWith('### ')) {
+      const headingText = line.replace(/^### \*\*(.*)\*\*$/, '$1').replace(/^### (.*)$/, '$1');
+      elements.push(
+        <span key={`heading-${lineIndex}`} style={{ 
+          display: 'block',
+          fontWeight: 'bold', 
+          fontSize: '18px', 
+          margin: '16px 0 8px 0',
+          color: '#1e3a8a'
+        }}>
+          {headingText}
+        </span>
+      );
+      return;
+    }
+
+    // Handle bullet points (*   text)
+    if (line.trim().startsWith('*   ')) {
+      const bulletText = line.replace(/^\*\s+/, '');
+      const parsedBulletText = parseInlineFormatting(bulletText);
+      elements.push(
+        <span key={`bullet-${lineIndex}`} style={{ 
+          display: 'block',
+          marginLeft: '20px', 
+          marginBottom: '4px',
+          position: 'relative'
+        }}>
+          <span style={{ 
+            position: 'absolute', 
+            left: '-15px', 
+            top: '0px' 
+          }}>•</span>
+          {parsedBulletText}
+        </span>
+      );
+      return;
+    }
+
+    // Handle regular paragraphs with inline formatting
+    const parsedLine = parseInlineFormatting(line);
+    elements.push(
+      <span key={`line-${lineIndex}`} style={{ display: 'block', marginBottom: '8px' }}>
+        {parsedLine}
+      </span>
+    );
+  });
+
+  return elements;
+};
+
 const MessageBubble = ({message, isLatest, onOptionClick, hasBehindTheScenes}) => {
   const {
     id: messageId,
@@ -54,10 +167,10 @@ const MessageBubble = ({message, isLatest, onOptionClick, hasBehindTheScenes}) =
         }}
       >
         <Body
-          style={isUser ? { color: "white" } : {whiteSpace: "pre-line"}}
+          style={isUser ? { color: "white" } : {}}
           className={isUser ? "text-start messageContent" : "messageContent"}
         >
-          {messageContent}
+          {isUser ? messageContent : parseMarkdownContent(messageContent)}
         </Body>
         {/* Message details section */}
         {hasBehindTheScenes  && (

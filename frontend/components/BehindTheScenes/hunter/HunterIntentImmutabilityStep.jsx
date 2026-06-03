@@ -34,7 +34,7 @@ export const HunterIntentImmutabilityStep = ({ type }) => {
             When a user changes their mind after offering a cart, the agent doesn't go back and update the existing mandate. It creates a new one. In this demo, every intent is signed — which means every intent is a sealed contract. And sealed contracts don't get rewritten.
           </p>
           <p>
-            But agent behavior alone isn't what enforces this. Even if the Merchant Agent produced an error — or attempted to correct a previously stored mandate — the Mandate Ledger Service would block it.
+            But agent behavior alone isn't what enforces this. Even if the <span className="green-text">Merchant Agent</span> produced an error — or attempted to correct a previously stored mandate — the <span className="blue-text">Mandate Ledger Service</span> would block it.
           </p>
         </div>
         
@@ -47,15 +47,15 @@ export const HunterIntentImmutabilityStep = ({ type }) => {
         
         <div className="info">
           <p>
-            The Mandate Ledger Service acts as a protective middleware between agents and MongoDB. No agent communicates directly with the database. Every request passes through the service first, and the service enforces three things before any write reaches storage:
+            The <span className="blue-text">Mandate Ledger Service</span> acts as a protective middleware between agents and <span className="green-text">MongoDB</span>. No agent communicates directly with the database. Every request passes through the service first, and the service enforces three things before any write reaches storage:
           </p>
           <ul>
             <li><strong>Authentication</strong> — API key validation and role-based access control determine what each agent is allowed to do. No agent has update or delete permissions on mandate documents.</li>
             <li><strong>Business logic</strong> — immutability is enforced at this layer. A request to modify or delete an existing mandate is rejected before it ever touches the database.</li>
-            <li><strong>Data access</strong> — only valid, append-only writes reach MongoDB, where mandates are stored with Queryable Encryption.</li>
+            <li><strong>Data access</strong> — only valid, append-only writes reach <span className="green-text">MongoDB</span>, where signed mandates are stored as immutable records for verification and audit.</li>
           </ul>
           <p>
-            The result is that once a mandate is written, it cannot be changed or removed by any agent or system.
+            <span className="green-text">MongoDB</span> also supports selective encryption for sensitive fields, such as PII (Personally Identifiable Information), when required to comply with regulations such as GDPR (General Data Protection Regulation). This helps protect confidential data without encrypting the entire mandate, while cryptographic signatures preserve the integrity of the complete record.
           </p>
         </div>
         

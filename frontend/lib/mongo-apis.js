@@ -311,7 +311,7 @@ export async function getIntentMandateAPI(journeyId, recentMandateIndex = 1) {
       "entity_type": "IntentMandate"
     },
     options: { 
-      "sort": { "_id": -1 }
+      "sort": { "created_at": 1 } // oldest doc is in index 0, so the most recent doc is at the end of the array. To get the nth most recent, we will access documents[documents.length - n]
     },
     collectionName: COLLECTIONS.MANDATE_LEDGER,
   };

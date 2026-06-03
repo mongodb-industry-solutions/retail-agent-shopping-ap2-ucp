@@ -26,9 +26,9 @@ const ProfileSelection = () => {
   const [showOrderSelectionModal, setShowOrderSelectionModal] = useState(false);
 
   const onSelectProfile = (profileId) => {
-    if(profileId === journeys.disputing.id) {
+    if (profileId === journeys.disputing.id && !startedJourneys.includes(journeys.disputing.id)) {
       setShowOrderSelectionModal(true);
-    }else{
+    } else {
       router.push(`/journey/${profileId}`);
     }
   };
@@ -48,10 +48,15 @@ const ProfileSelection = () => {
   };
 
   const isUnlocked = (profileId) => {
-    const profileIndex = profileOrder.indexOf(profileId);
-    if (profileIndex === 0) return true;
-    const previousJourney = profileOrder[profileIndex - 1];
-    return startedJourneys.includes(previousJourney);
+    // Straightforward is always unlocked initially
+    if (profileId === 'straightforward') return true;
+    
+    // Hunter and disputing are unlocked when straightforward is started
+    if (profileId === 'hunter' || profileId === 'disputing') {
+      return startedJourneys.includes('straightforward');
+    }
+    
+    return false;
   };
 
   const isStarted = (profileId) => {
@@ -59,10 +64,11 @@ const ProfileSelection = () => {
   };
 
   const getPreviousJourneyName = (profileId) => {
-    const profileIndex = profileOrder.indexOf(profileId);
-    if (profileIndex <= 0) return "";
-    const previousJourney = profileOrder[profileIndex - 1];
-    return journeys[previousJourney]?.name || "";
+    // For hunter and disputing, they need the straightforward journey to be started
+    if (profileId === 'hunter' || profileId === 'disputing') {
+      return journeys.straightforward?.name || "";
+    }
+    return "";
   };
 
   return (
@@ -274,7 +280,7 @@ const ProfileSelection = () => {
                 </div>
 
                 {/* Select Button */}
-                {unlocked || true ? (
+                {unlocked ? (
                   <Button
                     variant="primary"
                     size="large"
