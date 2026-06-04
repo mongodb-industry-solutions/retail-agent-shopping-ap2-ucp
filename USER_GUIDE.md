@@ -41,7 +41,7 @@ The main app contains three journeys. Each one is designed to highlight a differ
 - **When to use:** After starting/completing Straightforward.
 - **Expected takeaway:** See how AP2 + Mandate Ledger handle evolving intent and maintain trustworthy execution history.
 
-Placeholder image (replace later):
+
 
 ![The Hunter Buyer journey card](./assets/user-guide/journey-hunter.png)
 
@@ -62,7 +62,7 @@ Each journey view has two core areas:
 	- Enter prompts and follow the guided options to progress the scenario.
 	- Selected/important system messages may expose additional details in the sidebar.
 
-	Placeholder image (replace later):
+	
 
 	![Chatbot interaction area](./assets/user-guide/chatbot-area.png)
 
@@ -71,6 +71,6 @@ Each journey view has two core areas:
 	- It explains what happened under the hood (for example, mandate-related stages and supporting details).
 	- Treat it as the transparency panel for AP2 + Mandate Ledger events.
 
-	Placeholder image (replace later):
+	
 
 	![Behind The Scenes sidebar](./assets/user-guide/behind-the-scenes-sidebar.png)
