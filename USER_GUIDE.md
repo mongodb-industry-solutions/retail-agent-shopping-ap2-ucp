@@ -13,7 +13,7 @@ What you should observe while navigating:
 
 ## 2. Where to Start
 
-1. Open the app at `http://localhost:8000`.
+1. Open the app at `http://localhost:8080`.
 2. On the landing page, review the introduction (optional) and select a journey card.
 3. Complete journeys in sequence for the best experience:
 	- Start with **The Straightforward Buyer**.
