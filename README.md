@@ -121,7 +121,7 @@ Create `.env` file in `/backend`.
 
 ```bash
 GOOGLE_API_KEY=
-MANDATE_LEDGER_SERVICE_URL=http:localhost:5000
+MANDATE_LEDGER_SERVICE_URL=http://localhost:5000
 MANDATE_LEDGER_API_KEY=
 ```
 
