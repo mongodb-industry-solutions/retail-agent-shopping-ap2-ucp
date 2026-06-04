@@ -89,11 +89,11 @@ uvicorn src.main:app --reload --port 5000
 Or run the Mandate Ledger Service with Docker:
 
 ```bash
-docker build -f mandate_ledger_service/Dockerfile -t mandate-ledger ./mandate_ledger_service
+docker build -t mandate-ledger .
 
 docker run --rm \
 	-p 5000:5000 \
-	--env-file mandate_ledger_service/.env \
+	--env-file .env \
 	mandate-ledger
 ```
 
