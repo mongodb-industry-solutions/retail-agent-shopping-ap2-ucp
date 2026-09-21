@@ -55,7 +55,7 @@ const GuidedIntro = () => {
 
       <div className="">
         {/* Progress indicators */}
-        <div className="flex justify-center gap-2 mb-12">
+        <div className="flex justify-center gap-2 mb-2">
           {introSlides.map((_, index) => {
             let backgroundColor;
             if (index === currentSlide) {
@@ -78,6 +78,37 @@ const GuidedIntro = () => {
               />
             );
           })}
+        </div>
+
+
+                {/* Navigation */}
+        <div className="flex justify-center items-center gap-4 mb-2">
+          {currentSlide > 0 && (
+            <Button
+              variant="default"
+              size="small"
+              leftGlyph={<Icon glyph="CaretLeft" />}
+              onClick={handlePrevious}
+              style={{
+                backgroundColor: palette.gray.light2,
+                color: palette.gray.dark1,
+                border: `1px solid ${palette.gray.light1}`
+              }}
+            >
+              Previous
+            </Button>
+          )}
+          <Button 
+            size="small" 
+            onClick={handleNext}
+            rightGlyph={<Icon glyph="CaretRight" />}
+            style={{
+              backgroundColor: palette.green.dark2,
+              color: palette.gray.light3
+            }}
+          >
+            {isLastSlide ? "Start Demo" : "Continue"}
+          </Button>
         </div>
 
         {/* Slide content */}
@@ -113,36 +144,6 @@ const GuidedIntro = () => {
               dangerouslySetInnerHTML={{ __html: slide.description }}
             />
           </div>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex justify-center items-center gap-4 mt-16">
-          {currentSlide > 0 && (
-            <Button
-              variant="default"
-              size="large"
-              leftGlyph={<Icon glyph="CaretLeft" />}
-              onClick={handlePrevious}
-              style={{
-                backgroundColor: palette.gray.light2,
-                color: palette.gray.dark1,
-                border: `1px solid ${palette.gray.light1}`
-              }}
-            >
-              Previous
-            </Button>
-          )}
-          <Button 
-            size="large" 
-            onClick={handleNext}
-            rightGlyph={<Icon glyph="CaretRight" />}
-            style={{
-              backgroundColor: palette.green.dark2,
-              color: palette.gray.light3
-            }}
-          >
-            {isLastSlide ? "Start Demo" : "Continue"}
-          </Button>
         </div>
       </div>
     </div>
