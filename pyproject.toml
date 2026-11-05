@@ -9,7 +9,7 @@ description = "Mandate Ledger Service Demo for Agent Payments Protocol"
 dependencies = []
 keywords = ["mandate-ledger", "ap2", "mongodb"]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 
 [tool.setuptools.packages.find]
 where = ["example/src"]
