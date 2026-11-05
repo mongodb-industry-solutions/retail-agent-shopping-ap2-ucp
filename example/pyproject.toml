@@ -20,7 +20,7 @@ dependencies = [
 ]
 keywords = ["payments", "a2a", "ap2", "mandate-ledger"]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 
 [tool.setuptools.packages.find]
 where = ["src"]
