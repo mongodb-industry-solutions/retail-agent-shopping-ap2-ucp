@@ -47,6 +47,12 @@ The complete payment lifecycle flows through three mandate types:
 
 - Python 3.12+
 - MongoDB Atlas or local MongoDB 7.0+
+	- [Use a free Atlas account](https://www.mongodb.com/cloud/atlas/register) (recommended if you plan to keep your work)
+		1. Register for a free MongoDB Atlas account
+    	2. Create a new database cluster
+    	3. Obtain the connection string
+	- Or try it now (no account required) with an Ephemeral Atlas Cluster
+		1. Run one command that creates an [Atlas Ephemeral Cluster](https://www.mongodb.com/docs/atlas/tutorial/create-ephemeral-cluster/#create-the-ephemeral-cluster) to get a free cluster and connection string.It lasts 48 hours. Claim it by registering within 7 days to keep it.
 - Google API Key ([Get one](https://aistudio.google.com/apikey)) or Vertex AI access
 - [`uv`](https://docs.astral.sh/uv/) (optional)
 
